@@ -1,0 +1,347 @@
+/* AI Auto News Poster Admin Styles */
+
+.aanp-dashboard {
+    margin: 20px 0;
+}
+
+.aanp-stat-box {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    text-align: center;
+    min-width: 120px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.aanp-stat-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.aanp-stat-box h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.aanp-stat-box p {
+    margin: 5px 0 0 0;
+    color: #666;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.aanp-generate-section {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.aanp-generate-controls {
+    margin-top: 15px;
+}
+
+.aanp-progress {
+    background: #f0f0f1;
+    border-radius: 3px;
+    height: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.aanp-progress-bar {
+    background: linear-gradient(90deg, #0073aa, #005a87);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.aanp-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 35%, rgba(255,255,255,0.2) 35%, rgba(255,255,255,0.2) 65%, transparent 65%);
+    background-size: 20px 20px;
+    animation: progress-stripes 1s linear infinite;
+}
+
+@keyframes progress-stripes {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 0; }
+}
+
+.aanp-categories {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 3px;
+    background: #fafafa;
+}
+
+.aanp-categories label {
+    display: block;
+    margin-bottom: 8px;
+    padding: 5px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.aanp-categories label:hover {
+    background-color: #e8f4f8;
+}
+
+.aanp-categories input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.rss-feed-row {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rss-feed-row input[type="url"] {
+    flex: 1;
+}
+
+.remove-feed {
+    background: #d63638;
+    border-color: #d63638;
+    color: #fff;
+}
+
+.remove-feed:hover {
+    background: #b32d2e;
+    border-color: #b32d2e;
+}
+
+#rss-feeds-container {
+    margin-bottom: 15px;
+}
+
+#add-feed {
+    background: #00a32a;
+    border-color: #00a32a;
+    color: #fff;
+}
+
+#add-feed:hover {
+    background: #008a20;
+    border-color: #008a20;
+}
+
+.post-status {
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.post-status.draft {
+    background: #fcf2f3;
+    color: #b32d2e;
+    border: 1px solid #f1aeb5;
+}
+
+.post-status.publish {
+    background: #f0f6fc;
+    color: #00a32a;
+    border: 1px solid #a7c6ed;
+}
+
+.post-status.private {
+    background: #fef8e7;
+    color: #ff6900;
+    border: 1px solid #f0d000;
+}
+
+.aanp-recent-posts {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.aanp-recent-posts table {
+    margin-top: 15px;
+}
+
+.aanp-recent-posts td {
+    vertical-align: middle;
+}
+
+.aanp-pro-features {
+    background: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 20px 0;
+    opacity: 0.6;
+    position: relative;
+}
+
+.aanp-pro-features::before {
+    content: "🔒 PRO";
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: #ff6900;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.aanp-pro-features input,
+.aanp-pro-features select {
+    cursor: not-allowed;
+}
+
+.dashicons.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+#aanp-generation-status {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+#aanp-status-text {
+    margin: 10px 0 0 0;
+    font-style: italic;
+    font-size: 14px;
+}
+
+#aanp-generation-results {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0f6fc;
+    border: 1px solid #a7c6ed;
+    border-radius: 4px;
+}
+
+#aanp-results-list ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#aanp-results-list li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#aanp-results-list li:last-child {
+    margin-bottom: 0;
+}
+
+.notice.aanp-notice {
+    margin: 15px 0;
+}
+
+.notice.aanp-notice p {
+    margin: 0.5em 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .aanp-dashboard > div {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .aanp-stat-box {
+        min-width: auto;
+    }
+    
+    .rss-feed-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    #aanp-results-list li {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+}
+
+/* Form styling improvements */
+.form-table th {
+    width: 200px;
+}
+
+.form-table td {
+    padding: 15px 10px;
+}
+
+.form-table input[type="text"],
+.form-table input[type="url"],
+.form-table input[type="password"],
+.form-table select {
+    min-width: 300px;
+}
+
+.form-table .description {
+    margin-top: 8px;
+    font-style: italic;
+    color: #666;
+}
+
+/* Button improvements */
+.button-large {
+    padding: 8px 16px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.button-primary.button-large {
+    background: #0073aa;
+    border-color: #0073aa;
+}
+
+.button-primary.button-large:hover {
+    background: #005a87;
+    border-color: #005a87;
+}
+
+/* Loading states */
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.button:disabled:hover {
+    background: inherit;
+    border-color: inherit;
+    color: inherit;
+}
