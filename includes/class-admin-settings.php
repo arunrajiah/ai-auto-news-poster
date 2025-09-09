@@ -316,6 +316,7 @@ class AANP_Admin_Settings {
             
             if (!empty($generated_posts)) {
                 wp_send_json_success(array(
+                    /* translators: %d: Number of posts generated */
                     'message' => sprintf(__('%d posts generated successfully!', 'ai-auto-news-poster'), count($generated_posts)),
                     'posts' => $generated_posts
                 ));

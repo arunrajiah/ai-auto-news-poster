@@ -3,7 +3,7 @@
  * Plugin Name: AI Auto News Poster
  * Plugin URI: https://github.com/arunrajiah/ai-auto-news-poster
  * Description: Auto-generate blog posts based on the latest news/content. Free users can generate up to 5 posts manually per batch.
- * Version: 1.0.3
+ * Version: 1.0.6
  * Author: Arun Rajiah
  * Author URI: https://github.com/arunrajiah
  * License: GPL v2 or later
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AANP_VERSION', '1.0.3');
+define('AANP_VERSION', '1.0.6');
 define('AANP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AANP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('AANP_PLUGIN_FILE', __FILE__);
@@ -82,6 +82,7 @@ class AI_Auto_News_Poster {
             if (version_compare(PHP_VERSION, '7.4', '<')) {
                 deactivate_plugins(plugin_basename(__FILE__));
                 $php_version = PHP_VERSION;
+                /* translators: %s: PHP version number */
                 wp_die(sprintf(__('AI Auto News Poster requires PHP 7.4 or higher. Your current version is %s', 'ai-auto-news-poster'), $php_version));
             }
             
@@ -123,6 +124,7 @@ class AI_Auto_News_Poster {
             error_log('AANP Activation Error: ' . $e->getMessage());
             deactivate_plugins(plugin_basename(__FILE__));
             $error_message = $e->getMessage();
+            /* translators: %s: Error message */
             wp_die(sprintf(__('Plugin activation failed: %s', 'ai-auto-news-poster'), $error_message));
         }
     }
