@@ -3,15 +3,15 @@
  * Plugin Name: AI Auto News Poster
  * Plugin URI: https://github.com/arunrajiah/ai-auto-news-poster
  * Description: Auto-generate blog posts based on the latest news/content. Free users can generate up to 5 posts manually per batch.
- * Version: 1.0.0
+ * Version: 1.0.2
  * Author: Arun Rajiah
  * Author URI: https://github.com/arunrajiah
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: ai-auto-news-poster
- * Domain Path: /languages
+
  * Requires at least: 5.0
- * Tested up to: 6.4
+ * Tested up to: 6.8
  * Requires PHP: 7.4
  */
 
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AANP_VERSION', '1.0.0');
+define('AANP_VERSION', '1.0.2');
 define('AANP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AANP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('AANP_PLUGIN_FILE', __FILE__);
@@ -44,8 +44,7 @@ class AI_Auto_News_Poster {
      * Initialize plugin
      */
     public function init() {
-        // Load text domain
-        load_plugin_textdomain('ai-auto-news-poster', false, dirname(plugin_basename(__FILE__)) . '/languages');
+        // Text domain is automatically loaded by WordPress 4.6+
         
         // Load includes
         $this->load_includes();
@@ -82,7 +81,8 @@ class AI_Auto_News_Poster {
             // Check PHP version
             if (version_compare(PHP_VERSION, '7.4', '<')) {
                 deactivate_plugins(plugin_basename(__FILE__));
-                wp_die(__('AI Auto News Poster requires PHP 7.4 or higher. Your current version is ' . PHP_VERSION, 'ai-auto-news-poster'));
+                $php_version = PHP_VERSION;
+                wp_die(sprintf(__('AI Auto News Poster requires PHP 7.4 or higher. Your current version is %s', 'ai-auto-news-poster'), $php_version));
             }
             
             // Check WordPress version
@@ -122,7 +122,8 @@ class AI_Auto_News_Poster {
         } catch (Exception $e) {
             error_log('AANP Activation Error: ' . $e->getMessage());
             deactivate_plugins(plugin_basename(__FILE__));
-            wp_die(__('Plugin activation failed: ' . $e->getMessage(), 'ai-auto-news-poster'));
+            $error_message = $e->getMessage();
+            wp_die(sprintf(__('Plugin activation failed: %s', 'ai-auto-news-poster'), $error_message));
         }
     }
     
