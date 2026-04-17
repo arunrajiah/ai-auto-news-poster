@@ -185,9 +185,11 @@ class AANP_Admin_Settings {
      */
     public function api_key_callback() {
         $options = get_option('aanp_settings', array());
-        $value = isset($options['api_key']) ? $options['api_key'] : '';
-        
-        echo '<input type="password" name="aanp_settings[api_key]" id="api_key" value="' . esc_attr($value) . '" class="regular-text" />';
+        $has_key = !empty($options['api_key']);
+
+        // Never render the stored (encrypted) value — use a placeholder instead
+        $placeholder = $has_key ? __('API key saved — enter a new value to replace it', 'ai-auto-news-poster') : '';
+        echo '<input type="password" name="aanp_settings[api_key]" id="api_key" value="" class="regular-text" placeholder="' . esc_attr($placeholder) . '" autocomplete="new-password" />';
         echo '<p class="description">' . __('Enter your API key for the selected LLM provider.', 'ai-auto-news-poster') . '</p>';
     }
     
@@ -347,18 +349,18 @@ class AANP_Admin_Settings {
             }
         }
         
-        // Sanitize and encrypt API key
+        // Sanitize and encrypt API key — keep existing value when field is left blank
+        $existing_options = get_option('aanp_settings', array());
         if (isset($input['api_key'])) {
             $api_key = sanitize_text_field($input['api_key']);
             if (!empty($api_key)) {
-                // Basic validation for API key format
                 if (strlen($api_key) < 10) {
                     add_settings_error('aanp_settings', 'invalid_api_key', __('API key appears to be too short.', 'ai-auto-news-poster'));
                 }
-                // Store encrypted API key
                 $sanitized['api_key'] = $this->encrypt_api_key($api_key);
             } else {
-                $sanitized['api_key'] = '';
+                // Preserve existing key when no new value was entered
+                $sanitized['api_key'] = isset($existing_options['api_key']) ? $existing_options['api_key'] : '';
             }
         }
         
@@ -434,35 +436,71 @@ class AANP_Admin_Settings {
     }
     
     /**
-     * Encrypt API key for secure storage
+     * Encrypt API key for secure storage using AES-256-CBC.
+     * Requires the OpenSSL PHP extension. If unavailable the plugin will
+     * show an admin warning and refuse to store the key.
      */
-    private function encrypt_api_key($api_key) {
-        if (function_exists('openssl_encrypt')) {
-            $key = wp_salt('auth');
-            $iv = openssl_random_pseudo_bytes(16);
-            $encrypted = openssl_encrypt($api_key, 'AES-256-CBC', $key, 0, $iv);
-            return base64_encode($iv . $encrypted);
+    private function encrypt_api_key(string $api_key): string {
+        if (!function_exists('openssl_encrypt')) {
+            add_settings_error(
+                'aanp_settings',
+                'openssl_unavailable',
+                __('The OpenSSL PHP extension is required to store your API key securely. Please enable OpenSSL on your server.', 'ai-auto-news-poster'),
+                'error'
+            );
+            // Return empty rather than storing the key unencrypted
+            return '';
         }
-        // Fallback to base64 encoding (not secure but better than plain text)
-        return base64_encode($api_key);
+
+        // Derive a 32-byte key from the WordPress auth salt so it is unique per install
+        $key = substr(hash('sha256', wp_salt('auth'), true), 0, 32);
+        $iv  = openssl_random_pseudo_bytes(16);
+        $encrypted = openssl_encrypt($api_key, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+
+        if ($encrypted === false) {
+            return '';
+        }
+
+        // Prefix "enc2:" identifies the new format and distinguishes it from legacy values
+        return 'enc2:' . base64_encode($iv . $encrypted);
     }
-    
+
     /**
-     * Decrypt API key for use
+     * Decrypt API key.
+     * Supports both the new "enc2:" format and the legacy format from earlier plugin versions.
      */
-    public static function decrypt_api_key($encrypted_key) {
+    public static function decrypt_api_key(string $encrypted_key): string {
         if (empty($encrypted_key)) {
             return '';
         }
-        
-        if (function_exists('openssl_decrypt')) {
-            $key = wp_salt('auth');
-            $data = base64_decode($encrypted_key);
-            $iv = substr($data, 0, 16);
-            $encrypted = substr($data, 16);
-            return openssl_decrypt($encrypted, 'AES-256-CBC', $key, 0, $iv);
+
+        // New format: enc2:<base64(iv . ciphertext)>
+        if (strncmp($encrypted_key, 'enc2:', 5) === 0 && function_exists('openssl_decrypt')) {
+            $raw  = base64_decode(substr($encrypted_key, 5), true);
+            if ($raw === false || strlen($raw) <= 16) {
+                return '';
+            }
+            $key       = substr(hash('sha256', wp_salt('auth'), true), 0, 32);
+            $iv        = substr($raw, 0, 16);
+            $ciphertext = substr($raw, 16);
+            $decrypted = openssl_decrypt($ciphertext, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+            return $decrypted !== false ? $decrypted : '';
         }
-        // Fallback from base64 encoding
-        return base64_decode($encrypted_key);
+
+        // Legacy format: base64(iv . ciphertext) using wp_salt('auth') as raw key
+        if (function_exists('openssl_decrypt')) {
+            $data = base64_decode($encrypted_key, true);
+            if ($data !== false && strlen($data) > 16) {
+                $key       = wp_salt('auth');
+                $iv        = substr($data, 0, 16);
+                $ciphertext = substr($data, 16);
+                $decrypted = openssl_decrypt($ciphertext, 'AES-256-CBC', $key, 0, $iv);
+                if ($decrypted !== false) {
+                    return $decrypted;
+                }
+            }
+        }
+
+        return '';
     }
 }
