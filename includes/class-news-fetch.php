@@ -43,33 +43,50 @@ class AANP_News_Fetch {
         return array_slice($articles, 0, 10);
     }
     
+    /** Cache lifetime in seconds for individual RSS feed responses (30 minutes). */
+    const FEED_CACHE_TTL = 1800;
+
     /**
-     * Fetch articles from a single RSS feed
+     * Build a short, safe transient key for a feed URL.
+     */
+    private function feed_cache_key(string $feed_url): string {
+        return 'aanp_feed_' . md5($feed_url);
+    }
+
+    /**
+     * Fetch articles from a single RSS feed, using a transient cache.
      *
      * @param string $feed_url RSS feed URL
      * @return array Array of articles
      */
     private function fetch_from_feed($feed_url) {
         $articles = array();
-        
+
+        $cache_key = $this->feed_cache_key($feed_url);
+        $cached    = get_transient($cache_key);
+
+        if ($cached !== false) {
+            return $cached;
+        }
+
         // Use WordPress HTTP API
         $response = wp_remote_get($feed_url, array(
-            'timeout' => 30,
-            'user-agent' => 'AI Auto News Poster/' . AANP_VERSION
+            'timeout'    => 30,
+            'user-agent' => 'AI Auto News Poster/' . AANP_VERSION,
         ));
-        
+
         if (is_wp_error($response)) {
             error_log('AANP: Failed to fetch RSS feed: ' . $feed_url . ' - ' . $response->get_error_message());
             return $articles;
         }
-        
+
         $body = wp_remote_retrieve_body($response);
-        
+
         if (empty($body)) {
             error_log('AANP: Empty response from RSS feed: ' . $feed_url);
             return $articles;
         }
-        
+
         // Parse XML
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string($body);
@@ -78,10 +95,9 @@ class AANP_News_Fetch {
             error_log('AANP: Failed to parse XML from RSS feed: ' . $feed_url);
             return $articles;
         }
-        
+
         // Handle different RSS formats
         if (isset($xml->channel->item)) {
-            // RSS 2.0 format
             foreach ($xml->channel->item as $item) {
                 $article = $this->parse_rss_item($item, $feed_url);
                 if ($article) {
@@ -89,7 +105,6 @@ class AANP_News_Fetch {
                 }
             }
         } elseif (isset($xml->entry)) {
-            // Atom format
             foreach ($xml->entry as $entry) {
                 $article = $this->parse_atom_entry($entry, $feed_url);
                 if ($article) {
@@ -97,7 +112,10 @@ class AANP_News_Fetch {
                 }
             }
         }
-        
+
+        // Cache the parsed articles to avoid fetching the same feed on every request
+        set_transient($cache_key, $articles, self::FEED_CACHE_TTL);
+
         return $articles;
     }
     
