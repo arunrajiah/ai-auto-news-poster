@@ -87,10 +87,25 @@ jQuery(document).ready(function($) {
                 showAdminNotice(errorMsg, 'error');
             },
             complete: function() {
-                // Re-enable button
-                button.prop('disabled', false);
                 button.find('.dashicons').removeClass('spin');
-                
+
+                // Enforce client-side cooldown matching the server-side limit
+                var cooldown = aanp_ajax.cooldown_seconds || 60;
+                var remaining = cooldown;
+                var originalText = button.text().trim();
+
+                button.prop('disabled', true);
+                var countdownInterval = setInterval(function() {
+                    remaining--;
+                    button.val(aanp_ajax.cooldown_text.replace('%d', remaining));
+                    button.text(aanp_ajax.cooldown_text.replace('%d', remaining));
+                    if (remaining <= 0) {
+                        clearInterval(countdownInterval);
+                        button.prop('disabled', false);
+                        button.text(originalText);
+                    }
+                }, 1000);
+
                 // Hide progress after delay
                 setTimeout(function() {
                     statusDiv.fadeOut();
