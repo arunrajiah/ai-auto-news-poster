@@ -6,395 +6,415 @@
  */
 
 // Prevent direct access
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 class AANP_Post_Creator {
-    
-    /**
-     * Check whether a post sourced from the given URL already exists.
-     *
-     * @param string $source_url The article's canonical URL
-     * @return bool True when a duplicate post is found
-     */
-    public function is_duplicate(string $source_url): bool {
-        global $wpdb;
 
-        // Check the tracking table first (fast indexed lookup)
-        $table_name = $wpdb->prefix . 'aanp_generated_posts';
-        $exists = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table_name} WHERE source_url = %s LIMIT 1",
-                $source_url
-            )
-        );
+	/**
+	 * Check whether a post sourced from the given URL already exists.
+	 *
+	 * @param string $source_url The article's canonical URL
+	 * @return bool True when a duplicate post is found
+	 */
+	public function is_duplicate( string $source_url ): bool {
+		global $wpdb;
 
-        if ((int) $exists > 0) {
-            return true;
-        }
+		// Check the tracking table first (fast indexed lookup)
+		$table_name = $wpdb->prefix . 'aanp_generated_posts';
+		$exists     = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$table_name} WHERE source_url = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$source_url
+			)
+		);
 
-        // Fallback: check post meta for any post that may have been created outside
-        // the normal flow (e.g. by an earlier plugin version that predates the table)
-        $meta_query = get_posts(array(
-            'post_type'   => 'post',
-            'meta_key'    => '_aanp_source_url',
-            'meta_value'  => $source_url,
-            'numberposts' => 1,
-            'fields'      => 'ids',
-        ));
+		if ( (int) $exists > 0 ) {
+			return true;
+		}
 
-        return !empty($meta_query);
-    }
+		// Fallback: check post meta for any post that may have been created outside
+		// the normal flow (e.g. by an earlier plugin version that predates the table)
+		$meta_query = get_posts(
+			array(
+				'post_type'   => 'post',
+				'meta_key'    => '_aanp_source_url',
+				'meta_value'  => $source_url,
+				'numberposts' => 1,
+				'fields'      => 'ids',
+			)
+		);
 
-    /**
-     * Create WordPress post from generated content
-     *
-     * @param array $generated_content Generated content data
-     * @param array $source_article Original article data
-     * @return int|false Post ID on success, false on failure
-     */
-    public function create_post(array $generated_content, array $source_article) {
-        if (empty($generated_content['title']) || empty($generated_content['content'])) {
-            error_log('AANP: Invalid generated content data');
-            return false;
-        }
+		return ! empty( $meta_query );
+	}
 
-        // Skip duplicate articles
-        if (!empty($source_article['link']) && $this->is_duplicate($source_article['link'])) {
-            error_log('AANP: Skipping duplicate article: ' . $source_article['link']);
-            return false;
-        }
-        
-        // Get plugin settings
-        $options = get_option('aanp_settings', array());
-        $selected_categories = isset($options['categories']) ? $options['categories'] : array();
-        
-        // Prepare post data
-        $post_data = array(
-            'post_title' => wp_strip_all_tags($generated_content['title']),
-            'post_content' => $this->format_post_content($generated_content, $source_article),
-            'post_status' => 'draft',
-            'post_type' => 'post',
-            'post_author' => get_current_user_id(),
-            'post_category' => $selected_categories,
-            'meta_input' => array(
-                '_aanp_source_url' => $source_article['link'],
-                '_aanp_source_domain' => $source_article['source_domain'],
-                '_aanp_generated_at' => current_time('mysql'),
-                '_aanp_version' => AANP_VERSION
-            )
-        );
-        
-        // Insert the post
-        $post_id = wp_insert_post($post_data);
-        
-        if (is_wp_error($post_id)) {
-            error_log('AANP: Failed to create post: ' . $post_id->get_error_message());
-            return false;
-        }
-        
-        if (!$post_id) {
-            error_log('AANP: Failed to create post - unknown error');
-            return false;
-        }
-        
-        // Set post categories
-        if (!empty($selected_categories)) {
-            wp_set_post_categories($post_id, $selected_categories);
-        }
-        
-        // Add custom taxonomy or tags if needed
-        $this->add_post_tags($post_id, $generated_content, $source_article);
-        
-        // Log the creation
-        $this->log_post_creation($post_id, $source_article);
-        
-        return $post_id;
-    }
-    
-    /**
-     * Format post content with proper structure
-     *
-     * @param array $generated_content Generated content
-     * @param array $source_article Source article
-     * @return string Formatted content
-     */
-    private function format_post_content(array $generated_content, array $source_article): string {
-        $content = $generated_content['content'];
-        
-        // Ensure proper paragraph formatting
-        $content = wpautop($content);
-        
-        // Add source attribution at the end
-        $attribution = $this->create_source_attribution($source_article);
-        $content .= $attribution;
-        
-        return $content;
-    }
-    
-    /**
-     * Create source attribution
-     *
-     * @param array $source_article Source article
-     * @return string Attribution HTML
-     */
-    private function create_source_attribution(array $source_article): string {
-        $attribution = "
+	/**
+	 * Create WordPress post from generated content
+	 *
+	 * @param array $generated_content Generated content data
+	 * @param array $source_article Original article data
+	 * @return int|false Post ID on success, false on failure
+	 */
+	public function create_post( array $generated_content, array $source_article ) {
+		if ( empty( $generated_content['title'] ) || empty( $generated_content['content'] ) ) {
+			error_log( 'AANP: Invalid generated content data' );
+			return false;
+		}
 
-<div class=\"aanp-source-attribution\" style=\"margin-top: 30px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #0073aa; font-size: 14px;\">
+		// Skip duplicate articles
+		if ( ! empty( $source_article['link'] ) && $this->is_duplicate( $source_article['link'] ) ) {
+			error_log( 'AANP: Skipping duplicate article: ' . $source_article['link'] );
+			return false;
+		}
+
+		// Get plugin settings
+		$options             = get_option( 'aanp_settings', array() );
+		$selected_categories = isset( $options['categories'] ) ? $options['categories'] : array();
+
+		// Prepare post data
+		$post_data = array(
+			'post_title'    => wp_strip_all_tags( $generated_content['title'] ),
+			'post_content'  => $this->format_post_content( $generated_content, $source_article ),
+			'post_status'   => 'draft',
+			'post_type'     => 'post',
+			'post_author'   => get_current_user_id(),
+			'post_category' => $selected_categories,
+			'meta_input'    => array(
+				'_aanp_source_url'    => $source_article['link'],
+				'_aanp_source_domain' => $source_article['source_domain'],
+				'_aanp_generated_at'  => current_time( 'mysql' ),
+				'_aanp_version'       => AANP_VERSION,
+			),
+		);
+
+		// Insert the post
+		$post_id = wp_insert_post( $post_data );
+
+		if ( is_wp_error( $post_id ) ) {
+			error_log( 'AANP: Failed to create post: ' . $post_id->get_error_message() );
+			return false;
+		}
+
+		if ( ! $post_id ) {
+			error_log( 'AANP: Failed to create post - unknown error' );
+			return false;
+		}
+
+		// Set post categories
+		if ( ! empty( $selected_categories ) ) {
+			wp_set_post_categories( $post_id, $selected_categories );
+		}
+
+		// Add custom taxonomy or tags if needed
+		$this->add_post_tags( $post_id, $generated_content, $source_article );
+
+		// Log the creation
+		$this->log_post_creation( $post_id, $source_article );
+
+		return $post_id;
+	}
+
+	/**
+	 * Format post content with proper structure
+	 *
+	 * @param array $generated_content Generated content
+	 * @param array $source_article Source article
+	 * @return string Formatted content
+	 */
+	private function format_post_content( array $generated_content, array $source_article ): string {
+		$content = $generated_content['content'];
+
+		// Ensure proper paragraph formatting
+		$content = wpautop( $content );
+
+		// Add source attribution at the end
+		$attribution = $this->create_source_attribution( $source_article );
+		$content    .= $attribution;
+
+		return $content;
+	}
+
+	/**
+	 * Create source attribution
+	 *
+	 * @param array $source_article Source article
+	 * @return string Attribution HTML
+	 */
+	private function create_source_attribution( array $source_article ): string {
+		$attribution  = '
+
+<div class="aanp-source-attribution" style="margin-top: 30px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #0073aa; font-size: 14px;">
+';
+		$attribution .= "<p><strong>Source:</strong> This article was inspired by news from <a href=\"{$source_article['link']}\" target=\"_blank\" rel=\"noopener nofollow\">{$source_article['source_domain']}</a></p>
 ";
-        $attribution .= "<p><strong>Source:</strong> This article was inspired by news from <a href=\"{$source_article['link']}\" target=\"_blank\" rel=\"noopener nofollow\">{$source_article['source_domain']}</a></p>
-";
-        $attribution .= "<p><em>Generated by AI Auto News Poster</em></p>
-";
-        $attribution .= "</div>";
-        
-        return $attribution;
-    }
-    
-    /**
-     * Add relevant tags to the post
-     *
-     * @param int $post_id Post ID
-     * @param array $generated_content Generated content
-     * @param array $source_article Source article
-     */
-    private function add_post_tags(int $post_id, array $generated_content, array $source_article): void {
-        $tags = array();
-        
-        // Extract potential tags from title and content
-        $text = $generated_content['title'] . ' ' . strip_tags($generated_content['content']);
-        
-        // Simple keyword extraction (can be enhanced)
-        $common_news_tags = array(
-            'breaking news', 'update', 'report', 'analysis', 'latest',
-            'technology', 'business', 'politics', 'health', 'science',
-            'sports', 'entertainment', 'world news', 'economy', 'finance'
-        );
-        
-        foreach ($common_news_tags as $tag) {
-            if (stripos($text, $tag) !== false) {
-                $tags[] = $tag;
-            }
-        }
-        
-        // Add source domain as tag
-        if (!empty($source_article['source_domain'])) {
-            $tags[] = $source_article['source_domain'];
-        }
-        
-        // Add AI generated tag
-        $tags[] = 'AI Generated';
-        
-        if (!empty($tags)) {
-            wp_set_post_tags($post_id, $tags);
-        }
-    }
-    
-    /**
-     * Log post creation for tracking
-     *
-     * @param int $post_id Created post ID
-     * @param array $source_article Source article
-     */
-    private function log_post_creation(int $post_id, array $source_article): void {
-        global $wpdb;
-        
-        $table_name = $wpdb->prefix . 'aanp_generated_posts';
-        
-        $wpdb->insert(
-            $table_name,
-            array(
-                'post_id' => $post_id,
-                'source_url' => $source_article['link'],
-                'generated_at' => current_time('mysql')
-            ),
-            array('%d', '%s', '%s')
-        );
-    }
-    
-    /**
-     * Update post with additional content
-     *
-     * @param int $post_id Post ID
-     * @param array $updates Updates to apply
-     * @return bool Success status
-     */
-    public function update_post(int $post_id, array $updates): bool {
-        $post_data = array('ID' => $post_id);
-        
-        if (isset($updates['title'])) {
-            $post_data['post_title'] = wp_strip_all_tags($updates['title']);
-        }
-        
-        if (isset($updates['content'])) {
-            $post_data['post_content'] = $updates['content'];
-        }
-        
-        if (isset($updates['status'])) {
-            $post_data['post_status'] = $updates['status'];
-        }
-        
-        if (isset($updates['categories'])) {
-            $post_data['post_category'] = $updates['categories'];
-        }
-        
-        $result = wp_update_post($post_data);
-        
-        return !is_wp_error($result) && $result !== 0;
-    }
-    
-    /**
-     * Delete generated post
-     *
-     * @param int $post_id Post ID
-     * @param bool $force_delete Force delete (bypass trash)
-     * @return bool Success status
-     */
-    public function delete_post(int $post_id, bool $force_delete = false): bool {
-        // Verify this is an AANP generated post
-        $source_url = get_post_meta($post_id, '_aanp_source_url', true);
-        
-        if (empty($source_url)) {
-            error_log('AANP: Attempted to delete non-AANP post: ' . $post_id);
-            return false;
-        }
-        
-        $result = wp_delete_post($post_id, $force_delete);
-        
-        if ($result) {
-            // Remove from tracking table
-            global $wpdb;
-            $table_name = $wpdb->prefix . 'aanp_generated_posts';
-            
-            $wpdb->delete(
-                $table_name,
-                array('post_id' => $post_id),
-                array('%d')
-            );
-        }
-        
-        return (bool) $result;
-    }
-    
-    /**
-     * Get generated posts statistics
-     *
-     * @return array Statistics
-     */
-    public function get_stats(): array {
-        global $wpdb;
-        
-        $table_name = $wpdb->prefix . 'aanp_generated_posts';
-        
-        // Total generated posts
-        $total_posts = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
-        
-        // Posts generated today
-        $today_posts = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM $table_name WHERE DATE(generated_at) = %s",
-                current_time('Y-m-d')
-            )
-        );
-        
-        // Posts generated this week
-        $week_start = date('Y-m-d', strtotime('monday this week'));
-        $week_posts = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM $table_name WHERE generated_at >= %s",
-                $week_start . ' 00:00:00'
-            )
-        );
-        
-        // Posts generated this month
-        $month_start = date('Y-m-01');
-        $month_posts = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM $table_name WHERE generated_at >= %s",
-                $month_start . ' 00:00:00'
-            )
-        );
-        
-        return array(
-            'total' => (int) $total_posts,
-            'today' => (int) $today_posts,
-            'week' => (int) $week_posts,
-            'month' => (int) $month_posts
-        );
-    }
-    
-    /**
-     * Get recent generated posts
-     *
-     * @param int $limit Number of posts to retrieve
-     * @return array Recent posts
-     */
-    public function get_recent_posts(int $limit = 10): array {
-        global $wpdb;
-        
-        $table_name = $wpdb->prefix . 'aanp_generated_posts';
-        
-        $results = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT gp.*, p.post_title, p.post_status, p.post_date 
-                 FROM $table_name gp 
-                 JOIN {$wpdb->posts} p ON gp.post_id = p.ID 
-                 ORDER BY gp.generated_at DESC 
+		$attribution .= '<p><em>Generated by AI Auto News Poster</em></p>
+';
+		$attribution .= '</div>';
+
+		return $attribution;
+	}
+
+	/**
+	 * Add relevant tags to the post
+	 *
+	 * @param int   $post_id Post ID
+	 * @param array $generated_content Generated content
+	 * @param array $source_article Source article
+	 */
+	private function add_post_tags( int $post_id, array $generated_content, array $source_article ): void {
+		$tags = array();
+
+		// Extract potential tags from title and content
+		$text = $generated_content['title'] . ' ' . strip_tags( $generated_content['content'] );
+
+		// Simple keyword extraction (can be enhanced)
+		$common_news_tags = array(
+			'breaking news',
+			'update',
+			'report',
+			'analysis',
+			'latest',
+			'technology',
+			'business',
+			'politics',
+			'health',
+			'science',
+			'sports',
+			'entertainment',
+			'world news',
+			'economy',
+			'finance',
+		);
+
+		foreach ( $common_news_tags as $tag ) {
+			if ( stripos( $text, $tag ) !== false ) {
+				$tags[] = $tag;
+			}
+		}
+
+		// Add source domain as tag
+		if ( ! empty( $source_article['source_domain'] ) ) {
+			$tags[] = $source_article['source_domain'];
+		}
+
+		// Add AI generated tag
+		$tags[] = 'AI Generated';
+
+		if ( ! empty( $tags ) ) {
+			wp_set_post_tags( $post_id, $tags );
+		}
+	}
+
+	/**
+	 * Log post creation for tracking
+	 *
+	 * @param int   $post_id Created post ID
+	 * @param array $source_article Source article
+	 */
+	private function log_post_creation( int $post_id, array $source_article ): void {
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . 'aanp_generated_posts';
+
+		$wpdb->insert(
+			$table_name,
+			array(
+				'post_id'      => $post_id,
+				'source_url'   => $source_article['link'],
+				'generated_at' => current_time( 'mysql' ),
+			),
+			array( '%d', '%s', '%s' )
+		);
+	}
+
+	/**
+	 * Update post with additional content
+	 *
+	 * @param int   $post_id Post ID
+	 * @param array $updates Updates to apply
+	 * @return bool Success status
+	 */
+	public function update_post( int $post_id, array $updates ): bool {
+		$post_data = array( 'ID' => $post_id );
+
+		if ( isset( $updates['title'] ) ) {
+			$post_data['post_title'] = wp_strip_all_tags( $updates['title'] );
+		}
+
+		if ( isset( $updates['content'] ) ) {
+			$post_data['post_content'] = $updates['content'];
+		}
+
+		if ( isset( $updates['status'] ) ) {
+			$post_data['post_status'] = $updates['status'];
+		}
+
+		if ( isset( $updates['categories'] ) ) {
+			$post_data['post_category'] = $updates['categories'];
+		}
+
+		$result = wp_update_post( $post_data );
+
+		return ! is_wp_error( $result ) && 0 !== $result;
+	}
+
+	/**
+	 * Delete generated post
+	 *
+	 * @param int  $post_id Post ID
+	 * @param bool $force_delete Force delete (bypass trash)
+	 * @return bool Success status
+	 */
+	public function delete_post( int $post_id, bool $force_delete = false ): bool {
+		// Verify this is an AANP generated post
+		$source_url = get_post_meta( $post_id, '_aanp_source_url', true );
+
+		if ( empty( $source_url ) ) {
+			error_log( 'AANP: Attempted to delete non-AANP post: ' . $post_id );
+			return false;
+		}
+
+		$result = wp_delete_post( $post_id, $force_delete );
+
+		if ( $result ) {
+			// Remove from tracking table
+			global $wpdb;
+			$table_name = $wpdb->prefix . 'aanp_generated_posts';
+
+			$wpdb->delete(
+				$table_name,
+				array( 'post_id' => $post_id ),
+				array( '%d' )
+			);
+		}
+
+		return (bool) $result;
+	}
+
+	/**
+	 * Get generated posts statistics
+	 *
+	 * @return array Statistics
+	 */
+	public function get_stats(): array {
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . 'aanp_generated_posts';
+
+		// Total generated posts.
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table_name is a safe prefixed table name.
+		$total_posts = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
+
+		// Posts generated today.
+		$today_posts = $wpdb->get_var(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT COUNT(*) FROM $table_name WHERE DATE(generated_at) = %s",
+				current_time( 'Y-m-d' )
+			)
+		);
+
+		// Posts generated this week.
+		$week_start = gmdate( 'Y-m-d', strtotime( 'monday this week' ) );
+		$week_posts = $wpdb->get_var(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT COUNT(*) FROM $table_name WHERE generated_at >= %s",
+				$week_start . ' 00:00:00'
+			)
+		);
+
+		// Posts generated this month.
+		$month_start = gmdate( 'Y-m-01' );
+		$month_posts = $wpdb->get_var(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT COUNT(*) FROM $table_name WHERE generated_at >= %s",
+				$month_start . ' 00:00:00'
+			)
+		);
+
+		return array(
+			'total' => (int) $total_posts,
+			'today' => (int) $today_posts,
+			'week'  => (int) $week_posts,
+			'month' => (int) $month_posts,
+		);
+	}
+
+	/**
+	 * Get recent generated posts
+	 *
+	 * @param int $limit Number of posts to retrieve
+	 * @return array Recent posts
+	 */
+	public function get_recent_posts( int $limit = 10 ): array {
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . 'aanp_generated_posts';
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table_name is a safe prefixed table name.
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT gp.*, p.post_title, p.post_status, p.post_date
+                 FROM $table_name gp
+                 JOIN {$wpdb->posts} p ON gp.post_id = p.ID
+                 ORDER BY gp.generated_at DESC
                  LIMIT %d",
-                $limit
-            )
-        );
-        
-        $posts = array();
-        
-        foreach ($results as $result) {
-            $posts[] = array(
-                'id' => $result->post_id,
-                'title' => $result->post_title,
-                'status' => $result->post_status,
-                'source_url' => $result->source_url,
-                'generated_at' => $result->generated_at,
-                'edit_link' => get_edit_post_link($result->post_id)
-            );
-        }
-        
-        return $posts;
-    }
-    
-    /**
-     * Validate post data before creation
-     *
-     * @param array $generated_content Generated content
-     * @param array $source_article Source article
-     * @return array Validation result
-     */
-    public function validate_post_data(array $generated_content, array $source_article): array {
-        $errors = array();
-        
-        // Check title
-        if (empty($generated_content['title'])) {
-            $errors[] = 'Title is required';
-        } elseif (strlen($generated_content['title']) > 200) {
-            $errors[] = 'Title is too long (max 200 characters)';
-        }
-        
-        // Check content
-        if (empty($generated_content['content'])) {
-            $errors[] = 'Content is required';
-        } elseif (strlen(strip_tags($generated_content['content'])) < 100) {
-            $errors[] = 'Content is too short (min 100 characters)';
-        }
-        
-        // Check source URL
-        if (empty($source_article['link']) || !filter_var($source_article['link'], FILTER_VALIDATE_URL)) {
-            $errors[] = 'Valid source URL is required';
-        }
-        
-        return array(
-            'valid' => empty($errors),
-            'errors' => $errors
-        );
-    }
+				$limit
+			)
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		$posts = array();
+
+		foreach ( $results as $result ) {
+			$posts[] = array(
+				'id'           => $result->post_id,
+				'title'        => $result->post_title,
+				'status'       => $result->post_status,
+				'source_url'   => $result->source_url,
+				'generated_at' => $result->generated_at,
+				'edit_link'    => get_edit_post_link( $result->post_id ),
+			);
+		}
+
+		return $posts;
+	}
+
+	/**
+	 * Validate post data before creation
+	 *
+	 * @param array $generated_content Generated content
+	 * @param array $source_article Source article
+	 * @return array Validation result
+	 */
+	public function validate_post_data( array $generated_content, array $source_article ): array {
+		$errors = array();
+
+		// Check title
+		if ( empty( $generated_content['title'] ) ) {
+			$errors[] = 'Title is required';
+		} elseif ( strlen( $generated_content['title'] ) > 200 ) {
+			$errors[] = 'Title is too long (max 200 characters)';
+		}
+
+		// Check content
+		if ( empty( $generated_content['content'] ) ) {
+			$errors[] = 'Content is required';
+		} elseif ( strlen( strip_tags( $generated_content['content'] ) ) < 100 ) {
+			$errors[] = 'Content is too short (min 100 characters)';
+		}
+
+		// Check source URL
+		if ( empty( $source_article['link'] ) || ! filter_var( $source_article['link'], FILTER_VALIDATE_URL ) ) {
+			$errors[] = 'Valid source URL is required';
+		}
+
+		return array(
+			'valid'  => empty( $errors ),
+			'errors' => $errors,
+		);
+	}
 }
