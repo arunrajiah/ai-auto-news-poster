@@ -18,6 +18,13 @@ class AANP_AI_Generator {
     private $tone;
     
     /**
+     * Truncate a string for safe inclusion in error logs.
+     */
+    private function sanitize_for_log(string $text, int $max_length = 200): string {
+        return mb_substr(wp_strip_all_tags($text), 0, $max_length);
+    }
+
+    /**
      * Constructor
      */
     public function __construct() {
@@ -170,7 +177,7 @@ class AANP_AI_Generator {
         $result = json_decode($body, true);
         
         if (!isset($result['choices'][0]['message']['content'])) {
-            error_log('AANP: Invalid OpenAI response: ' . $body);
+            error_log('AANP: Invalid OpenAI response: ' . $this->sanitize_for_log($body));
             return false;
         }
         
@@ -219,7 +226,7 @@ class AANP_AI_Generator {
         $result = json_decode($body, true);
         
         if (!isset($result['content'][0]['text'])) {
-            error_log('AANP: Invalid Anthropic response: ' . $body);
+            error_log('AANP: Invalid Anthropic response: ' . $this->sanitize_for_log($body));
             return false;
         }
         
