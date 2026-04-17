@@ -1,6 +1,6 @@
 === AI Auto News Poster ===
 Contributors: arunrajiah
-Tags: ai, news, auto-posting, content generation, rss, openai, anthropic
+Tags: ai, news, auto-posting, content generation, rss, openai, anthropic, claude
 Requires at least: 5.0
 Tested up to: 6.8
 Stable tag: 1.0.6
@@ -12,157 +12,176 @@ Auto-generate unique blog posts from the latest news using AI. Free users can ge
 
 == Description ==
 
-AI Auto News Poster is a powerful WordPress plugin that automatically transforms the latest news articles into unique, engaging blog posts using advanced AI technology. Perfect for news websites, blogs, and content creators who want to stay current with trending topics.
+AI Auto News Poster transforms the latest news articles into unique, engaging blog posts using OpenAI, Anthropic Claude, or any OpenAI-compatible API. Perfect for news sites, blogs, and content creators who want to stay on top of trending topics without the manual effort.
 
 **Key Features:**
 
-* **AI-Powered Content Generation**: Uses OpenAI, Anthropic, or custom APIs to create unique blog posts
-* **RSS Feed Integration**: Fetches latest news from popular sources or custom RSS feeds
-* **Manual Batch Generation**: Generate up to 5 unique posts with one click (free version)
-* **Customizable Settings**: Choose tone, word count, and post categories
-* **Draft Posts**: All generated content is saved as drafts for review before publishing
-* **Source Attribution**: Proper attribution to original news sources
-* **Security First**: Secure API key storage and input sanitization
+* **Multi-provider AI generation** — OpenAI GPT, Anthropic Claude, or any OpenAI-compatible custom endpoint
+* **RSS feed management** — add, remove, and test feeds from the settings page; results cached for 30 minutes
+* **Live progress UI** — per-article generation with a progress bar and real-time status messages
+* **Duplicate detection** — already-posted articles are automatically skipped
+* **AES-256 encrypted API keys** — stored encrypted using a per-install key; never displayed again after saving
+* **Draft-first workflow** — all posts saved as drafts for your review before publishing
+* **Source attribution** — every post links back to the original news source
+* **60-second rate limit** — prevents accidental API overuse
+* **Customisable content** — choose tone, word count, and post categories
 
 **How It Works:**
 
-1. Configure your AI provider (OpenAI, Anthropic, or Custom API)
-2. Add RSS feeds from your favorite news sources
+1. Configure your AI provider and paste your API key
+2. Add RSS feeds from your favourite news sources (or use the built-in defaults: BBC, CNN, Reuters)
 3. Select categories and content preferences
-4. Click "Generate 5 Posts" to create unique blog content
-5. Review and publish the generated drafts
+4. Click "Generate 5 Posts" — articles are fetched and generated one at a time with live feedback
+5. Review the draft posts and publish what you like
 
 **Free Version Includes:**
+
 * Manual generation of up to 5 posts per batch
-* Support for OpenAI and Anthropic APIs
-* Custom RSS feed management
-* Basic content customization
-* Source attribution
+* OpenAI, Anthropic, and Custom API support
+* RSS feed management with per-feed testing
+* Duplicate detection
+* Transient-cached feed fetching
+* AES-256 API key encryption
+* PHPUnit-tested, CI-verified codebase
 
 **Pro Features (Coming Soon):**
+
 * Automated scheduling with WP-Cron
-* Generate up to 30 posts per batch
-* Automatic featured image generation
+* Up to 30 posts per batch
+* AI-powered featured image generation
 * SEO meta tags auto-fill
 * Priority support
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/ai-auto-news-poster` directory, or install the plugin through the WordPress plugins screen directly.
-2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Go to Settings > AI Auto News Poster to configure the plugin
-4. Add your AI API key and configure your preferences
-5. Add RSS feeds for news sources
-6. Click "Generate 5 Posts" to start creating content
+1. Upload the plugin files to `/wp-content/plugins/ai-auto-news-poster/`, or install through the WordPress plugins screen.
+2. Activate the plugin through the **Plugins** screen.
+3. Go to **Settings > AI Auto News Poster**.
+4. Select your AI provider and enter your API key.
+5. Add RSS feed URLs (or use the built-in defaults).
+6. Click **Generate 5 Posts** to start creating content.
 
 == Frequently Asked Questions ==
 
 = What AI providers are supported? =
 
-Currently, the plugin supports OpenAI (GPT models) and Anthropic (Claude models). A custom API option is also available for advanced users.
+OpenAI (GPT-3.5-turbo), Anthropic (Claude 3 Sonnet), and any OpenAI-compatible custom API endpoint (e.g. Ollama, LM Studio, OpenRouter).
 
 = Do I need an API key? =
 
-Yes, you need an API key from your chosen AI provider (OpenAI or Anthropic). The plugin does not include AI credits.
+Yes. You need a key from OpenAI, Anthropic, or your custom provider. The plugin does not include AI credits.
 
 = Are the generated posts unique? =
 
-Yes, the AI is instructed to create unique content based on news headlines and summaries, not to copy directly from sources.
+Yes. The AI is prompted to rewrite the article in its own words and explicitly told not to copy text from the source.
 
-= Can I customize the generated content? =
+= Can I customise the generated content? =
 
-Yes, you can choose the tone (neutral, professional, friendly), word count (short, medium, long), and post categories.
+Yes — tone (neutral / professional / friendly), word count (short ~300 w / medium ~500 w / long ~800 w), and WordPress categories.
 
 = Are posts published automatically? =
 
-No, all generated posts are saved as drafts. You can review and edit them before publishing.
+No. All posts are saved as drafts for you to review and edit before publishing.
 
-= How many posts can I generate? =
+= How many posts can I generate at once? =
 
-The free version allows up to 5 posts per batch. Pro version (coming soon) will support up to 30 posts per batch.
+Up to 5 per batch in the free version. Pro will support up to 30.
+
+= Why do I have to wait 60 seconds between batches? =
+
+To prevent accidental API overuse. The cooldown is stored in a WordPress transient.
+
+= How are API keys stored? =
+
+Keys are encrypted with AES-256-CBC using a 32-byte key derived from your site's `wp_salt('auth')` value. They are never displayed in plaintext after saving.
+
+= What happens if an article was already posted? =
+
+The plugin checks its own tracking table (`wp_aanp_generated_posts`) and silently skips any source URL that has already been processed.
 
 = Is the plugin secure? =
 
-Yes, the plugin follows WordPress security best practices including input sanitization, nonce verification, and secure API key storage.
+Yes. It follows WordPress security best practices: nonce verification, `manage_options` capability checks, `$wpdb->prepare()` for all queries, and output escaping throughout.
 
 == Screenshots ==
 
-1. Main settings page with AI configuration
-2. RSS feed management
-3. Post generation interface
-4. Generated posts dashboard
-5. Pro features preview
+1. Main settings page with AI provider configuration
+2. RSS feed management with per-feed test button
+3. Live post generation with progress bar
+4. Statistics dashboard (total, today, week, month)
+5. Recent generated posts table with edit links
 
 == Changelog ==
 
+= 1.0.6 =
+* Fixed all WordPress Plugin Check errors (i18n, escaping, missing translators comments)
+* Removed all inline styles from admin templates; moved to admin.css
+* Added semantic CSS classes for stat boxes and status indicators
+* Corrected readme.txt stable tag
+
+= 1.0.5 =
+* AES-256-CBC API key encryption with wp_salt('auth')-derived key
+* 60-second rate limiting between generation batches
+* Two-phase AJAX generation flow with live progress bar
+* Per-feed Test button (aanp_test_feed AJAX action)
+* Custom API endpoint and model name settings
+* Pro license key field with active/inactive badge
+* Duplicate post detection via dedicated tracking table with post meta fallback
+* RSS feed transient cache (30-minute TTL)
+* PHP 7.4 type hints across all classes
+* GitHub Actions CI pipeline (PHP lint, PHPCS, PHPUnit)
+* Full PHPUnit test suite (31 tests)
+
+= 1.0.3 – 1.0.4 =
+* Fixed WordPress i18n NonSingularStringLiteralText errors
+* readme.txt stable tag corrections
+
 = 1.0.0 =
-* Initial release
-* AI-powered content generation with OpenAI and Anthropic support
-* RSS feed integration
-* Manual batch generation (5 posts)
-* Customizable tone and word count
-* Draft post creation with source attribution
-* Security features and input sanitization
-* Pro features placeholder
+* Initial release: OpenAI and Anthropic integration, RSS feed parsing, batch draft creation, admin settings UI
 
 == Upgrade Notice ==
 
-= 1.0.0 =
-Initial release of AI Auto News Poster. Configure your AI provider and start generating unique blog posts from the latest news!
+= 1.0.6 =
+Maintenance release — fixes Plugin Check warnings and cleans up inline styles. No settings migration required.
+
+= 1.0.5 =
+Important security update: API keys are now encrypted at rest. Existing plaintext keys will be re-encrypted on next settings save. Rate limiting and duplicate detection are also new in this release.
 
 == Support ==
 
-For support, feature requests, or bug reports:
-* GitHub Issues: https://github.com/arunrajiah/ai-auto-news-poster/issues
-* Email: Contact via GitHub profile
-* Documentation: https://github.com/arunrajiah/ai-auto-news-poster/wiki
+* Bug reports / feature requests: https://github.com/arunrajiah/ai-auto-news-poster/issues
+* Documentation: https://github.com/arunrajiah/ai-auto-news-poster
 
 == Privacy Policy ==
 
-This plugin sends article headlines and summaries to your configured AI provider (OpenAI, Anthropic, or custom API) for content generation. Please review your AI provider's privacy policy and terms of service. 
+This plugin sends article headlines and summaries to your configured AI provider for content generation. Please review your provider's privacy policy:
 
-**Data Handling:**
-* API keys are encrypted and stored securely in WordPress options
-* No personal user data is transmitted to AI providers
-* Generated content is stored locally in your WordPress database
+* OpenAI: https://openai.com/policies/privacy-policy
+* Anthropic: https://www.anthropic.com/privacy
+
+**Data handling:**
+
+* API keys are encrypted and stored in WordPress options — never transmitted except to your AI provider
+* No personal user data is sent to AI providers
+* Generated content is stored in your local WordPress database
 * RSS feed URLs are stored in plugin settings
-* Plugin logs errors locally for debugging purposes
+* The plugin logs errors locally (PHP `error_log`) for debugging
 
 == Third-Party Services ==
 
-This plugin integrates with external services:
+**AI Providers (requires API key and may incur costs):**
 
-**AI Providers:**
-* OpenAI API (https://openai.com/policies/privacy-policy)
-* Anthropic API (https://www.anthropic.com/privacy)
+* OpenAI API — https://openai.com/policies/privacy-policy
+* Anthropic API — https://www.anthropic.com/privacy
 
-**RSS Feeds:**
-* BBC News (https://www.bbc.com/privacy)
-* CNN (https://www.cnn.com/privacy)
-* Reuters (https://www.reuters.com/privacy-policy)
-* Custom RSS feeds as configured by user
+**Default RSS Feeds (publicly available, no registration required):**
 
-== Credits ==
+* BBC News — https://www.bbc.com/privacy
+* CNN — https://www.cnn.com/privacy
+* Reuters — https://www.reuters.com/privacy-policy
 
-Developed by Arun Rajiah
-* GitHub: https://github.com/arunrajiah
-* Plugin Repository: https://github.com/arunrajiah/ai-auto-news-poster
-
-**Technologies Used:**
-* WordPress HTTP API for RSS feed fetching
-* OpenAI GPT models for content generation
-* Anthropic Claude models for content generation
-* WordPress Settings API for configuration
-* WordPress AJAX for dynamic interactions
-
-== Contributing ==
-
-Contributions are welcome! Please visit our GitHub repository to:
-* Report bugs
-* Suggest features
-* Submit pull requests
-* Improve documentation
+Users can add, remove, or replace these feeds at any time.
 
 == License ==
 
-This plugin is licensed under GPL v2 or later. You are free to use, modify, and distribute this plugin according to the terms of the GPL license.
+This plugin is licensed under GPL v2 or later. You are free to use, modify, and distribute it under the terms of that licence.

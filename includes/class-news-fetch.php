@@ -82,14 +82,14 @@ class AANP_News_Fetch {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'AANP: Failed to fetch RSS feed: ' . $feed_url . ' - ' . $response->get_error_message() );
+			error_log( 'AANP: Failed to fetch RSS feed: ' . $feed_url . ' - ' . $response->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return $articles;
 		}
 
 		$body = wp_remote_retrieve_body( $response );
 
 		if ( '' === $body || empty( $body ) ) {
-			error_log( 'AANP: Empty response from RSS feed: ' . $feed_url );
+			error_log( 'AANP: Empty response from RSS feed: ' . $feed_url ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return $articles;
 		}
 
@@ -98,7 +98,7 @@ class AANP_News_Fetch {
 		$xml = simplexml_load_string( $body );
 
 		if ( false === $xml ) {
-			error_log( 'AANP: Failed to parse XML from RSS feed: ' . $feed_url );
+			error_log( 'AANP: Failed to parse XML from RSS feed: ' . $feed_url ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return $articles;
 		}
 
@@ -155,7 +155,7 @@ class AANP_News_Fetch {
 			'description'   => $description,
 			'date'          => $date,
 			'source_feed'   => $feed_url,
-			'source_domain' => parse_url( $link, PHP_URL_HOST ),
+			'source_domain' => wp_parse_url( $link, PHP_URL_HOST ),
 		);
 	}
 
@@ -210,7 +210,7 @@ class AANP_News_Fetch {
 			'description'   => $description,
 			'date'          => $date,
 			'source_feed'   => $feed_url,
-			'source_domain' => parse_url( $link, PHP_URL_HOST ),
+			'source_domain' => wp_parse_url( $link, PHP_URL_HOST ),
 		);
 	}
 

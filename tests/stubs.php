@@ -360,3 +360,6 @@ function submit_button($text = null, $type = 'primary', $name = 'submit', $wrap 
 function get_admin_page_title(): string { return 'AI Auto News Poster'; }
 function selected($selected, $current, bool $echo = true): string { return $selected == $current ? ' selected="selected"' : ''; }
 
+function wp_parse_url(string $url, int $component = -1) { return parse_url($url, $component); }
+function wp_json_encode($data, int $flags = 0, int $depth = 512) { return json_encode($data, $flags, $depth); }
+

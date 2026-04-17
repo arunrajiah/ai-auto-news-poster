@@ -45,7 +45,7 @@ class AANP_AI_Generator {
 	 */
 	public function generate_content( array $article ) {
 		if ( empty( $this->api_key ) ) {
-			error_log( 'AANP: API key not configured' );
+			error_log( 'AANP: API key not configured' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
@@ -59,7 +59,7 @@ class AANP_AI_Generator {
 			case 'custom':
 				return $this->generate_with_custom_api( $prompt, $article );
 			default:
-				error_log( 'AANP: Unknown LLM provider: ' . $this->provider );
+				error_log( 'AANP: Unknown LLM provider: ' . $this->provider ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 				return false;
 		}
 	}
@@ -166,13 +166,13 @@ class AANP_AI_Generator {
 			$url,
 			array(
 				'headers' => $headers,
-				'body'    => json_encode( $data ),
+				'body'    => wp_json_encode( $data ),
 				'timeout' => 60,
 			)
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'AANP: OpenAI API error: ' . $response->get_error_message() );
+			error_log( 'AANP: OpenAI API error: ' . $response->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
@@ -180,7 +180,7 @@ class AANP_AI_Generator {
 		$result = json_decode( $body, true );
 
 		if ( ! isset( $result['choices'][0]['message']['content'] ) ) {
-			error_log( 'AANP: Invalid OpenAI response: ' . $this->sanitize_for_log( $body ) );
+			error_log( 'AANP: Invalid OpenAI response: ' . $this->sanitize_for_log( $body ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
@@ -218,13 +218,13 @@ class AANP_AI_Generator {
 			$url,
 			array(
 				'headers' => $headers,
-				'body'    => json_encode( $data ),
+				'body'    => wp_json_encode( $data ),
 				'timeout' => 60,
 			)
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'AANP: Anthropic API error: ' . $response->get_error_message() );
+			error_log( 'AANP: Anthropic API error: ' . $response->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
@@ -232,7 +232,7 @@ class AANP_AI_Generator {
 		$result = json_decode( $body, true );
 
 		if ( ! isset( $result['content'][0]['text'] ) ) {
-			error_log( 'AANP: Invalid Anthropic response: ' . $this->sanitize_for_log( $body ) );
+			error_log( 'AANP: Invalid Anthropic response: ' . $this->sanitize_for_log( $body ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
@@ -253,7 +253,7 @@ class AANP_AI_Generator {
 		$endpoint = isset( $options['custom_api_endpoint'] ) ? trim( $options['custom_api_endpoint'] ) : '';
 
 		if ( empty( $endpoint ) || ! filter_var( $endpoint, FILTER_VALIDATE_URL ) ) {
-			error_log( 'AANP: Custom API endpoint not configured or invalid' );
+			error_log( 'AANP: Custom API endpoint not configured or invalid' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
@@ -283,13 +283,13 @@ class AANP_AI_Generator {
 			$endpoint,
 			array(
 				'headers' => $headers,
-				'body'    => json_encode( $data ),
+				'body'    => wp_json_encode( $data ),
 				'timeout' => 60,
 			)
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'AANP: Custom API error: ' . $response->get_error_message() );
+			error_log( 'AANP: Custom API error: ' . $response->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
@@ -297,7 +297,7 @@ class AANP_AI_Generator {
 		$result = json_decode( $body, true );
 
 		if ( ! isset( $result['choices'][0]['message']['content'] ) ) {
-			error_log( 'AANP: Invalid custom API response: ' . $this->sanitize_for_log( $body ) );
+			error_log( 'AANP: Invalid custom API response: ' . $this->sanitize_for_log( $body ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 

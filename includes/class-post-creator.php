@@ -58,13 +58,13 @@ class AANP_Post_Creator {
 	 */
 	public function create_post( array $generated_content, array $source_article ) {
 		if ( empty( $generated_content['title'] ) || empty( $generated_content['content'] ) ) {
-			error_log( 'AANP: Invalid generated content data' );
+			error_log( 'AANP: Invalid generated content data' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
 		// Skip duplicate articles
 		if ( ! empty( $source_article['link'] ) && $this->is_duplicate( $source_article['link'] ) ) {
-			error_log( 'AANP: Skipping duplicate article: ' . $source_article['link'] );
+			error_log( 'AANP: Skipping duplicate article: ' . $source_article['link'] ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
@@ -92,12 +92,12 @@ class AANP_Post_Creator {
 		$post_id = wp_insert_post( $post_data );
 
 		if ( is_wp_error( $post_id ) ) {
-			error_log( 'AANP: Failed to create post: ' . $post_id->get_error_message() );
+			error_log( 'AANP: Failed to create post: ' . $post_id->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
 		if ( ! $post_id ) {
-			error_log( 'AANP: Failed to create post - unknown error' );
+			error_log( 'AANP: Failed to create post - unknown error' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
@@ -166,7 +166,7 @@ class AANP_Post_Creator {
 		$tags = array();
 
 		// Extract potential tags from title and content
-		$text = $generated_content['title'] . ' ' . strip_tags( $generated_content['content'] );
+		$text = $generated_content['title'] . ' ' . wp_strip_all_tags( $generated_content['content'] );
 
 		// Simple keyword extraction (can be enhanced)
 		$common_news_tags = array(
@@ -271,7 +271,7 @@ class AANP_Post_Creator {
 		$source_url = get_post_meta( $post_id, '_aanp_source_url', true );
 
 		if ( empty( $source_url ) ) {
-			error_log( 'AANP: Attempted to delete non-AANP post: ' . $post_id );
+			error_log( 'AANP: Attempted to delete non-AANP post: ' . $post_id ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return false;
 		}
 
@@ -403,7 +403,7 @@ class AANP_Post_Creator {
 		// Check content
 		if ( empty( $generated_content['content'] ) ) {
 			$errors[] = 'Content is required';
-		} elseif ( strlen( strip_tags( $generated_content['content'] ) ) < 100 ) {
+		} elseif ( strlen( wp_strip_all_tags( $generated_content['content'] ) ) < 100 ) {
 			$errors[] = 'Content is too short (min 100 characters)';
 		}
 

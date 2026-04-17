@@ -408,7 +408,7 @@ class AANP_Admin_Settings {
 				// Validate before persisting
 				$validation = $post_creator->validate_post_data( $generated_content, $article );
 				if ( ! $validation['valid'] ) {
-					error_log( 'AANP: Skipping invalid post data: ' . implode( '; ', $validation['errors'] ) );
+					error_log( 'AANP: Skipping invalid post data: ' . implode( '; ', $validation['errors'] ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 					continue;
 				}
 
@@ -599,7 +599,7 @@ class AANP_Admin_Settings {
 		if ( isset( $input['llm_provider'] ) ) {
 			$allowed_providers = array( 'openai', 'anthropic', 'custom' );
 			$provider          = sanitize_text_field( $input['llm_provider'] );
-			if ( in_array( $provider, $allowed_providers ) ) {
+			if ( in_array( $provider, $allowed_providers, true ) ) {
 				$sanitized['llm_provider'] = $provider;
 			} else {
 				add_settings_error( 'aanp_settings', 'invalid_provider', __( 'Invalid LLM provider selected.', 'ai-auto-news-poster' ) );
@@ -630,7 +630,7 @@ class AANP_Admin_Settings {
 
 			foreach ( $input['categories'] as $cat_id ) {
 				$cat_id = intval( $cat_id );
-				if ( in_array( $cat_id, $valid_cat_ids ) ) {
+				if ( in_array( $cat_id, $valid_cat_ids, true ) ) {
 					$sanitized['categories'][] = $cat_id;
 				}
 			}
@@ -640,7 +640,7 @@ class AANP_Admin_Settings {
 		if ( isset( $input['word_count'] ) ) {
 			$allowed_counts = array( 'short', 'medium', 'long' );
 			$word_count     = sanitize_text_field( $input['word_count'] );
-			if ( in_array( $word_count, $allowed_counts ) ) {
+			if ( in_array( $word_count, $allowed_counts, true ) ) {
 				$sanitized['word_count'] = $word_count;
 			} else {
 				$sanitized['word_count'] = 'medium'; // Default fallback
@@ -651,7 +651,7 @@ class AANP_Admin_Settings {
 		if ( isset( $input['tone'] ) ) {
 			$allowed_tones = array( 'neutral', 'professional', 'friendly' );
 			$tone          = sanitize_text_field( $input['tone'] );
-			if ( in_array( $tone, $allowed_tones ) ) {
+			if ( in_array( $tone, $allowed_tones, true ) ) {
 				$sanitized['tone'] = $tone;
 			} else {
 				$sanitized['tone'] = 'neutral'; // Default fallback
@@ -710,8 +710,8 @@ class AANP_Admin_Settings {
 				$feed = esc_url_raw( $feed );
 				if ( ! empty( $feed ) && filter_var( $feed, FILTER_VALIDATE_URL ) ) {
 					// Additional security check for feed URL
-					$parsed_url = parse_url( $feed );
-					if ( isset( $parsed_url['scheme'] ) && in_array( $parsed_url['scheme'], array( 'http', 'https' ) ) ) {
+					$parsed_url = wp_parse_url( $feed );
+					if ( isset( $parsed_url['scheme'] ) && in_array( $parsed_url['scheme'], array( 'http', 'https' ), true ) ) {
 						$sanitized['rss_feeds'][] = $feed;
 						++$feed_count;
 					}
