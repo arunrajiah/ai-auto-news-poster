@@ -26,6 +26,13 @@ define('AANP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AANP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('AANP_PLUGIN_FILE', __FILE__);
 
+// Single authoritative list of built-in RSS feeds used as the default value
+define('AANP_DEFAULT_FEEDS', array(
+    'https://feeds.bbci.co.uk/news/rss.xml',
+    'https://rss.cnn.com/rss/edition.rss',
+    'https://feeds.reuters.com/reuters/topNews',
+));
+
 /**
  * Main plugin class
  */
@@ -105,15 +112,11 @@ class AI_Auto_News_Poster {
                 'categories' => array(),
                 'word_count' => 'medium',
                 'tone' => 'neutral',
-                'rss_feeds' => array(
-                    'https://feeds.bbci.co.uk/news/rss.xml',
-                    'https://rss.cnn.com/rss/edition.rss',
-                    'https://feeds.reuters.com/reuters/topNews'
-                )
+                'rss_feeds' => AANP_DEFAULT_FEEDS
             );
             
             add_option('aanp_settings', $default_options);
-            
+
             // Create database table if needed
             $this->create_tables();
             
