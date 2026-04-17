@@ -248,12 +248,9 @@ class AANP_News_Fetch {
     }
     
     /**
-     * Get feed info for testing
-     *
-     * @param string $feed_url RSS feed URL
-     * @return array Feed information
+     * Get feed info for testing — used internally by validate_feed_url().
      */
-    public function get_feed_info(string $feed_url): array {
+    private function get_feed_info(string $feed_url): array {
         $response = wp_remote_get($feed_url, array(
             'timeout' => 15,
             'user-agent' => 'AI Auto News Poster/' . AANP_VERSION

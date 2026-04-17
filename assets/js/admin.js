@@ -3,9 +3,47 @@ jQuery(document).ready(function($) {
     // Add RSS Feed functionality
     $('#add-feed').on('click', function() {
         var container = $('#rss-feeds-container');
-        var newRow = $('<div class="rss-feed-row">');
-        newRow.html('<input type="url" name="aanp_settings[rss_feeds][]" value="" class="regular-text" placeholder="https://example.com/feed.xml" /> <button type="button" class="button remove-feed">Remove</button>');
+        var newRow    = $('<div class="rss-feed-row">');
+        newRow.html(
+            '<input type="url" name="aanp_settings[rss_feeds][]" value="" class="regular-text" placeholder="https://example.com/feed.xml" /> ' +
+            '<button type="button" class="button test-feed">Test</button> ' +
+            '<button type="button" class="button remove-feed">Remove</button> ' +
+            '<span class="feed-test-result"></span>'
+        );
         container.append(newRow);
+    });
+
+    // Test RSS feed URL
+    $(document).on('click', '.test-feed', function() {
+        var row      = $(this).closest('.rss-feed-row');
+        var feedUrl  = row.find('input[type="url"]').val().trim();
+        var result   = row.find('.feed-test-result');
+
+        if (!feedUrl) {
+            result.html('<span class="aanp-status-error">Enter a URL first.</span>');
+            return;
+        }
+
+        var btn = $(this).prop('disabled', true).text('Testing…');
+
+        $.ajax({
+            url: aanp_ajax.ajax_url,
+            type: 'POST',
+            data: { action: 'aanp_test_feed', nonce: aanp_ajax.nonce, feed_url: feedUrl },
+            success: function(response) {
+                if (response.success) {
+                    result.html('<span class="aanp-status-success">&#x2713; ' + escapeHtml(response.data.message) + '</span>');
+                } else {
+                    result.html('<span class="aanp-status-error">&#x2717; ' + escapeHtml(response.data || 'Error') + '</span>');
+                }
+            },
+            error: function() {
+                result.html('<span class="aanp-status-error">&#x2717; Request failed.</span>');
+            },
+            complete: function() {
+                btn.prop('disabled', false).text('Test');
+            }
+        });
     });
     
     // Remove RSS Feed functionality
