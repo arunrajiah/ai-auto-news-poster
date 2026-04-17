@@ -2,6 +2,8 @@ name: Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
@@ -26,17 +28,28 @@ jobs:
       - name: Install Composer dependencies (production only)
         run: composer install --no-dev --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Extract version from tag
-        id: version
-        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+      - name: Resolve version and release type
+        id: meta
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF_NAME#v}"  >> "$GITHUB_OUTPUT"
+            echo "tag=${GITHUB_REF_NAME}"        >> "$GITHUB_OUTPUT"
+            echo "prerelease=false"              >> "$GITHUB_OUTPUT"
+            echo "release_name=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            SHORT_SHA="${GITHUB_SHA::7}"
+            echo "version=latest"               >> "$GITHUB_OUTPUT"
+            echo "tag=latest"                   >> "$GITHUB_OUTPUT"
+            echo "prerelease=true"              >> "$GITHUB_OUTPUT"
+            echo "release_name=Latest build (${SHORT_SHA})" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Build plugin zip
         run: |
           PLUGIN_SLUG="ai-auto-news-poster"
           DIST_DIR="${PLUGIN_SLUG}"
-          ZIP_NAME="${PLUGIN_SLUG}-${{ steps.version.outputs.version }}.zip"
+          ZIP_NAME="${PLUGIN_SLUG}-${{ steps.meta.outputs.version }}.zip"
 
-          # Copy plugin files into a versioned folder
           mkdir -p "${DIST_DIR}"
           rsync -av --exclude="${DIST_DIR}" \
             --exclude=".git" \
@@ -55,10 +68,11 @@ jobs:
           zip -r "${ZIP_NAME}" "${DIST_DIR}/"
           echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
 
-      - name: Create GitHub Release
+      - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          name: "v${{ steps.version.outputs.version }}"
-          tag_name: ${{ github.ref_name }}
-          generate_release_notes: true
+          name: ${{ steps.meta.outputs.release_name }}
+          tag_name: ${{ steps.meta.outputs.tag }}
+          prerelease: ${{ steps.meta.outputs.prerelease }}
+          generate_release_notes: ${{ steps.meta.outputs.prerelease == 'false' }}
           files: ${{ env.ZIP_NAME }}
