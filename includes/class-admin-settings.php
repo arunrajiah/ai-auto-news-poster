@@ -511,10 +511,8 @@ class AANP_Admin_Settings {
             
             // Ensure at least one feed exists
             if (empty($sanitized['rss_feeds'])) {
-                $sanitized['rss_feeds'] = array(
-                    'https://feeds.bbci.co.uk/news/rss.xml'
-                );
-                add_settings_error('aanp_settings', 'no_feeds', __('At least one RSS feed is required. Default feed added.', 'ai-auto-news-poster'));
+                $sanitized['rss_feeds'] = AANP_DEFAULT_FEEDS;
+                add_settings_error('aanp_settings', 'no_feeds', __('At least one RSS feed is required. Default feeds restored.', 'ai-auto-news-poster'));
             }
         }
         

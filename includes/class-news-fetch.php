@@ -22,12 +22,7 @@ class AANP_News_Fetch {
         $rss_feeds = isset($options['rss_feeds']) ? $options['rss_feeds'] : array();
         
         if (empty($rss_feeds)) {
-            // Use default feeds if none configured
-            $rss_feeds = array(
-                'https://feeds.bbci.co.uk/news/rss.xml',
-                'https://rss.cnn.com/rss/edition.rss',
-                'https://feeds.reuters.com/reuters/topNews'
-            );
+            $rss_feeds = AANP_DEFAULT_FEEDS;
         }
         
         $articles = array();
