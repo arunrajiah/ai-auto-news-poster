@@ -17,7 +17,7 @@ class AANP_News_Fetch {
      *
      * @return array Array of news articles
      */
-    public function fetch_latest_news() {
+    public function fetch_latest_news(): array {
         $options = get_option('aanp_settings', array());
         $rss_feeds = isset($options['rss_feeds']) ? $options['rss_feeds'] : array();
         
@@ -59,7 +59,7 @@ class AANP_News_Fetch {
      * @param string $feed_url RSS feed URL
      * @return array Array of articles
      */
-    private function fetch_from_feed($feed_url) {
+    private function fetch_from_feed(string $feed_url): array {
         $articles = array();
 
         $cache_key = $this->feed_cache_key($feed_url);
@@ -126,7 +126,7 @@ class AANP_News_Fetch {
      * @param string $feed_url Source feed URL
      * @return array|null Parsed article data
      */
-    private function parse_rss_item($item, $feed_url) {
+    private function parse_rss_item(\SimpleXMLElement $item, string $feed_url): ?array {
         $title = (string) $item->title;
         $link = (string) $item->link;
         $description = (string) $item->description;
@@ -160,7 +160,7 @@ class AANP_News_Fetch {
      * @param string $feed_url Source feed URL
      * @return array|null Parsed article data
      */
-    private function parse_atom_entry($entry, $feed_url) {
+    private function parse_atom_entry(\SimpleXMLElement $entry, string $feed_url): ?array {
         $title = (string) $entry->title;
         $link = '';
         $description = '';
@@ -214,7 +214,7 @@ class AANP_News_Fetch {
      * @param string $description Raw description
      * @return string Cleaned description
      */
-    private function clean_description($description) {
+    private function clean_description(string $description): string {
         // Remove extra whitespace
         $description = preg_replace('/\s+/', ' ', $description);
         $description = trim($description);
@@ -233,7 +233,7 @@ class AANP_News_Fetch {
      * @param string $date_string Date string
      * @return string Formatted date
      */
-    private function parse_date($date_string) {
+    private function parse_date(string $date_string): string {
         if (empty($date_string)) {
             return current_time('mysql');
         }
@@ -253,7 +253,7 @@ class AANP_News_Fetch {
      * @param string $feed_url RSS feed URL
      * @return array Feed information
      */
-    public function get_feed_info($feed_url) {
+    public function get_feed_info(string $feed_url): array {
         $response = wp_remote_get($feed_url, array(
             'timeout' => 15,
             'user-agent' => 'AI Auto News Poster/' . AANP_VERSION
@@ -304,7 +304,7 @@ class AANP_News_Fetch {
      * @param string $url Feed URL
      * @return bool True if valid
      */
-    public function validate_feed_url($url) {
+    public function validate_feed_url(string $url): bool {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             return false;
         }

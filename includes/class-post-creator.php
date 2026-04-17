@@ -54,7 +54,7 @@ class AANP_Post_Creator {
      * @param array $source_article Original article data
      * @return int|false Post ID on success, false on failure
      */
-    public function create_post($generated_content, $source_article) {
+    public function create_post(array $generated_content, array $source_article) {
         if (empty($generated_content['title']) || empty($generated_content['content'])) {
             error_log('AANP: Invalid generated content data');
             return false;
@@ -120,7 +120,7 @@ class AANP_Post_Creator {
      * @param array $source_article Source article
      * @return string Formatted content
      */
-    private function format_post_content($generated_content, $source_article) {
+    private function format_post_content(array $generated_content, array $source_article): string {
         $content = $generated_content['content'];
         
         // Ensure proper paragraph formatting
@@ -139,7 +139,7 @@ class AANP_Post_Creator {
      * @param array $source_article Source article
      * @return string Attribution HTML
      */
-    private function create_source_attribution($source_article) {
+    private function create_source_attribution(array $source_article): string {
         $attribution = "
 
 <div class=\"aanp-source-attribution\" style=\"margin-top: 30px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #0073aa; font-size: 14px;\">
@@ -160,7 +160,7 @@ class AANP_Post_Creator {
      * @param array $generated_content Generated content
      * @param array $source_article Source article
      */
-    private function add_post_tags($post_id, $generated_content, $source_article) {
+    private function add_post_tags(int $post_id, array $generated_content, array $source_article): void {
         $tags = array();
         
         // Extract potential tags from title and content
@@ -198,7 +198,7 @@ class AANP_Post_Creator {
      * @param int $post_id Created post ID
      * @param array $source_article Source article
      */
-    private function log_post_creation($post_id, $source_article) {
+    private function log_post_creation(int $post_id, array $source_article): void {
         global $wpdb;
         
         $table_name = $wpdb->prefix . 'aanp_generated_posts';
@@ -221,7 +221,7 @@ class AANP_Post_Creator {
      * @param array $updates Updates to apply
      * @return bool Success status
      */
-    public function update_post($post_id, $updates) {
+    public function update_post(int $post_id, array $updates): bool {
         $post_data = array('ID' => $post_id);
         
         if (isset($updates['title'])) {
@@ -252,7 +252,7 @@ class AANP_Post_Creator {
      * @param bool $force_delete Force delete (bypass trash)
      * @return bool Success status
      */
-    public function delete_post($post_id, $force_delete = false) {
+    public function delete_post(int $post_id, bool $force_delete = false): bool {
         // Verify this is an AANP generated post
         $source_url = get_post_meta($post_id, '_aanp_source_url', true);
         
@@ -283,7 +283,7 @@ class AANP_Post_Creator {
      *
      * @return array Statistics
      */
-    public function get_stats() {
+    public function get_stats(): array {
         global $wpdb;
         
         $table_name = $wpdb->prefix . 'aanp_generated_posts';
@@ -331,7 +331,7 @@ class AANP_Post_Creator {
      * @param int $limit Number of posts to retrieve
      * @return array Recent posts
      */
-    public function get_recent_posts($limit = 10) {
+    public function get_recent_posts(int $limit = 10): array {
         global $wpdb;
         
         $table_name = $wpdb->prefix . 'aanp_generated_posts';
@@ -370,7 +370,7 @@ class AANP_Post_Creator {
      * @param array $source_article Source article
      * @return array Validation result
      */
-    public function validate_post_data($generated_content, $source_article) {
+    public function validate_post_data(array $generated_content, array $source_article): array {
         $errors = array();
         
         // Check title

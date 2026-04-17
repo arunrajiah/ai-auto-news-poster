@@ -43,7 +43,7 @@ class AANP_AI_Generator {
      * @param array $article Article data
      * @return array|false Generated content or false on failure
      */
-    public function generate_content($article) {
+    public function generate_content(array $article) {
         if (empty($this->api_key)) {
             error_log('AANP: API key not configured');
             return false;
@@ -70,7 +70,7 @@ class AANP_AI_Generator {
      * @param array $article Article data
      * @return string Generated prompt
      */
-    private function build_prompt($article) {
+    private function build_prompt(array $article): string {
         $word_counts = array(
             'short' => '300-400',
             'medium' => '500-600',
@@ -142,7 +142,7 @@ class AANP_AI_Generator {
      * @param array $article Original article
      * @return array|false Generated content
      */
-    private function generate_with_openai($prompt, $article) {
+    private function generate_with_openai(string $prompt, array $article) {
         $url = 'https://api.openai.com/v1/chat/completions';
         
         $data = array(
@@ -191,7 +191,7 @@ class AANP_AI_Generator {
      * @param array $article Original article
      * @return array|false Generated content
      */
-    private function generate_with_anthropic($prompt, $article) {
+    private function generate_with_anthropic(string $prompt, array $article) {
         $url = 'https://api.anthropic.com/v1/messages';
         
         $data = array(
@@ -299,7 +299,7 @@ class AANP_AI_Generator {
      * @param array $article Original article
      * @return array|false Parsed content
      */
-    private function parse_ai_response($response, $article) {
+    private function parse_ai_response(string $response, array $article) {
         // Try to parse JSON response
         $json_data = json_decode($response, true);
         
@@ -360,7 +360,7 @@ class AANP_AI_Generator {
      * @param array $article Original article
      * @return string Fallback content
      */
-    private function generate_fallback_content($article) {
+    private function generate_fallback_content(array $article): string {
         $content = "<p>In recent news, {$article['title']} has been making headlines.</p>
 
 ";
@@ -380,7 +380,7 @@ class AANP_AI_Generator {
      *
      * @return array Test result
      */
-    public function test_api_connection() {
+    public function test_api_connection(): array {
         if (empty($this->api_key)) {
             return array(
                 'status' => 'error',
