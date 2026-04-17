@@ -13,6 +13,41 @@ if (!defined('ABSPATH')) {
 class AANP_Post_Creator {
     
     /**
+     * Check whether a post sourced from the given URL already exists.
+     *
+     * @param string $source_url The article's canonical URL
+     * @return bool True when a duplicate post is found
+     */
+    public function is_duplicate(string $source_url): bool {
+        global $wpdb;
+
+        // Check the tracking table first (fast indexed lookup)
+        $table_name = $wpdb->prefix . 'aanp_generated_posts';
+        $exists = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$table_name} WHERE source_url = %s LIMIT 1",
+                $source_url
+            )
+        );
+
+        if ((int) $exists > 0) {
+            return true;
+        }
+
+        // Fallback: check post meta for any post that may have been created outside
+        // the normal flow (e.g. by an earlier plugin version that predates the table)
+        $meta_query = get_posts(array(
+            'post_type'   => 'post',
+            'meta_key'    => '_aanp_source_url',
+            'meta_value'  => $source_url,
+            'numberposts' => 1,
+            'fields'      => 'ids',
+        ));
+
+        return !empty($meta_query);
+    }
+
+    /**
      * Create WordPress post from generated content
      *
      * @param array $generated_content Generated content data
@@ -22,6 +57,12 @@ class AANP_Post_Creator {
     public function create_post($generated_content, $source_article) {
         if (empty($generated_content['title']) || empty($generated_content['content'])) {
             error_log('AANP: Invalid generated content data');
+            return false;
+        }
+
+        // Skip duplicate articles
+        if (!empty($source_article['link']) && $this->is_duplicate($source_article['link'])) {
+            error_log('AANP: Skipping duplicate article: ' . $source_article['link']);
             return false;
         }
         
