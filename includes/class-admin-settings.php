@@ -22,6 +22,7 @@ class AANP_Admin_Settings {
         add_action('wp_ajax_aanp_generate_posts', array($this, 'ajax_generate_posts'));
         add_action('wp_ajax_aanp_fetch_articles', array($this, 'ajax_fetch_articles'));
         add_action('wp_ajax_aanp_generate_single', array($this, 'ajax_generate_single'));
+        add_action('wp_ajax_aanp_test_feed', array($this, 'ajax_test_feed'));
     }
     
     /**
@@ -325,15 +326,17 @@ class AANP_Admin_Settings {
         
         echo '<div id="rss-feeds-container">';
         if (!empty($feeds)) {
-            foreach ($feeds as $index => $feed) {
+            foreach ($feeds as $feed) {
                 echo '<div class="rss-feed-row">';
                 echo '<input type="url" name="aanp_settings[rss_feeds][]" value="' . esc_attr($feed) . '" class="regular-text" placeholder="https://example.com/feed.xml" />';
-                echo '<button type="button" class="button remove-feed">Remove</button>';
+                echo '<button type="button" class="button test-feed">' . esc_html__('Test', 'ai-auto-news-poster') . '</button>';
+                echo '<button type="button" class="button remove-feed">' . esc_html__('Remove', 'ai-auto-news-poster') . '</button>';
+                echo '<span class="feed-test-result"></span>';
                 echo '</div>';
             }
         }
         echo '</div>';
-        echo '<button type="button" id="add-feed" class="button">Add RSS Feed</button>';
+        echo '<button type="button" id="add-feed" class="button">' . esc_html__('Add RSS Feed', 'ai-auto-news-poster') . '</button>';
         echo '<p class="description">' . __('Add RSS feed URLs for news sources.', 'ai-auto-news-poster') . '</p>';
     }
     
@@ -430,6 +433,34 @@ class AANP_Admin_Settings {
         }
     }
     
+    /**
+     * AJAX handler: test whether a single RSS feed URL is reachable and parseable.
+     */
+    public function ajax_test_feed(): void {
+        if (!wp_verify_nonce($_POST['nonce'], 'aanp_nonce') || !current_user_can('manage_options')) {
+            wp_send_json_error('Unauthorized');
+            return;
+        }
+
+        $feed_url = isset($_POST['feed_url']) ? esc_url_raw(wp_unslash($_POST['feed_url'])) : '';
+
+        if (empty($feed_url) || !filter_var($feed_url, FILTER_VALIDATE_URL)) {
+            wp_send_json_error(__('Invalid feed URL.', 'ai-auto-news-poster'));
+            return;
+        }
+
+        $news_fetch = new AANP_News_Fetch();
+        $is_valid   = $news_fetch->validate_feed_url($feed_url);
+
+        if ($is_valid) {
+            wp_send_json_success(array(
+                'message' => __('Feed is reachable and contains valid RSS/Atom content.', 'ai-auto-news-poster'),
+            ));
+        } else {
+            wp_send_json_error(__('Could not reach the feed or it returned invalid content.', 'ai-auto-news-poster'));
+        }
+    }
+
     /**
      * AJAX handler: fetch the list of candidate articles without generating posts.
      * Returns up to 5 article stubs so the client can drive per-article generation.
