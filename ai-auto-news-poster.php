@@ -22,6 +22,7 @@ if (!defined('ABSPATH')) {
 
 // Define plugin constants
 define('AANP_VERSION', '1.0.6');
+define('AANP_DB_VERSION', '1.1');
 define('AANP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AANP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('AANP_PLUGIN_FILE', __FILE__);
@@ -52,13 +53,27 @@ class AI_Auto_News_Poster {
      */
     public function init() {
         // Text domain is automatically loaded by WordPress 4.6+
-        
+
         // Load includes
         $this->load_includes();
-        
+
+        // Run DB migrations if needed (e.g. plugin updated without re-activation)
+        $this->maybe_run_migrations();
+
         // Initialize admin
         if (is_admin()) {
             $this->init_admin();
+        }
+    }
+
+    /**
+     * Run database migrations when the stored DB version is behind the current one.
+     */
+    private function maybe_run_migrations(): void {
+        $installed_db_version = get_option('aanp_db_version', '0');
+        if (version_compare($installed_db_version, AANP_DB_VERSION, '<')) {
+            $this->create_tables();
+            update_option('aanp_db_version', AANP_DB_VERSION);
         }
     }
     
@@ -117,9 +132,10 @@ class AI_Auto_News_Poster {
             
             add_option('aanp_settings', $default_options);
 
-            // Create database table if needed
+            // Create database table and record current DB version
             $this->create_tables();
-            
+            update_option('aanp_db_version', AANP_DB_VERSION);
+
             // Set activation flag
             add_option('aanp_activation_redirect', true);
             
