@@ -177,7 +177,6 @@ class AI_Auto_News_Poster {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
     }
-}
 
     /**
      * Check if a valid Pro license is active.
