@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  release:
+    name: Build & Publish Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, openssl
+          tools: composer
+          coverage: none
+
+      - name: Install Composer dependencies (production only)
+        run: composer install --no-dev --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build plugin zip
+        run: |
+          PLUGIN_SLUG="ai-auto-news-poster"
+          DIST_DIR="${PLUGIN_SLUG}"
+          ZIP_NAME="${PLUGIN_SLUG}-${{ steps.version.outputs.version }}.zip"
+
+          # Copy plugin files into a versioned folder
+          mkdir -p "${DIST_DIR}"
+          rsync -av --exclude="${DIST_DIR}" \
+            --exclude=".git" \
+            --exclude=".github" \
+            --exclude=".phpcs.xml" \
+            --exclude=".DS_Store" \
+            --exclude="composer.json" \
+            --exclude="composer.lock" \
+            --exclude="phpunit.xml" \
+            --exclude="vendor/" \
+            --exclude="tests/" \
+            --exclude="node_modules/" \
+            --exclude="*.zip" \
+            . "${DIST_DIR}/"
+
+          zip -r "${ZIP_NAME}" "${DIST_DIR}/"
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "v${{ steps.version.outputs.version }}"
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: ${{ env.ZIP_NAME }}
