@@ -94,6 +94,24 @@ class AANP_Admin_Settings {
             'aanp_main_section'
         );
         
+        // Custom API endpoint field
+        add_settings_field(
+            'custom_api_endpoint',
+            __('Custom API Endpoint', 'ai-auto-news-poster'),
+            array($this, 'custom_api_endpoint_callback'),
+            'ai-auto-news-poster',
+            'aanp_main_section'
+        );
+
+        // Custom API model field
+        add_settings_field(
+            'custom_api_model',
+            __('Custom API Model', 'ai-auto-news-poster'),
+            array($this, 'custom_api_model_callback'),
+            'ai-auto-news-poster',
+            'aanp_main_section'
+        );
+
         // RSS Feeds section
         add_settings_section(
             'aanp_rss_section',
@@ -244,6 +262,26 @@ class AANP_Admin_Settings {
         echo '<p class="description">' . __('Select the tone of voice for generated content.', 'ai-auto-news-poster') . '</p>';
     }
     
+    /**
+     * Custom API endpoint callback
+     */
+    public function custom_api_endpoint_callback(): void {
+        $options = get_option('aanp_settings', array());
+        $value   = isset($options['custom_api_endpoint']) ? $options['custom_api_endpoint'] : '';
+        echo '<input type="url" name="aanp_settings[custom_api_endpoint]" id="custom_api_endpoint" value="' . esc_attr($value) . '" class="regular-text" placeholder="https://my-api.example.com/v1/chat/completions" />';
+        echo '<p class="description">' . __('OpenAI-compatible endpoint URL for the Custom API provider. Required when "Custom API" is selected above.', 'ai-auto-news-poster') . '</p>';
+    }
+
+    /**
+     * Custom API model callback
+     */
+    public function custom_api_model_callback(): void {
+        $options = get_option('aanp_settings', array());
+        $value   = isset($options['custom_api_model']) ? $options['custom_api_model'] : '';
+        echo '<input type="text" name="aanp_settings[custom_api_model]" id="custom_api_model" value="' . esc_attr($value) . '" class="regular-text" placeholder="e.g. mistral-7b-instruct" />';
+        echo '<p class="description">' . __('Model name to pass in the API request body. Leave blank to use the endpoint default.', 'ai-auto-news-poster') . '</p>';
+    }
+
     /**
      * RSS Feeds callback
      */
@@ -400,6 +438,24 @@ class AANP_Admin_Settings {
             }
         }
         
+        // Sanitize custom API endpoint
+        if (isset($input['custom_api_endpoint'])) {
+            $endpoint = esc_url_raw(trim($input['custom_api_endpoint']));
+            if (!empty($endpoint) && filter_var($endpoint, FILTER_VALIDATE_URL)) {
+                $sanitized['custom_api_endpoint'] = $endpoint;
+            } else {
+                $sanitized['custom_api_endpoint'] = '';
+                if (!empty($input['custom_api_endpoint'])) {
+                    add_settings_error('aanp_settings', 'invalid_custom_endpoint', __('Custom API endpoint must be a valid URL.', 'ai-auto-news-poster'));
+                }
+            }
+        }
+
+        // Sanitize custom API model
+        if (isset($input['custom_api_model'])) {
+            $sanitized['custom_api_model'] = sanitize_text_field($input['custom_api_model']);
+        }
+
         // Validate and sanitize RSS feeds
         if (isset($input['rss_feeds']) && is_array($input['rss_feeds'])) {
             $sanitized['rss_feeds'] = array();

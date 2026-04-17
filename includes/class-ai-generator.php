@@ -234,23 +234,62 @@ class AANP_AI_Generator {
     }
     
     /**
-     * Generate content using custom API
+     * Generate content using a user-configured custom API endpoint.
+     * The endpoint must accept an OpenAI-compatible chat completions request
+     * and return an OpenAI-compatible response (choices[0].message.content).
      *
      * @param string $prompt AI prompt
-     * @param array $article Original article
+     * @param array  $article Original article
      * @return array|false Generated content
      */
-    private function generate_with_custom_api($prompt, $article) {
-        // This is a placeholder for custom API implementation
-        // Users can modify this method to integrate with their preferred API
-        
-        error_log('AANP: Custom API not implemented yet');
-        
-        // For now, return a fallback response
-        return array(
-            'title' => 'Breaking: ' . $article['title'],
-            'content' => $this->generate_fallback_content($article)
+    private function generate_with_custom_api(string $prompt, array $article) {
+        $options  = get_option('aanp_settings', array());
+        $endpoint = isset($options['custom_api_endpoint']) ? trim($options['custom_api_endpoint']) : '';
+
+        if (empty($endpoint) || !filter_var($endpoint, FILTER_VALIDATE_URL)) {
+            error_log('AANP: Custom API endpoint not configured or invalid');
+            return false;
+        }
+
+        $model = !empty($options['custom_api_model']) ? $options['custom_api_model'] : 'default';
+
+        $data = array(
+            'model'       => $model,
+            'messages'    => array(
+                array('role' => 'user', 'content' => $prompt),
+            ),
+            'max_tokens'  => 2000,
+            'temperature' => 0.7,
         );
+
+        $headers = array(
+            'Content-Type' => 'application/json',
+        );
+
+        if (!empty($this->api_key)) {
+            $headers['Authorization'] = 'Bearer ' . $this->api_key;
+        }
+
+        $response = wp_remote_post($endpoint, array(
+            'headers' => $headers,
+            'body'    => json_encode($data),
+            'timeout' => 60,
+        ));
+
+        if (is_wp_error($response)) {
+            error_log('AANP: Custom API error: ' . $response->get_error_message());
+            return false;
+        }
+
+        $body   = wp_remote_retrieve_body($response);
+        $result = json_decode($body, true);
+
+        if (!isset($result['choices'][0]['message']['content'])) {
+            error_log('AANP: Invalid custom API response: ' . $this->sanitize_for_log($body));
+            return false;
+        }
+
+        return $this->parse_ai_response($result['choices'][0]['message']['content'], $article);
     }
     
     /**
