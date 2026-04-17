@@ -4,6 +4,49 @@
     margin: 20px 0;
 }
 
+.aanp-stat-grid {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* Per-stat accent colours */
+.aanp-stat-total h3  { color: #0073aa; }
+.aanp-stat-today h3  { color: #00a32a; }
+.aanp-stat-week h3   { color: #ff6900; }
+.aanp-stat-month h3  { color: #8c8f94; }
+
+/* Button icon vertical alignment */
+.aanp-btn-icon {
+    margin-top: 3px;
+}
+
+/* Generation status panel — hidden by default, shown by JS */
+#aanp-generation-status {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+#aanp-status-text {
+    margin: 10px 0 0 0;
+    font-style: italic;
+    font-size: 14px;
+}
+
+/* Generation results panel — hidden by default, shown by JS */
+#aanp-generation-results {
+    display: none;
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0f6fc;
+    border: 1px solid #a7c6ed;
+    border-radius: 4px;
+}
+
 .aanp-stat-box {
     background: #fff;
     padding: 20px;
@@ -219,28 +262,6 @@
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
-
-#aanp-generation-status {
-    margin-top: 15px;
-    padding: 15px;
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-}
-
-#aanp-status-text {
-    margin: 10px 0 0 0;
-    font-style: italic;
-    font-size: 14px;
-}
-
-#aanp-generation-results {
-    margin-top: 20px;
-    padding: 15px;
-    background: #f0f6fc;
-    border: 1px solid #a7c6ed;
-    border-radius: 4px;
 }
 
 #aanp-results-list ul {

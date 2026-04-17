@@ -37,56 +37,56 @@ $recent_posts = $post_creator->get_recent_posts(5);
     </div>
     
     <!-- Statistics Dashboard -->
-    <div class="aanp-dashboard" style="margin: 20px 0;">
+    <div class="aanp-dashboard">
         <h2><?php _e('Statistics', 'ai-auto-news-poster'); ?></h2>
-        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-            <div class="aanp-stat-box" style="background: #fff; padding: 20px; border: 1px solid #ccd0d4; border-radius: 4px; text-align: center; min-width: 120px;">
-                <h3 style="margin: 0; font-size: 24px; color: #0073aa;"><?php echo esc_html($stats['total']); ?></h3>
-                <p style="margin: 5px 0 0 0; color: #666;"><?php _e('Total Posts', 'ai-auto-news-poster'); ?></p>
+        <div class="aanp-stat-grid">
+            <div class="aanp-stat-box aanp-stat-total">
+                <h3><?php echo esc_html($stats['total']); ?></h3>
+                <p><?php _e('Total Posts', 'ai-auto-news-poster'); ?></p>
             </div>
-            <div class="aanp-stat-box" style="background: #fff; padding: 20px; border: 1px solid #ccd0d4; border-radius: 4px; text-align: center; min-width: 120px;">
-                <h3 style="margin: 0; font-size: 24px; color: #00a32a;"><?php echo esc_html($stats['today']); ?></h3>
-                <p style="margin: 5px 0 0 0; color: #666;"><?php _e('Today', 'ai-auto-news-poster'); ?></p>
+            <div class="aanp-stat-box aanp-stat-today">
+                <h3><?php echo esc_html($stats['today']); ?></h3>
+                <p><?php _e('Today', 'ai-auto-news-poster'); ?></p>
             </div>
-            <div class="aanp-stat-box" style="background: #fff; padding: 20px; border: 1px solid #ccd0d4; border-radius: 4px; text-align: center; min-width: 120px;">
-                <h3 style="margin: 0; font-size: 24px; color: #ff6900;"><?php echo esc_html($stats['week']); ?></h3>
-                <p style="margin: 5px 0 0 0; color: #666;"><?php _e('This Week', 'ai-auto-news-poster'); ?></p>
+            <div class="aanp-stat-box aanp-stat-week">
+                <h3><?php echo esc_html($stats['week']); ?></h3>
+                <p><?php _e('This Week', 'ai-auto-news-poster'); ?></p>
             </div>
-            <div class="aanp-stat-box" style="background: #fff; padding: 20px; border: 1px solid #ccd0d4; border-radius: 4px; text-align: center; min-width: 120px;">
-                <h3 style="margin: 0; font-size: 24px; color: #8c8f94;"><?php echo esc_html($stats['month']); ?></h3>
-                <p style="margin: 5px 0 0 0; color: #666;"><?php _e('This Month', 'ai-auto-news-poster'); ?></p>
+            <div class="aanp-stat-box aanp-stat-month">
+                <h3><?php echo esc_html($stats['month']); ?></h3>
+                <p><?php _e('This Month', 'ai-auto-news-poster'); ?></p>
             </div>
         </div>
     </div>
-    
+
     <!-- Generate Posts Section -->
-    <div class="aanp-generate-section" style="background: #fff; padding: 20px; border: 1px solid #ccd0d4; border-radius: 4px; margin-bottom: 20px;">
+    <div class="aanp-generate-section">
         <h2><?php _e('Generate Posts', 'ai-auto-news-poster'); ?></h2>
         <p><?php _e('Click the button below to fetch the latest news and generate 5 unique blog posts automatically.', 'ai-auto-news-poster'); ?></p>
-        
+
         <div class="aanp-generate-controls">
             <button type="button" id="aanp-generate-posts" class="button button-primary button-large">
-                <span class="dashicons dashicons-update" style="margin-top: 3px;"></span>
+                <span class="dashicons dashicons-update aanp-btn-icon"></span>
                 <?php _e('Generate 5 Posts', 'ai-auto-news-poster'); ?>
             </button>
-            
-            <div id="aanp-generation-status" style="margin-top: 15px; display: none;">
-                <div class="aanp-progress" style="background: #f0f0f1; border-radius: 3px; height: 20px; overflow: hidden;">
-                    <div class="aanp-progress-bar" style="background: #0073aa; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+
+            <div id="aanp-generation-status">
+                <div class="aanp-progress">
+                    <div class="aanp-progress-bar"></div>
                 </div>
-                <p id="aanp-status-text" style="margin: 10px 0 0 0; font-style: italic;"></p>
+                <p id="aanp-status-text"></p>
             </div>
         </div>
-        
-        <div id="aanp-generation-results" style="margin-top: 20px; display: none;">
+
+        <div id="aanp-generation-results">
             <h3><?php _e('Generated Posts', 'ai-auto-news-poster'); ?></h3>
             <div id="aanp-results-list"></div>
         </div>
     </div>
-    
+
     <!-- Recent Posts -->
     <?php if (!empty($recent_posts)): ?>
-    <div class="aanp-recent-posts" style="background: #fff; padding: 20px; border: 1px solid #ccd0d4; border-radius: 4px; margin-bottom: 20px;">
+    <div class="aanp-recent-posts">
         <h2><?php _e('Recent Generated Posts', 'ai-auto-news-poster'); ?></h2>
         <table class="wp-list-table widefat fixed striped">
             <thead>
@@ -129,7 +129,7 @@ $recent_posts = $post_creator->get_recent_posts(5);
         ?>
         
         <!-- Pro Features (Disabled) -->
-        <div class="aanp-pro-features" style="background: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 4px; margin: 20px 0; opacity: 0.6;">
+        <div class="aanp-pro-features">
             <h2><?php _e('Pro Features (Coming Soon)', 'ai-auto-news-poster'); ?></h2>
             
             <table class="form-table">
@@ -187,47 +187,3 @@ $recent_posts = $post_creator->get_recent_posts(5);
     </form>
 </div>
 
-<style>
-.aanp-categories label {
-    display: inline-block;
-    margin-right: 15px;
-    margin-bottom: 5px;
-}
-
-.rss-feed-row {
-    margin-bottom: 10px;
-}
-
-.rss-feed-row input[type="url"] {
-    margin-right: 10px;
-}
-
-.post-status.draft {
-    color: #b32d2e;
-}
-
-.post-status.publish {
-    color: #00a32a;
-}
-
-.post-status.private {
-    color: #ff6900;
-}
-
-.aanp-pro-features {
-    position: relative;
-}
-
-.aanp-pro-features::before {
-    content: "🔒 PRO";
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: #ff6900;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 3px;
-    font-size: 12px;
-    font-weight: bold;
-}
-</style>
