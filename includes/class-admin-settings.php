@@ -154,11 +154,14 @@ class AANP_Admin_Settings {
         );
         
         wp_localize_script('aanp-admin-js', 'aanp_ajax', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('aanp_nonce'),
-            'generating_text' => __('Generating posts...', 'ai-auto-news-poster'),
-            'success_text' => __('Posts generated successfully!', 'ai-auto-news-poster'),
-            'error_text' => __('Error generating posts. Please try again.', 'ai-auto-news-poster')
+            'ajax_url'         => admin_url('admin-ajax.php'),
+            'nonce'            => wp_create_nonce('aanp_nonce'),
+            'generating_text'  => __('Generating posts...', 'ai-auto-news-poster'),
+            'success_text'     => __('Posts generated successfully!', 'ai-auto-news-poster'),
+            'error_text'       => __('Error generating posts. Please try again.', 'ai-auto-news-poster'),
+            'cooldown_seconds' => self::RATE_LIMIT_SECONDS,
+            /* translators: %d: seconds remaining */
+            'cooldown_text'    => __('Please wait %d seconds…', 'ai-auto-news-poster'),
         ));
     }
     
@@ -303,6 +306,12 @@ class AANP_Admin_Settings {
         echo '<p class="description">' . __('Add RSS feed URLs for news sources.', 'ai-auto-news-poster') . '</p>';
     }
     
+    /** Transient key used for rate-limiting generation requests. */
+    const RATE_LIMIT_TRANSIENT = 'aanp_generation_cooldown';
+
+    /** Seconds a user must wait between generation requests. */
+    const RATE_LIMIT_SECONDS = 60;
+
     /**
      * AJAX handler for generating posts
      */
@@ -311,11 +320,23 @@ class AANP_Admin_Settings {
         if (!wp_verify_nonce($_POST['nonce'], 'aanp_nonce')) {
             wp_die('Security check failed');
         }
-        
+
         // Check user capabilities
         if (!current_user_can('manage_options')) {
             wp_die('Insufficient permissions');
         }
+
+        // Rate limit: prevent rapid repeated submissions
+        if (get_transient(self::RATE_LIMIT_TRANSIENT)) {
+            wp_send_json_error(array(
+                'message'   => __('Please wait before generating again. Try again in a moment.', 'ai-auto-news-poster'),
+                'rate_limited' => true,
+            ));
+            return;
+        }
+
+        // Set cooldown transient before starting work
+        set_transient(self::RATE_LIMIT_TRANSIENT, 1, self::RATE_LIMIT_SECONDS);
         
         try {
             // Initialize classes
