@@ -20,6 +20,8 @@ class AANP_Admin_Settings {
         add_action('admin_init', array($this, 'init_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_action('wp_ajax_aanp_generate_posts', array($this, 'ajax_generate_posts'));
+        add_action('wp_ajax_aanp_fetch_articles', array($this, 'ajax_fetch_articles'));
+        add_action('wp_ajax_aanp_generate_single', array($this, 'ajax_generate_single'));
     }
     
     /**
@@ -399,6 +401,105 @@ class AANP_Admin_Settings {
         }
     }
     
+    /**
+     * AJAX handler: fetch the list of candidate articles without generating posts.
+     * Returns up to 5 article stubs so the client can drive per-article generation.
+     */
+    public function ajax_fetch_articles(): void {
+        if (!wp_verify_nonce($_POST['nonce'], 'aanp_nonce') || !current_user_can('manage_options')) {
+            wp_send_json_error('Unauthorized');
+            return;
+        }
+
+        $news_fetch = new AANP_News_Fetch();
+        $articles   = $news_fetch->fetch_latest_news();
+
+        if (empty($articles)) {
+            wp_send_json_error(__('No articles found in the configured RSS feeds.', 'ai-auto-news-poster'));
+            return;
+        }
+
+        $max      = AI_Auto_News_Poster::get_max_posts_per_batch();
+        $articles = array_slice($articles, 0, $max);
+
+        // Return lightweight stubs (no content) so the payload stays small
+        $stubs = array_map(function ($a) {
+            return array(
+                'title'         => $a['title'],
+                'link'          => $a['link'],
+                'description'   => $a['description'],
+                'date'          => $a['date'],
+                'source_feed'   => $a['source_feed'],
+                'source_domain' => $a['source_domain'],
+            );
+        }, $articles);
+
+        wp_send_json_success(array('articles' => $stubs));
+    }
+
+    /**
+     * AJAX handler: generate and save a single post from one article stub.
+     * Called once per article by the JS progress loop.
+     */
+    public function ajax_generate_single(): void {
+        if (!wp_verify_nonce($_POST['nonce'], 'aanp_nonce') || !current_user_can('manage_options')) {
+            wp_send_json_error('Unauthorized');
+            return;
+        }
+
+        $article = isset($_POST['article']) ? wp_unslash($_POST['article']) : null;
+        if (!is_array($article) || empty($article['link'])) {
+            wp_send_json_error(__('Invalid article data.', 'ai-auto-news-poster'));
+            return;
+        }
+
+        // Sanitize article fields
+        $article = array(
+            'title'         => sanitize_text_field($article['title']),
+            'link'          => esc_url_raw($article['link']),
+            'description'   => sanitize_textarea_field($article['description']),
+            'date'          => sanitize_text_field($article['date']),
+            'source_feed'   => esc_url_raw($article['source_feed']),
+            'source_domain' => sanitize_text_field($article['source_domain']),
+        );
+
+        $ai_generator = new AANP_AI_Generator();
+        $post_creator = new AANP_Post_Creator();
+
+        $generated_content = $ai_generator->generate_content($article);
+
+        if (!$generated_content) {
+            wp_send_json_error(
+                /* translators: %s: article title */
+                sprintf(__('AI generation failed for: %s', 'ai-auto-news-poster'), $article['title'])
+            );
+            return;
+        }
+
+        $validation = $post_creator->validate_post_data($generated_content, $article);
+        if (!$validation['valid']) {
+            wp_send_json_error(implode('; ', $validation['errors']));
+            return;
+        }
+
+        $post_id = $post_creator->create_post($generated_content, $article);
+
+        if (!$post_id) {
+            // Duplicate or other failure
+            wp_send_json_error(
+                /* translators: %s: article title */
+                sprintf(__('Could not create post for: %s (duplicate or error)', 'ai-auto-news-poster'), $article['title'])
+            );
+            return;
+        }
+
+        wp_send_json_success(array(
+            'id'        => $post_id,
+            'title'     => $generated_content['title'],
+            'edit_link' => get_edit_post_link($post_id),
+        ));
+    }
+
     /**
      * Sanitize settings
      */

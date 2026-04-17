@@ -13,106 +13,131 @@ jQuery(document).ready(function($) {
         $(this).closest('.rss-feed-row').remove();
     });
     
-    // Generate Posts functionality
+    // Generate Posts — two-phase: fetch article list, then generate one at a time
     $('#aanp-generate-posts').on('click', function() {
-        var button = $(this);
-        var statusDiv = $('#aanp-generation-status');
-        var statusText = $('#aanp-status-text');
+        var button      = $(this);
+        var statusDiv   = $('#aanp-generation-status');
+        var statusText  = $('#aanp-status-text');
         var progressBar = $('.aanp-progress-bar');
-        var resultsDiv = $('#aanp-generation-results');
+        var resultsDiv  = $('#aanp-generation-results');
         var resultsList = $('#aanp-results-list');
-        
-        // Disable button and show progress
+
         button.prop('disabled', true);
         button.find('.dashicons').addClass('spin');
         statusDiv.show();
         resultsDiv.hide();
         resultsList.empty();
-        
-        // Reset progress
         progressBar.css('width', '0%');
         statusText.text(aanp_ajax.generating_text);
-        
-        // Simulate progress
-        var progress = 0;
-        var progressInterval = setInterval(function() {
-            progress += Math.random() * 15;
-            if (progress > 90) progress = 90;
-            progressBar.css('width', progress + '%');
-        }, 500);
-        
-        // Make AJAX request
+
+        // Phase 1: fetch article list
         $.ajax({
             url: aanp_ajax.ajax_url,
             type: 'POST',
-            data: {
-                action: 'aanp_generate_posts',
-                nonce: aanp_ajax.nonce
-            },
+            data: { action: 'aanp_fetch_articles', nonce: aanp_ajax.nonce },
             success: function(response) {
-                clearInterval(progressInterval);
-                progressBar.css('width', '100%');
-                
-                if (response.success) {
-                    statusText.html('<span style="color: #00a32a;">✓ ' + response.data.message + '</span>');
-                    
-                    // Display generated posts
-                    if (response.data.posts && response.data.posts.length > 0) {
-                        var postsHtml = '<ul>';
-                        $.each(response.data.posts, function(index, post) {
-                            postsHtml += '<li>';
-                            postsHtml += '<strong>' + escapeHtml(post.title) + '</strong> ';
-                            postsHtml += '<a href="' + post.edit_link + '" class="button button-small" target="_blank">Edit Post</a>';
-                            postsHtml += '</li>';
-                        });
-                        postsHtml += '</ul>';
-                        resultsList.html(postsHtml);
-                        resultsDiv.show();
-                    }
-                    
-                    // Show admin notice
-                    showAdminNotice(response.data.message, 'success');
-                    
-                } else {
-                    var errorMsg = response.data || aanp_ajax.error_text;
-                    statusText.html('<span style="color: #d63638;">✗ ' + errorMsg + '</span>');
-                    showAdminNotice(errorMsg, 'error');
+                if (!response.success) {
+                    var errMsg = (response.data && response.data.message) ? response.data.message : (response.data || aanp_ajax.error_text);
+                    statusText.html('<span class="aanp-status-error">&#x2717; ' + escapeHtml(errMsg) + '</span>');
+                    showAdminNotice(errMsg, 'error');
+                    finishGeneration(button, statusDiv);
+                    return;
                 }
+
+                var articles   = response.data.articles;
+                var total      = articles.length;
+                var completed  = 0;
+                var generated  = [];
+
+                if (total === 0) {
+                    statusText.html('<span class="aanp-status-error">&#x2717; ' + escapeHtml(aanp_ajax.error_text) + '</span>');
+                    finishGeneration(button, statusDiv);
+                    return;
+                }
+
+                // Phase 2: generate each article sequentially for real progress
+                function generateNext(index) {
+                    if (index >= total) {
+                        // All done
+                        progressBar.css('width', '100%');
+                        var doneMsg = generated.length + ' ' + aanp_ajax.success_text;
+
+                        if (generated.length > 0) {
+                            statusText.html('<span class="aanp-status-success">&#x2713; ' + escapeHtml(doneMsg) + '</span>');
+                            var listHtml = '<ul>';
+                            $.each(generated, function(i, post) {
+                                listHtml += '<li><strong>' + escapeHtml(post.title) + '</strong> <a href="' + post.edit_link + '" class="button button-small" target="_blank">Edit Post</a></li>';
+                            });
+                            listHtml += '</ul>';
+                            resultsList.html(listHtml);
+                            resultsDiv.show();
+                            showAdminNotice(doneMsg, 'success');
+                        } else {
+                            statusText.html('<span class="aanp-status-error">&#x2717; ' + escapeHtml(aanp_ajax.error_text) + '</span>');
+                            showAdminNotice(aanp_ajax.error_text, 'error');
+                        }
+
+                        finishGeneration(button, statusDiv);
+                        return;
+                    }
+
+                    var article = articles[index];
+                    /* translators: %1$d current article number, %2$d total articles */
+                    statusText.text('(' + (index + 1) + '/' + total + ') ' + escapeHtml(article.title));
+                    progressBar.css('width', Math.round((index / total) * 100) + '%');
+
+                    $.ajax({
+                        url: aanp_ajax.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'aanp_generate_single',
+                            nonce:   aanp_ajax.nonce,
+                            article: article
+                        },
+                        success: function(res) {
+                            if (res.success) {
+                                generated.push(res.data);
+                            }
+                            completed++;
+                            generateNext(index + 1);
+                        },
+                        error: function() {
+                            completed++;
+                            generateNext(index + 1);
+                        }
+                    });
+                }
+
+                generateNext(0);
             },
             error: function(xhr, status, error) {
-                clearInterval(progressInterval);
-                progressBar.css('width', '100%');
-                var errorMsg = 'AJAX Error: ' + error;
-                statusText.html('<span style="color: #d63638;">✗ ' + errorMsg + '</span>');
-                showAdminNotice(errorMsg, 'error');
-            },
-            complete: function() {
-                button.find('.dashicons').removeClass('spin');
-
-                // Enforce client-side cooldown matching the server-side limit
-                var cooldown = aanp_ajax.cooldown_seconds || 60;
-                var remaining = cooldown;
-                var originalText = button.text().trim();
-
-                button.prop('disabled', true);
-                var countdownInterval = setInterval(function() {
-                    remaining--;
-                    button.val(aanp_ajax.cooldown_text.replace('%d', remaining));
-                    button.text(aanp_ajax.cooldown_text.replace('%d', remaining));
-                    if (remaining <= 0) {
-                        clearInterval(countdownInterval);
-                        button.prop('disabled', false);
-                        button.text(originalText);
-                    }
-                }, 1000);
-
-                // Hide progress after delay
-                setTimeout(function() {
-                    statusDiv.fadeOut();
-                }, 3000);
+                statusText.html('<span class="aanp-status-error">&#x2717; AJAX Error: ' + escapeHtml(error) + '</span>');
+                showAdminNotice(error, 'error');
+                finishGeneration(button, statusDiv);
             }
         });
     });
+
+    // Re-enable the button after a cooldown and hide the status panel
+    function finishGeneration(button, statusDiv) {
+        button.find('.dashicons').removeClass('spin');
+
+        var cooldown    = aanp_ajax.cooldown_seconds || 60;
+        var remaining   = cooldown;
+        var originalText = button.text().trim();
+
+        var countdownInterval = setInterval(function() {
+            remaining--;
+            button.text(aanp_ajax.cooldown_text.replace('%d', remaining));
+            if (remaining <= 0) {
+                clearInterval(countdownInterval);
+                button.prop('disabled', false);
+                button.text(originalText);
+            }
+        }, 1000);
+
+        setTimeout(function() { statusDiv.fadeOut(); }, 4000);
+    }
     
     // Helper function to escape HTML
     function escapeHtml(text) {
