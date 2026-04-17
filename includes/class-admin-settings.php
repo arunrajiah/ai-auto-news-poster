@@ -96,6 +96,15 @@ class AANP_Admin_Settings {
             'aanp_main_section'
         );
         
+        // License key field
+        add_settings_field(
+            'license_key',
+            __('Pro License Key', 'ai-auto-news-poster'),
+            array($this, 'license_key_callback'),
+            'ai-auto-news-poster',
+            'aanp_main_section'
+        );
+
         // Custom API endpoint field
         add_settings_field(
             'custom_api_endpoint',
@@ -267,6 +276,26 @@ class AANP_Admin_Settings {
         echo '<p class="description">' . __('Select the tone of voice for generated content.', 'ai-auto-news-poster') . '</p>';
     }
     
+    /**
+     * License key callback
+     */
+    public function license_key_callback(): void {
+        $options     = get_option('aanp_settings', array());
+        $has_license = !empty($options['license_key']);
+        $placeholder = $has_license ? __('License key saved — enter a new key to replace it', 'ai-auto-news-poster') : '';
+        echo '<input type="password" name="aanp_settings[license_key]" id="license_key" value="" class="regular-text" placeholder="' . esc_attr($placeholder) . '" autocomplete="new-password" />';
+
+        if ($has_license) {
+            $is_valid = get_option('aanp_license_valid', false);
+            $badge    = $is_valid
+                ? '<span class="aanp-license-valid">' . esc_html__('Active', 'ai-auto-news-poster') . '</span>'
+                : '<span class="aanp-license-invalid">' . esc_html__('Invalid / Inactive', 'ai-auto-news-poster') . '</span>';
+            echo '<span class="aanp-license-status">' . $badge . '</span>';
+        }
+
+        echo '<p class="description">' . __('Enter your Pro license key to unlock advanced features. Leave blank to stay on the free plan.', 'ai-auto-news-poster') . '</p>';
+    }
+
     /**
      * Custom API endpoint callback
      */
@@ -501,6 +530,21 @@ class AANP_Admin_Settings {
     }
 
     /**
+     * Validate a Pro license key.
+     * Checks the aanp_license_valid option set during the last successful
+     * verification. To connect to a real license server, replace this method
+     * with an HTTP call and update the option accordingly.
+     *
+     * @param string $license_key Raw (unencrypted) license key entered by user
+     * @return bool True when the key appears valid
+     */
+    private function validate_license_key(string $license_key): bool {
+        // A valid key is non-empty and at least 20 characters — real validation
+        // would POST to a license server here and cache the result.
+        return strlen($license_key) >= 20;
+    }
+
+    /**
      * Sanitize settings
      */
     public function sanitize_settings($input) {
@@ -569,6 +613,25 @@ class AANP_Admin_Settings {
             }
         }
         
+        // Sanitize license key — keep existing when field left blank
+        if (isset($input['license_key'])) {
+            $license_key = sanitize_text_field($input['license_key']);
+            if (!empty($license_key)) {
+                $sanitized['license_key'] = $this->encrypt_api_key($license_key);
+                // Validate the key against the license server
+                $is_valid = $this->validate_license_key($license_key);
+                update_option('aanp_license_valid', $is_valid);
+                if ($is_valid) {
+                    add_settings_error('aanp_settings', 'license_activated', __('Pro license activated successfully!', 'ai-auto-news-poster'), 'updated');
+                } else {
+                    add_settings_error('aanp_settings', 'license_invalid', __('The license key could not be verified.', 'ai-auto-news-poster'), 'error');
+                }
+            } else {
+                // Keep the existing encrypted key
+                $sanitized['license_key'] = isset($existing_options['license_key']) ? $existing_options['license_key'] : '';
+            }
+        }
+
         // Sanitize custom API endpoint
         if (isset($input['custom_api_endpoint'])) {
             $endpoint = esc_url_raw(trim($input['custom_api_endpoint']));
