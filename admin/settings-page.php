@@ -122,7 +122,7 @@ $recent_posts = $post_creator->get_recent_posts( 5 );
 						<?php
 						/* translators: human-readable time difference, e.g. "5 minutes ago" */
 						echo esc_html(
-							human_time_diff( strtotime( $generated_post['generated_at'] ), current_time( 'timestamp' ) )
+							human_time_diff( strtotime( $generated_post['generated_at'] ), time() )
 							. ' '
 							. __( 'ago', 'ai-auto-news-poster' )
 						);

@@ -1,258 +1,277 @@
 # AI Auto News Poster
 
-![WordPress Plugin](https://img.shields.io/badge/WordPress-Plugin-blue.svg)
-![Version](https://img.shields.io/badge/Version-1.0.0-green.svg)
+![CI](https://github.com/arunrajiah/ai-auto-news-poster/actions/workflows/ci.yml/badge.svg)
+![Version](https://img.shields.io/badge/Version-1.0.6-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
+![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-blue.svg)
 
-AI-powered WordPress plugin that automatically generates unique blog posts from the latest news using OpenAI and Anthropic APIs. Features RSS feed integration, customizable content generation, and batch post creation with security-first design.
+AI-powered WordPress plugin that automatically generates unique blog posts from the latest news using OpenAI, Anthropic Claude, or any OpenAI-compatible API. Features RSS feed integration with transient caching, per-article AJAX generation with live progress feedback, duplicate detection, and AES-256 encrypted API key storage.
 
-## 🚀 Features
+## Features
 
-### Core Features (Free Version)
-- **AI Content Generation**: Support for OpenAI GPT and Anthropic Claude APIs
-- **RSS Feed Integration**: Fetch latest news from popular RSS feeds or custom feeds
-- **Batch Post Creation**: Generate up to 5 unique blog posts per batch
-- **Customizable Content**: Configure tone of voice, word count, and categories
-- **Security First**: Encrypted API key storage and comprehensive input sanitization
-- **WordPress Native**: Built with WordPress coding standards and native UI
+### Free Version
+- **Multi-provider AI generation** — OpenAI GPT-3.5-turbo, Anthropic Claude, or any OpenAI-compatible custom endpoint
+- **RSS feed management** — add/remove/test feeds; parsed results cached for 30 minutes via WordPress transients
+- **Batch post creation** — generate up to 5 unique blog posts per batch
+- **Live progress UI** — per-article status with progress bar and cooldown timer (60-second rate limit)
+- **Duplicate detection** — articles already posted are skipped automatically
+- **Customisable content** — configure tone of voice, word count, and post categories
+- **AES-256 encrypted API keys** — keys are encrypted with a per-install key derived from `wp_salt('auth')` and never rendered back into the page
+- **Draft-first workflow** — all posts saved as drafts for review before publishing
+- **Source attribution** — each post links back to its original news source
 
 ### Pro Features (Coming Soon)
-- **Automated Scheduling**: Set up automatic post generation with WP-Cron
-- **Extended Batch Size**: Generate up to 30 posts per batch
-- **Featured Image Generation**: AI-powered featured images for posts
-- **SEO Optimization**: Automatic meta descriptions and SEO-friendly content
-- **Advanced Analytics**: Track post performance and engagement
+- Automated scheduling via WP-Cron
+- Up to 30 posts per batch
+- AI-powered featured image generation
+- SEO meta tags auto-fill
+- Priority support
 
-## 📋 Requirements
+## Requirements
 
-- WordPress 5.0 or higher
-- PHP 7.4 or higher
-- MySQL 5.6 or higher
-- OpenAI API key or Anthropic API key
-- cURL extension enabled
+| Component | Minimum |
+|-----------|---------|
+| WordPress | 5.0 |
+| PHP | 7.4 |
+| PHP extensions | `openssl`, `simplexml`, `mbstring` |
+| Database | MySQL 5.6 / MariaDB 10.1 |
+| AI API key | OpenAI, Anthropic, or compatible |
 
-## 🔧 Installation
+## Installation
 
-### Method 1: WordPress Admin (Recommended)
-1. Download the plugin zip file from the [releases page](https://github.com/arunrajiah/ai-auto-news-poster/releases)
-2. Log in to your WordPress admin dashboard
-3. Navigate to **Plugins > Add New**
-4. Click **Upload Plugin** and select the downloaded zip file
-5. Click **Install Now** and then **Activate**
+### WordPress Admin (Recommended)
+1. Download the plugin zip from the [releases page](https://github.com/arunrajiah/ai-auto-news-poster/releases)
+2. Go to **Plugins > Add New > Upload Plugin**
+3. Select the zip, click **Install Now**, then **Activate**
 
-### Method 2: Manual Installation
-1. Download and extract the plugin files
-2. Upload the `ai-auto-news-poster` folder to `/wp-content/plugins/`
-3. Activate the plugin through the WordPress admin **Plugins** menu
+### Manual
+1. Upload the `ai-auto-news-poster` folder to `/wp-content/plugins/`
+2. Activate from the **Plugins** screen
 
-### Method 3: Git Clone (Developers)
+### Developer (Git)
 ```bash
 git clone https://github.com/arunrajiah/ai-auto-news-poster.git
-cd ai-auto-news-poster
-# Copy to your WordPress plugins directory
-cp -r . /path/to/wordpress/wp-content/plugins/ai-auto-news-poster/
+cp -r ai-auto-news-poster /path/to/wordpress/wp-content/plugins/
 ```
 
-## ⚙️ Configuration
+## Configuration
 
-1. After activation, navigate to **Settings > AI Auto News Poster**
-2. Configure the following settings:
-   - **LLM Provider**: Choose between OpenAI, Anthropic, or Custom API
-   - **API Key**: Enter your API key (stored securely and encrypted)
-   - **Categories**: Select WordPress categories for generated posts
-   - **Word Count**: Choose short (300-500), medium (500-800), or long (800-1200) posts
-   - **Tone of Voice**: Select Neutral, Professional, or Friendly tone
+Navigate to **Settings > AI Auto News Poster** after activation.
+
+| Setting | Description |
+|---------|-------------|
+| LLM Provider | OpenAI, Anthropic, or Custom API |
+| API Key | Encrypted with AES-256-CBC on save; never shown again |
+| Custom API Endpoint | Any OpenAI-compatible URL (only for Custom API) |
+| Custom API Model | Model name sent in the request body |
+| Post Categories | WordPress categories assigned to generated posts |
+| Word Count | Short (300-400 w), Medium (500-600 w), Long (800-1000 w) |
+| Tone of Voice | Neutral, Professional, or Friendly |
+| RSS Feed URLs | One URL per row; use the **Test** button to validate |
+| Pro License Key | Unlocks Pro features when available |
 
 ### Getting API Keys
 
-#### OpenAI API Key
-1. Visit [OpenAI Platform](https://platform.openai.com/)
-2. Sign up or log in to your account
-3. Navigate to **API Keys** section
-4. Create a new API key
-5. Copy and paste into the plugin settings
+**OpenAI** — [platform.openai.com](https://platform.openai.com/) → API Keys → Create new secret key
 
-#### Anthropic API Key
-1. Visit [Anthropic Console](https://console.anthropic.com/)
-2. Sign up or log in to your account
-3. Navigate to **API Keys** section
-4. Create a new API key
-5. Copy and paste into the plugin settings
+**Anthropic** — [console.anthropic.com](https://console.anthropic.com/) → API Keys → Create key
 
-## 🎯 Usage
+## Usage
 
 ### Generating Posts
 1. Go to **Settings > AI Auto News Poster**
-2. Ensure all settings are configured
-3. Click **Generate 5 Posts** button
-4. Wait for the process to complete (usually 30-60 seconds)
-5. Check **Posts > All Posts** for new draft posts
-6. Review, edit, and publish the generated content
+2. Click **Generate 5 Posts**
+3. The plugin fetches articles from your RSS feeds, then generates one post at a time with a live progress indicator
+4. Each post appears in the results list with an edit link as soon as it is created
+5. Review and publish drafts from **Posts > All Posts**
 
-### Managing Generated Content
-- All generated posts are created as **drafts** for manual review
-- Posts are automatically categorized based on your settings
-- Each post includes a note indicating it was AI-generated
-- You can edit, modify, or delete posts as needed before publishing
+### Managing RSS Feeds
+- Click **Add RSS Feed** to add a new row
+- Click **Test** next to any feed URL to validate it before saving
+- Parsed feed results are cached for 30 minutes; clear the WordPress transient cache to force a refresh
 
-## 🔒 Security Features
+### Duplicate Detection
+The plugin tracks every generated post's source URL in a custom database table (`wp_aanp_generated_posts`). If the same article URL is fetched again it is silently skipped.
 
-- **Encrypted API Key Storage**: API keys are encrypted before storage
-- **Input Sanitization**: All user inputs are sanitized and validated
-- **Nonce Verification**: CSRF protection for all admin actions
-- **Capability Checks**: Proper WordPress permission handling
-- **SQL Injection Prevention**: Prepared statements for database queries
-- **XSS Protection**: Output escaping for all displayed content
+## Security
 
-## 🏗️ Technical Architecture
+| Feature | Detail |
+|---------|--------|
+| API key encryption | AES-256-CBC; key = `substr(sha256(wp_salt('auth')), 0, 32)` |
+| API key display | Stored value is never echoed; a placeholder is shown instead |
+| AJAX nonce | Every AJAX request verified with `wp_verify_nonce()` |
+| Capability check | `manage_options` required for all admin actions |
+| SQL | `$wpdb->prepare()` for all parametrised queries |
+| Output escaping | `esc_html()`, `esc_attr()`, `esc_url()` throughout |
+| Rate limiting | 60-second cooldown between generation requests (stored in a transient) |
+| Input sanitisation | Settings sanitised and validated before save |
 
-### File Structure
+## Architecture
+
 ```
 ai-auto-news-poster/
-├── ai-auto-news-poster.php      # Main plugin file
+├── ai-auto-news-poster.php          # Plugin bootstrap; constants; DB migrations
 ├── includes/
-│   ├── class-admin-settings.php  # Admin settings management
-│   ├── class-news-fetch.php      # RSS feed processing
-│   ├── class-ai-generator.php    # AI content generation
-│   └── class-post-creator.php    # WordPress post creation
+│   ├── class-admin-settings.php     # Settings API, AJAX handlers, encryption
+│   ├── class-news-fetch.php         # RSS/Atom parsing with transient cache
+│   ├── class-ai-generator.php       # OpenAI / Anthropic / Custom API calls
+│   ├── class-post-creator.php       # WP post creation, duplicate check, stats
+│   └── class-pro-features.php       # Pro feature stubs / upgrade notices
 ├── admin/
-│   └── settings-page.php         # Admin interface
+│   └── settings-page.php            # Admin page template
 ├── assets/
-│   ├── css/admin.css             # Admin styling
-│   └── js/admin.js               # Admin JavaScript
-├── readme.txt                    # WordPress repository readme
-└── README.md                     # This file
+│   ├── css/admin.css                # Admin styles (no inline CSS)
+│   └── js/admin.js                  # Phase-based AJAX generation flow
+├── tests/
+│   ├── bootstrap.php                # PHPUnit bootstrap
+│   ├── stubs.php                    # WordPress function stubs
+│   ├── AdminSettingsTest.php        # Encryption, sanitisation, rate-limit tests
+│   ├── PostCreatorTest.php          # Duplicate detection, post creation tests
+│   ├── NewsFetchTest.php            # Feed URL validation, cache TTL tests
+│   └── AiGeneratorTest.php          # Prompt building, response parsing tests
+├── .github/workflows/ci.yml         # CI: PHP lint, PHPCS, PHPUnit
+├── .phpcs.xml                       # WordPress coding-standard ruleset
+├── composer.json                    # Dev dependencies
+├── phpunit.xml                      # PHPUnit config
+├── readme.txt                       # WordPress.org repository readme
+└── README.md                        # This file
 ```
 
-### Key Classes
-- **AI_Auto_News_Admin_Settings**: Handles plugin configuration and settings
-- **AI_Auto_News_Fetch**: Manages RSS feed fetching and parsing
-- **AI_Auto_News_AI_Generator**: Interfaces with AI APIs for content generation
-- **AI_Auto_News_Post_Creator**: Creates and manages WordPress posts
+### AJAX Generation Flow
 
-## 🔌 API Integration
+The JavaScript uses a two-phase approach to show real-time progress:
 
-### Supported AI Providers
+1. **Phase 1** — calls `aanp_fetch_articles` to retrieve up to 5 candidate articles from RSS feeds
+2. **Phase 2** — calls `aanp_generate_single` once per article, sequentially, updating a progress bar after each
 
-#### OpenAI Integration
-- **Model**: GPT-3.5-turbo (default) or GPT-4
-- **Endpoint**: `https://api.openai.com/v1/chat/completions`
-- **Authentication**: Bearer token
+This avoids a single slow HTTP request and lets the user see each post appear as soon as it is created.
 
-#### Anthropic Integration
-- **Model**: Claude-3-haiku (default) or Claude-3-sonnet
-- **Endpoint**: `https://api.anthropic.com/v1/messages`
-- **Authentication**: API key header
+## Development
 
-#### Custom API
-- Configurable endpoint and authentication
-- Must follow OpenAI-compatible response format
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Posts not generating**
-- Verify API key is correct and has sufficient credits
-- Check WordPress error logs for detailed error messages
-- Ensure RSS feeds are accessible and returning content
-
-**API errors**
-- Confirm API key has proper permissions
-- Check API rate limits and usage quotas
-- Verify internet connectivity and firewall settings
-
-**Permission errors**
-- Ensure user has `manage_options` capability
-- Check WordPress file permissions
-- Verify plugin activation was successful
-
-### Debug Mode
-Enable WordPress debug mode to see detailed error messages:
-```php
-// Add to wp-config.php
-define('WP_DEBUG', true);
-define('WP_DEBUG_LOG', true);
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
-
-### Development Setup
+### Prerequisites
 ```bash
-# Clone the repository
-git clone https://github.com/arunrajiah/ai-auto-news-poster.git
-cd ai-auto-news-poster
-
-# Set up local WordPress development environment
-# Copy plugin to WordPress plugins directory
-cp -r . /path/to/wordpress/wp-content/plugins/ai-auto-news-poster/
+composer install   # installs phpunit, phpcs, wpcs
 ```
+
+### Commands
+| Command | Description |
+|---------|-------------|
+| `composer test` | Run PHPUnit (requires PHP 8.1+) |
+| `composer lint` | Run PHPCS against WordPress coding standards |
+| `composer lint-fix` | Auto-fix PHPCS violations with phpcbf |
+
+### CI Pipeline
+
+Three GitHub Actions jobs run on every push to `main`/`develop`:
+
+| Job | PHP versions | Tool |
+|-----|-------------|------|
+| PHP Syntax Check | 7.4, 8.0, 8.1, 8.2, 8.3 | `php -l` |
+| WordPress Coding Standards | 8.2 | PHPCS + WPCS |
+| PHPUnit Tests | 8.1, 8.2, 8.3 | PHPUnit 10 |
+
+> PHPUnit 10 requires PHP ≥ 8.1. Syntax checking still validates PHP 7.4 and 8.0 compatibility via the lint job.
 
 ### Coding Standards
-- Follow [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/)
-- Use proper sanitization and escaping
-- Include comprehensive error handling
-- Add inline documentation for complex functions
 
-## 📝 Changelog
+The project follows [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/) enforced by PHPCS with the `WordPress-Core` and `WordPress-Extra` rule sets. Key rules applied:
 
-### Version 1.0.0 (2025-09-08)
-- Initial release
-- Core AI content generation functionality
-- OpenAI and Anthropic API integration
-- RSS feed processing
-- Batch post creation (5 posts limit)
-- Admin settings interface
-- Security enhancements
-- WordPress repository compatibility
+- Tabs for indentation
+- Yoda conditions (`null === $var`)
+- `wp_json_encode()`, `wp_parse_url()`, `wp_strip_all_tags()` over PHP equivalents
+- `esc_html__()` / `esc_html_e()` rather than bare `__()`
+- `gmdate()` instead of `date()`
+- `$wpdb->prepare()` for all SQL with user-controlled values
 
-## 🔮 Roadmap
+## API Integration
 
-### Version 1.1.0 (Planned)
-- [ ] Featured image generation
-- [ ] SEO meta optimization
-- [ ] Content templates
-- [ ] Multi-language support
+### OpenAI
+- **Model**: `gpt-3.5-turbo`
+- **Endpoint**: `https://api.openai.com/v1/chat/completions`
+- **Auth**: `Authorization: Bearer <key>`
 
-### Version 2.0.0 (Pro Features)
-- [ ] Automated scheduling
-- [ ] Extended batch sizes
-- [ ] Advanced analytics
-- [ ] Premium support
+### Anthropic
+- **Model**: `claude-3-sonnet-20240229`
+- **Endpoint**: `https://api.anthropic.com/v1/messages`
+- **Auth**: `x-api-key: <key>` + `anthropic-version: 2023-06-01`
 
-## 📄 License
+### Custom API
+- Any OpenAI-compatible endpoint (e.g. Ollama, LM Studio, OpenRouter)
+- Model name is configurable; falls back to `"default"` if blank
+- API key is optional (sent as `Authorization: Bearer <key>` when present)
 
-This project is licensed under the GPL v2 License - see the [LICENSE](LICENSE) file for details.
+All providers expect the response to contain a JSON object with `title` and `content` fields. If JSON parsing fails the plugin attempts plain-text extraction and, as a last resort, generates a minimal fallback post from the original article data.
 
-## 👨‍💻 Author
+## Troubleshooting
 
-**Arun Rajiah**
-- GitHub: [@arunrajiah](https://github.com/arunrajiah)
-- Website: [Contact via GitHub](https://github.com/arunrajiah)
+**Posts not generating**
+- Check the API key is correct and the account has credits
+- Enable `WP_DEBUG_LOG` and inspect `wp-content/debug.log` for `AANP:` entries
+- Use the **Test** button next to each RSS feed to confirm the feed is reachable
 
-## 🙏 Acknowledgments
+**Rate limit message**
+- The plugin enforces a 60-second cooldown between batches. Wait and try again.
 
-- WordPress community for excellent documentation
-- OpenAI and Anthropic for powerful AI APIs
-- RSS feed providers for news content
-- Beta testers and early adopters
+**Duplicate articles skipped**
+- Check `wp_aanp_generated_posts` in your database — the source URL is already recorded. Delete the row to allow re-generation.
 
-## 📞 Support
+**API errors**
+- Verify the API key, check your provider's status page, and confirm outbound HTTPS is not blocked by a firewall or proxy.
 
-For support, please:
-1. Check the [troubleshooting section](#-troubleshooting)
-2. Search [existing issues](https://github.com/arunrajiah/ai-auto-news-poster/issues)
-3. Create a [new issue](https://github.com/arunrajiah/ai-auto-news-poster/issues/new) if needed
+**Debug mode**
+```php
+// wp-config.php
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_LOG', true );
+```
 
----
+## Contributing
 
-**Made with ❤️ for the WordPress community**
+1. Fork the repository
+2. Create a branch: `git checkout -b feature/my-feature`
+3. Make changes, run `composer test` and `composer lint`
+4. Push and open a Pull Request against `main`
+
+Please follow WordPress Coding Standards and include tests for new functionality.
+
+## Changelog
+
+### 1.0.6
+- Fixed all WordPress Plugin Check errors (i18n, escaping, missing translators comments)
+- Inline styles removed from admin templates; moved to `admin.css`
+- Added semantic CSS classes for stat boxes and status indicators
+- Fixed `readme.txt` stable tag
+
+### 1.0.5
+- AES-256-CBC API key encryption with `wp_salt('auth')`-derived key (replaces plaintext storage)
+- Rate limiting: 60-second cooldown between generation batches
+- Per-article AJAX generation with live progress bar (`aanp_fetch_articles` + `aanp_generate_single`)
+- Feed URL **Test** button via `aanp_test_feed` AJAX action
+- Custom API endpoint and model name settings
+- Pro license key field with active/inactive badge
+- Duplicate post detection via `wp_aanp_generated_posts` tracking table with post meta fallback
+- RSS feed transient cache (30-minute TTL, `AANP_DEFAULT_FEEDS` constant)
+- PHP 7.4 type hints across all classes
+- PHPUnit test suite (31 tests) and GitHub Actions CI pipeline
+- WordPress Coding Standards (PHPCS) enforced in CI
+
+### 1.0.3 – 1.0.4
+- Fixed WordPress i18n `NonSingularStringLiteralText` errors
+- `readme.txt` stable tag corrections
+
+### 1.0.0
+- Initial release: OpenAI and Anthropic integration, RSS feed parsing, batch draft creation, admin settings UI
+
+## License
+
+GPL v2 or later — see [LICENSE](https://www.gnu.org/licenses/gpl-2.0.html).
+
+## Author
+
+**Arun Rajiah** — [github.com/arunrajiah](https://github.com/arunrajiah)
+
+## Support
+
+- Bug reports / feature requests: [GitHub Issues](https://github.com/arunrajiah/ai-auto-news-poster/issues)
+- Documentation: this README and inline code comments
