@@ -3,12 +3,12 @@ Contributors: arunrajiah
 Tags: ai, news, auto-posting, content generation, rss, openai, anthropic, claude
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Auto-generate unique blog posts from the latest news using AI. Free users can generate up to 5 posts manually per batch.
+Auto-generate unique blog posts from the latest news using AI. Generate posts manually or on an automatic schedule. DALL-E 3 featured image generation included for OpenAI users.
 
 == Description ==
 
@@ -17,13 +17,15 @@ AI Auto News Poster transforms the latest news articles into unique, engaging bl
 **Key Features:**
 
 * **Multi-provider AI generation** — OpenAI GPT, Anthropic Claude, or any OpenAI-compatible custom endpoint
+* **WP-Cron scheduling** — run generation automatically: hourly, every 6 hours, twice daily, or daily
+* **DALL-E 3 featured images** — automatically generate and attach editorial images to every post (OpenAI only)
 * **RSS feed management** — add, remove, and test feeds from the settings page; results cached for 30 minutes
 * **Live progress UI** — per-article generation with a progress bar and real-time status messages
 * **Duplicate detection** — already-posted articles are automatically skipped
 * **AES-256 encrypted API keys** — stored encrypted using a per-install key; never displayed again after saving
 * **Draft-first workflow** — all posts saved as drafts for your review before publishing
 * **Source attribution** — every post links back to the original news source
-* **60-second rate limit** — prevents accidental API overuse
+* **60-second rate limit** — prevents accidental API overuse on manual generation
 * **Customisable content** — choose tone, word count, and post categories
 
 **How It Works:**
@@ -31,24 +33,25 @@ AI Auto News Poster transforms the latest news articles into unique, engaging bl
 1. Configure your AI provider and paste your API key
 2. Add RSS feeds from your favourite news sources (or use the built-in defaults: BBC, CNN, Reuters)
 3. Select categories and content preferences
-4. Click "Generate 5 Posts" — articles are fetched and generated one at a time with live feedback
-5. Review the draft posts and publish what you like
+4. **Manual mode:** click "Generate 5 Posts" — articles are fetched and generated one at a time with live feedback
+5. **Automatic mode:** choose a schedule in Settings > Automation and the plugin runs on its own
+6. Review the draft posts and publish what you like
 
-**Free Version Includes:**
+**Includes:**
 
 * Manual generation of up to 5 posts per batch
+* Automatic WP-Cron scheduling (hourly / every 6 h / twice daily / daily)
+* DALL-E 3 featured image generation (OpenAI provider)
 * OpenAI, Anthropic, and Custom API support
 * RSS feed management with per-feed testing
 * Duplicate detection
 * Transient-cached feed fetching
 * AES-256 API key encryption
-* PHPUnit-tested, CI-verified codebase
+* PHPUnit-tested, CI-verified codebase (39 tests)
 
-**Pro Features (Coming Soon):**
+**Coming Soon:**
 
-* Automated scheduling with WP-Cron
 * Up to 30 posts per batch
-* AI-powered featured image generation
 * SEO meta tags auto-fill
 * Priority support
 
@@ -81,15 +84,23 @@ Yes — tone (neutral / professional / friendly), word count (short ~300 w / med
 
 = Are posts published automatically? =
 
-No. All posts are saved as drafts for you to review and edit before publishing.
+No. All posts are saved as drafts for you to review and edit before publishing, even when scheduled generation runs automatically.
 
 = How many posts can I generate at once? =
 
-Up to 5 per batch in the free version. Pro will support up to 30.
+Up to 5 per batch (manual or scheduled).
 
-= Why do I have to wait 60 seconds between batches? =
+= Why do I have to wait 60 seconds between manual batches? =
 
-To prevent accidental API overuse. The cooldown is stored in a WordPress transient.
+To prevent accidental API overuse. The cooldown applies to manual generation only; scheduled runs are not rate-limited.
+
+= How does automatic scheduling work? =
+
+Choose a schedule (Hourly / Every 6 Hours / Twice Daily / Daily) in Settings > Automation and save. The plugin registers a WP-Cron event that fires generation automatically. The next run time is shown in the settings. WP-Cron requires incoming traffic — on low-traffic sites, set up a system cron to call `wp-cron.php` on a regular interval.
+
+= How much do DALL-E 3 images cost? =
+
+Approximately $0.08 USD per image at the standard resolution (1792×1024) on OpenAI's standard tier. Image generation only fires when the **Featured Images** option is enabled and the provider is OpenAI.
 
 = How are API keys stored? =
 
@@ -112,6 +123,14 @@ Yes. It follows WordPress security best practices: nonce verification, `manage_o
 5. Recent generated posts table with edit links
 
 == Changelog ==
+
+= 1.0.7 =
+* WP-Cron scheduling — new Automation section in settings; choose hourly / every 6 h / twice daily / daily; next-run time shown inline
+* DALL-E 3 featured images — auto-generate and attach featured images for every post (OpenAI provider only, 1792×1024)
+* Fixed PHP 7.4 syntax incompatibility in class-image-generator.php (union return type)
+* New classes: AANP_Scheduler, AANP_Image_Generator
+* New tests: SchedulerTest, ImageGeneratorTest (39 tests total)
+* Release workflow: rolling latest zip published on every push to main
 
 = 1.0.6 =
 * Fixed all WordPress Plugin Check errors (i18n, escaping, missing translators comments)
@@ -140,6 +159,9 @@ Yes. It follows WordPress security best practices: nonce verification, `manage_o
 * Initial release: OpenAI and Anthropic integration, RSS feed parsing, batch draft creation, admin settings UI
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+Adds automatic WP-Cron scheduling and DALL-E 3 featured image generation. No database migration required. New Automation settings section appears after upgrade.
 
 = 1.0.6 =
 Maintenance release — fixes Plugin Check warnings and cleans up inline styles. No settings migration required.

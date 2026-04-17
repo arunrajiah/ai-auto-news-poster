@@ -2,8 +2,8 @@
 /**
  * Plugin Name: AI Auto News Poster
  * Plugin URI: https://github.com/arunrajiah/ai-auto-news-poster
- * Description: Auto-generate blog posts based on the latest news/content. Free users can generate up to 5 posts manually per batch.
- * Version: 1.0.6
+ * Description: Auto-generate blog posts from the latest news using AI. Supports manual and automatic WP-Cron scheduling with optional DALL-E 3 featured image generation.
+ * Version: 1.0.7
  * Author: Arun Rajiah
  * Author URI: https://github.com/arunrajiah
  * License: GPL v2 or later
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants.
-define( 'AANP_VERSION', '1.0.6' );
+define( 'AANP_VERSION', '1.0.7' );
 define( 'AANP_DB_VERSION', '1.1' );
 define( 'AANP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AANP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

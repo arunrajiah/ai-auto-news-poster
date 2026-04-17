@@ -127,7 +127,7 @@ class AANP_Image_Generator {
 	 * @param string $title     Attachment title / alt text.
 	 * @return int|false Attachment ID on success, false on failure.
 	 */
-	private function sideload_image( string $image_url, int $post_id, string $title ): int|false {
+	private function sideload_image( string $image_url, int $post_id, string $title ) {
 		require_once ABSPATH . 'wp-admin/includes/media.php';
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/image.php';

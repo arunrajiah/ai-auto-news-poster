@@ -1,7 +1,7 @@
 # AI Auto News Poster
 
 ![CI](https://github.com/arunrajiah/ai-auto-news-poster/actions/workflows/ci.yml/badge.svg)
-![Version](https://img.shields.io/badge/Version-1.0.6-green.svg)
+![Version](https://img.shields.io/badge/Version-1.0.7-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-blue.svg)
@@ -10,10 +10,10 @@ AI-powered WordPress plugin that automatically generates unique blog posts from 
 
 ## Features
 
-### Free Version
+### Core Features
 - **Multi-provider AI generation** — OpenAI GPT-3.5-turbo, Anthropic Claude, or any OpenAI-compatible custom endpoint
 - **RSS feed management** — add/remove/test feeds; parsed results cached for 30 minutes via WordPress transients
-- **Batch post creation** — generate up to 5 unique blog posts per batch
+- **Batch post creation** — generate up to 5 unique blog posts per manual batch
 - **Live progress UI** — per-article status with progress bar and cooldown timer (60-second rate limit)
 - **Duplicate detection** — articles already posted are skipped automatically
 - **Customisable content** — configure tone of voice, word count, and post categories
@@ -21,10 +21,12 @@ AI-powered WordPress plugin that automatically generates unique blog posts from 
 - **Draft-first workflow** — all posts saved as drafts for review before publishing
 - **Source attribution** — each post links back to its original news source
 
-### Pro Features (Coming Soon)
-- Automated scheduling via WP-Cron
+### Automation (v1.0.7)
+- **WP-Cron scheduling** — run generation automatically on any schedule: hourly, every 6 hours, twice daily, or daily; configured in **Settings > Automation**
+- **DALL-E 3 featured images** — when OpenAI is the selected provider, automatically generate and attach a featured image to every post using `dall-e-3` at 1792×1024 resolution
+
+### Coming Soon
 - Up to 30 posts per batch
-- AI-powered featured image generation
 - SEO meta tags auto-fill
 - Priority support
 
@@ -69,6 +71,8 @@ Navigate to **Settings > AI Auto News Poster** after activation.
 | Word Count | Short (300-400 w), Medium (500-600 w), Long (800-1000 w) |
 | Tone of Voice | Neutral, Professional, or Friendly |
 | RSS Feed URLs | One URL per row; use the **Test** button to validate |
+| **Schedule** | Disabled / Hourly / Every 6 Hours / Twice Daily / Daily |
+| **Featured Images** | Auto-generate DALL-E 3 images (OpenAI provider only) |
 | Pro License Key | Unlocks Pro features when available |
 
 ### Getting API Keys
@@ -79,12 +83,28 @@ Navigate to **Settings > AI Auto News Poster** after activation.
 
 ## Usage
 
-### Generating Posts
+### Generating Posts Manually
 1. Go to **Settings > AI Auto News Poster**
 2. Click **Generate 5 Posts**
 3. The plugin fetches articles from your RSS feeds, then generates one post at a time with a live progress indicator
 4. Each post appears in the results list with an edit link as soon as it is created
 5. Review and publish drafts from **Posts > All Posts**
+
+### Automatic Scheduling
+1. Go to **Settings > AI Auto News Poster > Automation**
+2. Choose a schedule from the **Schedule** dropdown (Hourly / Every 6 Hours / Twice Daily / Daily)
+3. Click **Save Changes** — the WP-Cron event is registered immediately
+4. The next scheduled run time is shown below the dropdown
+5. Set the schedule back to **Disabled** to stop automatic generation
+
+WP-Cron fires when WordPress receives a web request. On low-traffic sites, consider setting up a real cron job to call `wp-cron.php` on a fixed interval.
+
+### Featured Image Generation
+1. Ensure **LLM Provider** is set to **OpenAI** and a valid API key is saved
+2. Check **Automatically generate featured images using DALL-E 3** in the Automation section
+3. Save settings — every new post will have an AI-generated editorial image attached as the featured image
+
+Images are generated at 1792×1024 using `dall-e-3`. Each image costs approximately $0.08 USD on the OpenAI standard tier.
 
 ### Managing RSS Feeds
 - Click **Add RSS Feed** to add a new row
@@ -116,7 +136,9 @@ ai-auto-news-poster/
 │   ├── class-admin-settings.php     # Settings API, AJAX handlers, encryption
 │   ├── class-news-fetch.php         # RSS/Atom parsing with transient cache
 │   ├── class-ai-generator.php       # OpenAI / Anthropic / Custom API calls
+│   ├── class-image-generator.php    # DALL-E 3 image generation and sideloading
 │   ├── class-post-creator.php       # WP post creation, duplicate check, stats
+│   ├── class-scheduler.php          # WP-Cron scheduling and automatic generation
 │   └── class-pro-features.php       # Pro feature stubs / upgrade notices
 ├── admin/
 │   └── settings-page.php            # Admin page template
@@ -127,10 +149,14 @@ ai-auto-news-poster/
 │   ├── bootstrap.php                # PHPUnit bootstrap
 │   ├── stubs.php                    # WordPress function stubs
 │   ├── AdminSettingsTest.php        # Encryption, sanitisation, rate-limit tests
-│   ├── PostCreatorTest.php          # Duplicate detection, post creation tests
+│   ├── AiGeneratorTest.php          # Prompt building, response parsing tests
+│   ├── ImageGeneratorTest.php       # Image generator unit tests
 │   ├── NewsFetchTest.php            # Feed URL validation, cache TTL tests
-│   └── AiGeneratorTest.php          # Prompt building, response parsing tests
-├── .github/workflows/ci.yml         # CI: PHP lint, PHPCS, PHPUnit
+│   ├── PostCreatorTest.php          # Duplicate detection, post creation tests
+│   └── SchedulerTest.php            # Cron schedule registration and state tests
+├── .github/
+│   ├── workflows/ci.yml             # CI: PHP lint, PHPCS, PHPUnit
+│   └── workflows/release.yml        # Release: zip and publish on push / tag
 ├── .phpcs.xml                       # WordPress coding-standard ruleset
 ├── composer.json                    # Dev dependencies
 ├── phpunit.xml                      # PHPUnit config
@@ -186,10 +212,18 @@ The project follows [WordPress Coding Standards](https://developer.wordpress.org
 
 ## API Integration
 
-### OpenAI
+### OpenAI (Text)
 - **Model**: `gpt-3.5-turbo`
 - **Endpoint**: `https://api.openai.com/v1/chat/completions`
 - **Auth**: `Authorization: Bearer <key>`
+
+### OpenAI (Images — DALL-E 3)
+- **Model**: `dall-e-3`
+- **Endpoint**: `https://api.openai.com/v1/images/generations`
+- **Auth**: `Authorization: Bearer <key>`
+- **Size**: `1792x1024`
+- **Approximate cost**: $0.08 USD per image (standard tier)
+- Only invoked when **Featured Images** is enabled in Automation settings
 
 ### Anthropic
 - **Model**: `claude-3-sonnet-20240229`
@@ -211,7 +245,17 @@ All providers expect the response to contain a JSON object with `title` and `con
 - Use the **Test** button next to each RSS feed to confirm the feed is reachable
 
 **Rate limit message**
-- The plugin enforces a 60-second cooldown between batches. Wait and try again.
+- The plugin enforces a 60-second cooldown between manual batches. Wait and try again.
+
+**Scheduled generation not running**
+- WP-Cron requires incoming web traffic to fire. On low-traffic sites, set up a system cron: `*/5 * * * * wget -q -O - https://yoursite.com/wp-cron.php?doing_wp_cron >/dev/null 2>&1`
+- Verify the event is registered: `wp cron event list | grep aanp`
+- Changing the schedule in settings clears the old event and registers a new one immediately
+
+**Featured images not being generated**
+- Featured images require the **LLM Provider** to be set to **OpenAI** — DALL-E 3 is an OpenAI-only feature
+- Check that the API key has image generation permissions
+- Look for `AANP_Image_Generator:` entries in `wp-content/debug.log`
 
 **Duplicate articles skipped**
 - Check `wp_aanp_generated_posts` in your database — the source URL is already recorded. Delete the row to allow re-generation.
@@ -236,6 +280,13 @@ define( 'WP_DEBUG_LOG', true );
 Please follow WordPress Coding Standards and include tests for new functionality.
 
 ## Changelog
+
+### 1.0.7
+- **WP-Cron scheduling** — new Automation settings section; choose hourly / every 6 h / twice daily / daily or disable; next-run time shown inline
+- **DALL-E 3 featured images** — auto-generate and attach a featured image to every post (OpenAI provider only, `dall-e-3` at 1792×1024)
+- New classes: `AANP_Scheduler`, `AANP_Image_Generator`
+- New tests: `SchedulerTest`, `ImageGeneratorTest` (39 tests total)
+- Release workflow: rolling `latest` zip published on every push to `main`
 
 ### 1.0.6
 - Fixed all WordPress Plugin Check errors (i18n, escaping, missing translators comments)
