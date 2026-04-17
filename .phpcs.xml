@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<ruleset name="AI Auto News Poster">
+    <description>WordPress coding standards for AI Auto News Poster plugin.</description>
+
+    <!-- What to scan -->
+    <file>.</file>
+
+    <!-- Exclude third-party directories -->
+    <exclude-pattern>vendor/</exclude-pattern>
+    <exclude-pattern>node_modules/</exclude-pattern>
+    <exclude-pattern>tests/stubs.php</exclude-pattern>
+
+    <!-- Base standard -->
+    <rule ref="WordPress-Core"/>
+    <rule ref="WordPress-Docs"/>
+    <rule ref="WordPress-Extra"/>
+
+    <!-- PHP version compatibility -->
+    <config name="minimum_supported_wp_version" value="5.0"/>
+    <config name="testVersion" value="7.4-"/>
+
+    <!-- Allow short array syntax -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Text domain for i18n checks -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="ai-auto-news-poster"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Allow slightly longer lines (common in admin templates) -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="0"/>
+        </properties>
+    </rule>
+
+    <!-- Suppress nonce check warning inside our AJAX handlers — we do check manually -->
+    <rule ref="WordPress.Security.NonceVerification.Missing">
+        <exclude-pattern>includes/class-admin-settings.php</exclude-pattern>
+    </rule>
+</ruleset>
