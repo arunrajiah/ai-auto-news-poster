@@ -339,18 +339,27 @@ class AANP_Admin_Settings {
             foreach ($articles as $article) {
                 // Generate content using AI
                 $generated_content = $ai_generator->generate_content($article);
-                
-                if ($generated_content) {
-                    // Create WordPress post
-                    $post_id = $post_creator->create_post($generated_content, $article);
-                    
-                    if ($post_id) {
-                        $generated_posts[] = array(
-                            'id' => $post_id,
-                            'title' => $generated_content['title'],
-                            'edit_link' => get_edit_post_link($post_id)
-                        );
-                    }
+
+                if (!$generated_content) {
+                    continue;
+                }
+
+                // Validate before persisting
+                $validation = $post_creator->validate_post_data($generated_content, $article);
+                if (!$validation['valid']) {
+                    error_log('AANP: Skipping invalid post data: ' . implode('; ', $validation['errors']));
+                    continue;
+                }
+
+                // Create WordPress post
+                $post_id = $post_creator->create_post($generated_content, $article);
+
+                if ($post_id) {
+                    $generated_posts[] = array(
+                        'id'        => $post_id,
+                        'title'     => $generated_content['title'],
+                        'edit_link' => get_edit_post_link($post_id),
+                    );
                 }
             }
             
