@@ -37,6 +37,9 @@
     font-size: 14px;
 }
 
+.aanp-status-success { color: #00a32a; }
+.aanp-status-error   { color: #d63638; }
+
 /* Generation results panel — hidden by default, shown by JS */
 #aanp-generation-results {
     display: none;
