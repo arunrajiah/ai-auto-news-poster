@@ -124,7 +124,7 @@ class AANP_Admin_Settings {
 			'aanp_main_section'
 		);
 
-		// RSS Feeds section
+		// RSS Feeds section.
 		add_settings_section(
 			'aanp_rss_section',
 			__( 'RSS Feeds', 'ai-auto-news-poster' ),
@@ -132,13 +132,39 @@ class AANP_Admin_Settings {
 			'ai-auto-news-poster'
 		);
 
-		// RSS Feeds field
+		// RSS Feeds field.
 		add_settings_field(
 			'rss_feeds',
 			__( 'RSS Feed URLs', 'ai-auto-news-poster' ),
 			array( $this, 'rss_feeds_callback' ),
 			'ai-auto-news-poster',
 			'aanp_rss_section'
+		);
+
+		// Automation section.
+		add_settings_section(
+			'aanp_automation_section',
+			__( 'Automation', 'ai-auto-news-poster' ),
+			array( $this, 'automation_section_callback' ),
+			'ai-auto-news-poster'
+		);
+
+		// Scheduling field.
+		add_settings_field(
+			'schedule',
+			__( 'Auto-Generate Schedule', 'ai-auto-news-poster' ),
+			array( $this, 'schedule_callback' ),
+			'ai-auto-news-poster',
+			'aanp_automation_section'
+		);
+
+		// Featured images field.
+		add_settings_field(
+			'featured_images',
+			__( 'Featured Images', 'ai-auto-news-poster' ),
+			array( $this, 'featured_images_callback' ),
+			'ai-auto-news-poster',
+			'aanp_automation_section'
 		);
 	}
 
@@ -342,6 +368,69 @@ class AANP_Admin_Settings {
 		echo '</div>';
 		echo '<button type="button" id="add-feed" class="button">' . esc_html__( 'Add RSS Feed', 'ai-auto-news-poster' ) . '</button>';
 		echo '<p class="description">' . esc_html__( 'Add RSS feed URLs for news sources.', 'ai-auto-news-poster' ) . '</p>';
+	}
+
+	/**
+	 * Automation section callback
+	 */
+	public function automation_section_callback() {
+		echo '<p>' . esc_html__( 'Configure automatic post generation and featured image settings.', 'ai-auto-news-poster' ) . '</p>';
+	}
+
+	/**
+	 * Schedule callback
+	 */
+	public function schedule_callback() {
+		$options = get_option( 'aanp_settings', array() );
+		$current = isset( $options['schedule'] ) ? $options['schedule'] : 'disabled';
+		$choices = array(
+			'disabled'         => __( 'Manual only', 'ai-auto-news-poster' ),
+			'hourly'           => __( 'Every hour', 'ai-auto-news-poster' ),
+			'aanp_every6hours' => __( 'Every 6 hours', 'ai-auto-news-poster' ),
+			'twicedaily'       => __( 'Twice daily', 'ai-auto-news-poster' ),
+			'daily'            => __( 'Daily', 'ai-auto-news-poster' ),
+		);
+
+		echo '<select name="aanp_settings[schedule]" id="aanp_schedule">';
+		foreach ( $choices as $value => $label ) {
+			echo '<option value="' . esc_attr( $value ) . '"' . selected( $current, $value, false ) . '>' . esc_html( $label ) . '</option>';
+		}
+		echo '</select>';
+
+		$scheduler = new AANP_Scheduler();
+		$next_run  = $scheduler->get_next_run();
+		if ( $next_run ) {
+			echo '<p class="description">';
+			/* translators: %s: human-readable time until next scheduled run, e.g. "2 hours" */
+			echo esc_html( sprintf( __( 'Next run in %s.', 'ai-auto-news-poster' ), $next_run ) );
+			echo '</p>';
+		} else {
+			echo '<p class="description">' . esc_html__( 'Posts will only be generated when you click the Generate button.', 'ai-auto-news-poster' ) . '</p>';
+		}
+	}
+
+	/**
+	 * Featured images callback
+	 */
+	public function featured_images_callback() {
+		$options  = get_option( 'aanp_settings', array() );
+		$enabled  = ! empty( $options['featured_images'] );
+		$provider = isset( $options['llm_provider'] ) ? $options['llm_provider'] : 'openai';
+
+		echo '<label>';
+		echo '<input type="checkbox" name="aanp_settings[featured_images]" value="1"' . checked( $enabled, true, false ) . ' />';
+		echo ' ' . esc_html__( 'Auto-generate a featured image via DALL-E for each post', 'ai-auto-news-poster' );
+		echo '</label>';
+
+		if ( 'openai' !== $provider ) {
+			echo '<p class="description aanp-warning">';
+			echo esc_html__( 'Featured image generation requires the OpenAI provider (uses DALL-E 3).', 'ai-auto-news-poster' );
+			echo '</p>';
+		} else {
+			echo '<p class="description">';
+			echo esc_html__( 'Uses the DALL-E 3 API — each image costs approximately $0.04. Requires an OpenAI key with image permissions.', 'ai-auto-news-poster' );
+			echo '</p>';
+		}
 	}
 
 	/** Transient key used for rate-limiting generation requests. */
@@ -724,6 +813,17 @@ class AANP_Admin_Settings {
 				add_settings_error( 'aanp_settings', 'no_feeds', __( 'At least one RSS feed is required. Default feeds restored.', 'ai-auto-news-poster' ) );
 			}
 		}
+
+		// Sanitize schedule setting and update WP-Cron accordingly.
+		$new_schedule = isset( $input['schedule'] ) ? sanitize_text_field( $input['schedule'] ) : 'disabled';
+		if ( ! in_array( $new_schedule, AANP_Scheduler::ALLOWED_SCHEDULES, true ) ) {
+			$new_schedule = 'disabled';
+		}
+		$sanitized['schedule'] = $new_schedule;
+		( new AANP_Scheduler() )->maybe_reschedule( $new_schedule );
+
+		// Sanitize featured images toggle.
+		$sanitized['featured_images'] = ! empty( $input['featured_images'] );
 
 		return $sanitized;
 	}

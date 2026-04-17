@@ -337,9 +337,7 @@ function wp_send_json_error($data = null): void {
     echo json_encode(array('success' => false, 'data' => $data));
 }
 
-function wp_clear_scheduled_hook(string $hook): void {}
-function wp_next_scheduled(string $hook): bool { return false; }
-function wp_schedule_event(int $timestamp, string $recurrence, string $hook): void {}
+function wp_get_scheduled_event(string $hook) { return false; }
 
 function register_activation_hook($file, $callback): void {}
 function register_deactivation_hook($file, $callback): void {}
@@ -362,4 +360,25 @@ function selected($selected, $current, bool $echo = true): string { return $sele
 
 function wp_parse_url(string $url, int $component = -1) { return parse_url($url, $component); }
 function wp_json_encode($data, int $flags = 0, int $depth = 512) { return json_encode($data, $flags, $depth); }
+
+// ---------- Featured image ----------
+function set_post_thumbnail(int $post_id, int $thumbnail_id): bool {
+    return update_post_meta($post_id, '_thumbnail_id', $thumbnail_id);
+}
+
+// ---------- WP-Cron ----------
+function wp_schedule_event(int $timestamp, string $recurrence, string $hook, array $args = array()): bool {
+    return true;
+}
+function wp_clear_scheduled_hook(string $hook, array $args = array()): int {
+    return 0;
+}
+function wp_next_scheduled(string $hook, array $args = array()) {
+    return false;
+}
+
+// ---------- Admin callbacks ----------
+function checked($checked, $current = true, bool $echo = true): string {
+    return (bool) $checked === (bool) $current ? ' checked="checked"' : '';
+}
 

@@ -28,3 +28,5 @@ require_once AANP_PLUGIN_DIR . 'includes/class-admin-settings.php';
 require_once AANP_PLUGIN_DIR . 'includes/class-news-fetch.php';
 require_once AANP_PLUGIN_DIR . 'includes/class-ai-generator.php';
 require_once AANP_PLUGIN_DIR . 'includes/class-post-creator.php';
+require_once AANP_PLUGIN_DIR . 'includes/class-image-generator.php';
+require_once AANP_PLUGIN_DIR . 'includes/class-scheduler.php';

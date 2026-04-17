@@ -65,6 +65,11 @@ class AI_Auto_News_Poster {
 		// Run DB migrations if needed (e.g. plugin updated without re-activation).
 		$this->maybe_run_migrations();
 
+		// Register custom cron interval and the scheduled-generation handler.
+		$scheduler = new AANP_Scheduler();
+		add_filter( 'cron_schedules', array( $scheduler, 'register_cron_schedules' ) ); // phpcs:ignore WordPress.WP.CronInterval.ChangeDetected
+		add_action( AANP_Scheduler::CRON_HOOK, array( 'AANP_Scheduler', 'run' ) );
+
 		// Initialize admin.
 		if ( is_admin() ) {
 			$this->init_admin();
@@ -89,7 +94,9 @@ class AI_Auto_News_Poster {
 		require_once AANP_PLUGIN_DIR . 'includes/class-admin-settings.php';
 		require_once AANP_PLUGIN_DIR . 'includes/class-news-fetch.php';
 		require_once AANP_PLUGIN_DIR . 'includes/class-ai-generator.php';
+		require_once AANP_PLUGIN_DIR . 'includes/class-image-generator.php';
 		require_once AANP_PLUGIN_DIR . 'includes/class-post-creator.php';
+		require_once AANP_PLUGIN_DIR . 'includes/class-scheduler.php';
 		require_once AANP_PLUGIN_DIR . 'includes/class-pro-features.php';
 	}
 
@@ -128,12 +135,14 @@ class AI_Auto_News_Poster {
 
 			// Set default options.
 			$default_options = array(
-				'llm_provider' => 'openai',
-				'api_key'      => '',
-				'categories'   => array(),
-				'word_count'   => 'medium',
-				'tone'         => 'neutral',
-				'rss_feeds'    => AANP_DEFAULT_FEEDS,
+				'llm_provider'    => 'openai',
+				'api_key'         => '',
+				'categories'      => array(),
+				'word_count'      => 'medium',
+				'tone'            => 'neutral',
+				'rss_feeds'       => AANP_DEFAULT_FEEDS,
+				'schedule'        => 'disabled',
+				'featured_images' => false,
 			);
 
 			add_option( 'aanp_settings', $default_options );
@@ -159,8 +168,7 @@ class AI_Auto_News_Poster {
 	 * Plugin deactivation
 	 */
 	public function deactivate() {
-		// Clean up scheduled events if any.
-		wp_clear_scheduled_hook( 'aanp_scheduled_generation' );
+		( new AANP_Scheduler() )->unschedule();
 	}
 
 	/**

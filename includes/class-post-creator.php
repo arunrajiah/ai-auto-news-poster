@@ -106,10 +106,17 @@ class AANP_Post_Creator {
 			wp_set_post_categories( $post_id, $selected_categories );
 		}
 
-		// Add custom taxonomy or tags if needed
+		// Add custom taxonomy or tags if needed.
 		$this->add_post_tags( $post_id, $generated_content, $source_article );
 
-		// Log the creation
+		// Generate and attach a featured image when the option is enabled.
+		$options = get_option( 'aanp_settings', array() );
+		if ( ! empty( $options['featured_images'] ) ) {
+			$image_gen = new AANP_Image_Generator();
+			$image_gen->generate_and_attach( $post_id, $generated_content['title'] );
+		}
+
+		// Log the creation.
 		$this->log_post_creation( $post_id, $source_article );
 
 		return $post_id;

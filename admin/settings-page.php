@@ -147,60 +147,16 @@ $recent_posts = $post_creator->get_recent_posts( 5 );
 		do_settings_sections( 'ai-auto-news-poster' );
 		?>
 
-		<!-- Pro Features (Disabled) -->
+		<!-- Coming Soon: SEO meta optimization -->
 		<div class="aanp-pro-features">
-			<h2><?php esc_html_e( 'Pro Features (Coming Soon)', 'ai-auto-news-poster' ); ?></h2>
-
+			<h2><?php esc_html_e( 'Coming Soon', 'ai-auto-news-poster' ); ?></h2>
 			<table class="form-table">
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Scheduling', 'ai-auto-news-poster' ); ?></th>
-					<td>
-						<select disabled>
-							<option><?php esc_html_e( 'Manual Only (Free)', 'ai-auto-news-poster' ); ?></option>
-							<option><?php esc_html_e( 'Every Hour (Pro)', 'ai-auto-news-poster' ); ?></option>
-							<option><?php esc_html_e( 'Every 6 Hours (Pro)', 'ai-auto-news-poster' ); ?></option>
-							<option><?php esc_html_e( 'Daily (Pro)', 'ai-auto-news-poster' ); ?></option>
-						</select>
-						<p class="description">
-							<?php esc_html_e( 'Automatically generate posts on a schedule.', 'ai-auto-news-poster' ); ?>
-						</p>
-					</td>
-				</tr>
-
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Batch Size', 'ai-auto-news-poster' ); ?></th>
-					<td>
-						<select disabled>
-							<option><?php esc_html_e( '5 Posts (Free)', 'ai-auto-news-poster' ); ?></option>
-							<option><?php esc_html_e( '10 Posts (Pro)', 'ai-auto-news-poster' ); ?></option>
-							<option><?php esc_html_e( '20 Posts (Pro)', 'ai-auto-news-poster' ); ?></option>
-							<option><?php esc_html_e( '30 Posts (Pro)', 'ai-auto-news-poster' ); ?></option>
-						</select>
-						<p class="description">
-							<?php esc_html_e( 'Number of posts to generate per batch.', 'ai-auto-news-poster' ); ?>
-						</p>
-					</td>
-				</tr>
-
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Featured Images', 'ai-auto-news-poster' ); ?></th>
-					<td>
-						<label>
-							<input type="checkbox" disabled />
-							<?php esc_html_e( 'Auto-generate featured images (Pro)', 'ai-auto-news-poster' ); ?>
-						</label>
-						<p class="description">
-							<?php esc_html_e( 'Automatically create relevant featured images for posts.', 'ai-auto-news-poster' ); ?>
-						</p>
-					</td>
-				</tr>
-
 				<tr>
 					<th scope="row"><?php esc_html_e( 'SEO Optimization', 'ai-auto-news-poster' ); ?></th>
 					<td>
 						<label>
 							<input type="checkbox" disabled />
-							<?php esc_html_e( 'Auto-fill SEO meta tags (Pro)', 'ai-auto-news-poster' ); ?>
+							<?php esc_html_e( 'Auto-fill SEO meta tags (coming soon)', 'ai-auto-news-poster' ); ?>
 						</label>
 						<p class="description">
 							<?php esc_html_e( 'Automatically generate SEO-optimized meta descriptions and keywords.', 'ai-auto-news-poster' ); ?>
