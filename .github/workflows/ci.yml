@@ -70,6 +70,8 @@ jobs:
         run: composer lint
 
   # ── PHPUnit ───────────────────────────────────────────────────────────────
+  # PHPUnit 10.x requires PHP >=8.1. PHP syntax is still checked on 7.4/8.0
+  # via the php-lint job above.
   phpunit:
     name: PHPUnit Tests (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
@@ -77,7 +79,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4', '8.0', '8.1', '8.2', '8.3']
+        php: ['8.1', '8.2', '8.3']
 
     steps:
       - uses: actions/checkout@v4
