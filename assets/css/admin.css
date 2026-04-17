@@ -40,6 +40,31 @@
 .aanp-status-success { color: #00a32a; }
 .aanp-status-error   { color: #d63638; }
 
+/* License key status badge */
+.aanp-license-status {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.aanp-license-valid {
+    background: #00a32a;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.aanp-license-invalid {
+    background: #d63638;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
 /* Generation results panel — hidden by default, shown by JS */
 #aanp-generation-results {
     display: none;

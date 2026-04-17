@@ -180,11 +180,12 @@ class AI_Auto_News_Poster {
 }
 
     /**
-     * Check if Pro features are available (placeholder)
+     * Check if a valid Pro license is active.
+     * Reads the cached validation result stored by AANP_Admin_Settings::sanitize_settings().
      */
-    public static function is_pro_active() {
-        // This will be used for Pro version detection
-        return apply_filters('aanp_is_pro_active', false);
+    public static function is_pro_active(): bool {
+        $is_valid = (bool) get_option('aanp_license_valid', false);
+        return apply_filters('aanp_is_pro_active', $is_valid);
     }
     
     /**
