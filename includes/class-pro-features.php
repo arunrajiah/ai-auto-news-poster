@@ -139,7 +139,7 @@ class AANP_Pro_Features {
 		$upgrade_url = AI_Auto_News_Poster::get_pro_upgrade_url();
 
 		echo '<div class="notice notice-info aanp-pro-notice" style="border-left-color: #ff6900;">';
-		echo '<p><strong>' . esc_html__( 'Upgrade to AI Auto News Poster Pro!', 'ai-auto-news-poster' ) . '</strong></p>';
+		echo '<p><strong>' . esc_html__( 'Upgrade to NewsForge Pro!', 'ai-auto-news-poster' ) . '</strong></p>';
 		echo '<p>' . esc_html__( 'Unlock powerful features like automated scheduling, 30 posts per batch, featured image generation, and SEO optimization.', 'ai-auto-news-poster' ) . '</p>';
 		echo '<p>';
 		echo '<a href="' . esc_url( $upgrade_url ) . '" class="button button-primary" target="_blank">';

@@ -77,7 +77,7 @@ class AANP_News_Fetch {
 			$feed_url,
 			array(
 				'timeout'    => 30,
-				'user-agent' => 'AI Auto News Poster/' . AANP_VERSION,
+				'user-agent' => 'NewsForge – AI Auto News Poster/' . AANP_VERSION,
 			)
 		);
 
@@ -261,7 +261,7 @@ class AANP_News_Fetch {
 			$feed_url,
 			array(
 				'timeout'    => 15,
-				'user-agent' => 'AI Auto News Poster/' . AANP_VERSION,
+				'user-agent' => 'NewsForge – AI Auto News Poster/' . AANP_VERSION,
 			)
 		);
 

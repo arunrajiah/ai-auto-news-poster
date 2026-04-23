@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: AI Auto News Poster
+ * Plugin Name: NewsForge – AI Auto News Poster
  * Plugin URI: https://github.com/arunrajiah/ai-auto-news-poster
  * Description: Auto-generate blog posts from the latest news using AI. Supports manual and automatic WP-Cron scheduling with optional DALL-E 3 featured image generation.
  * Version: 1.0.7
@@ -117,20 +117,20 @@ class AI_Auto_News_Poster {
 				deactivate_plugins( plugin_basename( __FILE__ ) );
 				$php_version = PHP_VERSION;
 				/* translators: %s: PHP version number */
-				$message = sprintf( __( 'AI Auto News Poster requires PHP 7.4 or higher. Your current version is %s', 'ai-auto-news-poster' ), $php_version );
+				$message = sprintf( __( 'NewsForge requires PHP 7.4 or higher. Your current version is %s', 'ai-auto-news-poster' ), $php_version );
 				wp_die( esc_html( $message ) );
 			}
 
 			// Check WordPress version.
 			if ( version_compare( get_bloginfo( 'version' ), '5.0', '<' ) ) {
 				deactivate_plugins( plugin_basename( __FILE__ ) );
-				wp_die( esc_html__( 'AI Auto News Poster requires WordPress 5.0 or higher.', 'ai-auto-news-poster' ) );
+				wp_die( esc_html__( 'NewsForge requires WordPress 5.0 or higher.', 'ai-auto-news-poster' ) );
 			}
 
 			// Check required functions.
 			if ( ! function_exists( 'wp_remote_get' ) || ! function_exists( 'wp_remote_post' ) ) {
 				deactivate_plugins( plugin_basename( __FILE__ ) );
-				wp_die( esc_html__( 'AI Auto News Poster requires WordPress HTTP API functions.', 'ai-auto-news-poster' ) );
+				wp_die( esc_html__( 'NewsForge requires WordPress HTTP API functions.', 'ai-auto-news-poster' ) );
 			}
 
 			// Set default options.
@@ -263,7 +263,7 @@ try {
 	add_action(
 		'admin_notices',
 		function () use ( $e ) {
-			echo '<div class="notice notice-error"><p>AI Auto News Poster Fatal Error: ' . esc_html( $e->getMessage() ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>NewsForge Fatal Error: ' . esc_html( $e->getMessage() ) . '</p></div>';
 		}
 	);
 }

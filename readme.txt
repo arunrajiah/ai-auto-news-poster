@@ -1,8 +1,8 @@
-=== AI Auto News Poster ===
+=== NewsForge – AI Auto News Poster ===
 Contributors: arunrajiah
 Tags: ai, news, auto-posting, openai, rss
 Requires at least: 5.0
-Tested up to: 6.8
+Tested up to: 6.9
 Stable tag: 1.0.7
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -12,7 +12,7 @@ Auto-generate unique blog posts from the latest news using OpenAI, Claude, or an
 
 == Description ==
 
-AI Auto News Poster transforms the latest news articles into unique, engaging blog posts using OpenAI, Anthropic Claude, or any OpenAI-compatible API. Perfect for news sites, blogs, and content creators who want to stay on top of trending topics without the manual effort.
+NewsForge transforms the latest news articles into unique, engaging blog posts using OpenAI, Anthropic Claude, or any OpenAI-compatible API. Perfect for news sites, blogs, and content creators who want to stay on top of trending topics without the manual effort.
 
 **Key Features:**
 
@@ -59,7 +59,7 @@ AI Auto News Poster transforms the latest news articles into unique, engaging bl
 
 1. Upload the plugin files to `/wp-content/plugins/ai-auto-news-poster/`, or install through the WordPress plugins screen.
 2. Activate the plugin through the **Plugins** screen.
-3. Go to **Settings > AI Auto News Poster**.
+3. Go to **Settings > NewsForge**.
 4. Select your AI provider and enter your API key.
 5. Add RSS feed URLs (or use the built-in defaults).
 6. Click **Generate 5 Posts** to start creating content.

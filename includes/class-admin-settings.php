@@ -30,8 +30,8 @@ class AANP_Admin_Settings {
 	 */
 	public function add_admin_menu() {
 		add_options_page(
-			__( 'AI Auto News Poster', 'ai-auto-news-poster' ),
-			__( 'AI Auto News Poster', 'ai-auto-news-poster' ),
+			__( 'NewsForge – AI Auto News Poster', 'ai-auto-news-poster' ),
+			__( 'NewsForge', 'ai-auto-news-poster' ),
 			'manage_options',
 			'ai-auto-news-poster',
 			array( $this, 'settings_page' )
@@ -218,7 +218,7 @@ class AANP_Admin_Settings {
 	 * Main section callback
 	 */
 	public function main_section_callback() {
-		echo '<p>' . esc_html__( 'Configure your AI Auto News Poster settings below.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure your NewsForge settings below.', 'ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
