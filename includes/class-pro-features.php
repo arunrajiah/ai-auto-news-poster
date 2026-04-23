@@ -102,28 +102,28 @@ class AANP_Pro_Features {
 		return array(
 			'scheduling'       => array(
 				'available'   => AI_Auto_News_Poster::is_scheduling_available(),
-				'title'       => __( 'Automated Scheduling', 'ai-auto-news-poster' ),
-				'description' => __( 'Automatically generate posts on a schedule using WP-Cron.', 'ai-auto-news-poster' ),
+				'title'       => __( 'Automated Scheduling', 'newsforge-ai-auto-news-poster' ),
+				'description' => __( 'Automatically generate posts on a schedule using WP-Cron.', 'newsforge-ai-auto-news-poster' ),
 			),
 			'batch_size'       => array(
 				'available'   => AI_Auto_News_Poster::is_pro_active(),
-				'title'       => __( 'Large Batch Generation', 'ai-auto-news-poster' ),
-				'description' => __( 'Generate up to 30 posts per batch instead of 5.', 'ai-auto-news-poster' ),
+				'title'       => __( 'Large Batch Generation', 'newsforge-ai-auto-news-poster' ),
+				'description' => __( 'Generate up to 30 posts per batch instead of 5.', 'newsforge-ai-auto-news-poster' ),
 			),
 			'featured_images'  => array(
 				'available'   => AI_Auto_News_Poster::is_featured_images_available(),
-				'title'       => __( 'Featured Image Generation', 'ai-auto-news-poster' ),
-				'description' => __( 'Automatically generate relevant featured images for posts.', 'ai-auto-news-poster' ),
+				'title'       => __( 'Featured Image Generation', 'newsforge-ai-auto-news-poster' ),
+				'description' => __( 'Automatically generate relevant featured images for posts.', 'newsforge-ai-auto-news-poster' ),
 			),
 			'seo_optimization' => array(
 				'available'   => AI_Auto_News_Poster::is_seo_features_available(),
-				'title'       => __( 'SEO Optimization', 'ai-auto-news-poster' ),
-				'description' => __( 'Auto-fill SEO meta descriptions and keywords.', 'ai-auto-news-poster' ),
+				'title'       => __( 'SEO Optimization', 'newsforge-ai-auto-news-poster' ),
+				'description' => __( 'Auto-fill SEO meta descriptions and keywords.', 'newsforge-ai-auto-news-poster' ),
 			),
 			'priority_support' => array(
 				'available'   => AI_Auto_News_Poster::is_pro_active(),
-				'title'       => __( 'Priority Support', 'ai-auto-news-poster' ),
-				'description' => __( 'Get priority email support and faster response times.', 'ai-auto-news-poster' ),
+				'title'       => __( 'Priority Support', 'newsforge-ai-auto-news-poster' ),
+				'description' => __( 'Get priority email support and faster response times.', 'newsforge-ai-auto-news-poster' ),
 			),
 		);
 	}
@@ -139,14 +139,14 @@ class AANP_Pro_Features {
 		$upgrade_url = AI_Auto_News_Poster::get_pro_upgrade_url();
 
 		echo '<div class="notice notice-info aanp-pro-notice" style="border-left-color: #ff6900;">';
-		echo '<p><strong>' . esc_html__( 'Upgrade to NewsForge Pro!', 'ai-auto-news-poster' ) . '</strong></p>';
-		echo '<p>' . esc_html__( 'Unlock powerful features like automated scheduling, 30 posts per batch, featured image generation, and SEO optimization.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p><strong>' . esc_html__( 'Upgrade to NewsForge Pro!', 'newsforge-ai-auto-news-poster' ) . '</strong></p>';
+		echo '<p>' . esc_html__( 'Unlock powerful features like automated scheduling, 30 posts per batch, featured image generation, and SEO optimization.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 		echo '<p>';
 		echo '<a href="' . esc_url( $upgrade_url ) . '" class="button button-primary" target="_blank">';
-		echo esc_html__( 'Learn More About Pro', 'ai-auto-news-poster' );
+		echo esc_html__( 'Learn More About Pro', 'newsforge-ai-auto-news-poster' );
 		echo '</a>';
 		echo ' <a href="#" class="button" onclick="this.parentElement.parentElement.parentElement.style.display=\'none\'; return false;">';
-		echo esc_html__( 'Maybe Later', 'ai-auto-news-poster' );
+		echo esc_html__( 'Maybe Later', 'newsforge-ai-auto-news-poster' );
 		echo '</a>';
 		echo '</p>';
 		echo '</div>';

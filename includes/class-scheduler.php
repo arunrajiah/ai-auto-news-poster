@@ -35,7 +35,7 @@ class AANP_Scheduler {
 	public function register_cron_schedules( array $schedules ): array {
 		$schedules['aanp_every6hours'] = array(
 			'interval' => 21600,
-			'display'  => __( 'Every 6 Hours', 'ai-auto-news-poster' ),
+			'display'  => __( 'Every 6 Hours', 'newsforge-ai-auto-news-poster' ),
 		);
 
 		return $schedules;

@@ -30,10 +30,10 @@ class AANP_Admin_Settings {
 	 */
 	public function add_admin_menu() {
 		add_options_page(
-			__( 'NewsForge – AI Auto News Poster', 'ai-auto-news-poster' ),
-			__( 'NewsForge', 'ai-auto-news-poster' ),
+			__( 'NewsForge – AI Auto News Poster', 'newsforge-ai-auto-news-poster' ),
+			__( 'NewsForge', 'newsforge-ai-auto-news-poster' ),
 			'manage_options',
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			array( $this, 'settings_page' )
 		);
 	}
@@ -47,123 +47,123 @@ class AANP_Admin_Settings {
 		// Main settings section
 		add_settings_section(
 			'aanp_main_section',
-			__( 'Main Settings', 'ai-auto-news-poster' ),
+			__( 'Main Settings', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'main_section_callback' ),
-			'ai-auto-news-poster'
+			'newsforge-ai-auto-news-poster'
 		);
 
 		// LLM Provider field
 		add_settings_field(
 			'llm_provider',
-			__( 'LLM Provider', 'ai-auto-news-poster' ),
+			__( 'LLM Provider', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'llm_provider_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_main_section'
 		);
 
 		// API Key field
 		add_settings_field(
 			'api_key',
-			__( 'API Key', 'ai-auto-news-poster' ),
+			__( 'API Key', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'api_key_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_main_section'
 		);
 
 		// Categories field
 		add_settings_field(
 			'categories',
-			__( 'Post Categories', 'ai-auto-news-poster' ),
+			__( 'Post Categories', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'categories_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_main_section'
 		);
 
 		// Word count field
 		add_settings_field(
 			'word_count',
-			__( 'Word Count', 'ai-auto-news-poster' ),
+			__( 'Word Count', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'word_count_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_main_section'
 		);
 
 		// Tone field
 		add_settings_field(
 			'tone',
-			__( 'Tone of Voice', 'ai-auto-news-poster' ),
+			__( 'Tone of Voice', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'tone_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_main_section'
 		);
 
 		// License key field
 		add_settings_field(
 			'license_key',
-			__( 'Pro License Key', 'ai-auto-news-poster' ),
+			__( 'Pro License Key', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'license_key_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_main_section'
 		);
 
 		// Custom API endpoint field
 		add_settings_field(
 			'custom_api_endpoint',
-			__( 'Custom API Endpoint', 'ai-auto-news-poster' ),
+			__( 'Custom API Endpoint', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'custom_api_endpoint_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_main_section'
 		);
 
 		// Custom API model field
 		add_settings_field(
 			'custom_api_model',
-			__( 'Custom API Model', 'ai-auto-news-poster' ),
+			__( 'Custom API Model', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'custom_api_model_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_main_section'
 		);
 
 		// RSS Feeds section.
 		add_settings_section(
 			'aanp_rss_section',
-			__( 'RSS Feeds', 'ai-auto-news-poster' ),
+			__( 'RSS Feeds', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'rss_section_callback' ),
-			'ai-auto-news-poster'
+			'newsforge-ai-auto-news-poster'
 		);
 
 		// RSS Feeds field.
 		add_settings_field(
 			'rss_feeds',
-			__( 'RSS Feed URLs', 'ai-auto-news-poster' ),
+			__( 'RSS Feed URLs', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'rss_feeds_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_rss_section'
 		);
 
 		// Automation section.
 		add_settings_section(
 			'aanp_automation_section',
-			__( 'Automation', 'ai-auto-news-poster' ),
+			__( 'Automation', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'automation_section_callback' ),
-			'ai-auto-news-poster'
+			'newsforge-ai-auto-news-poster'
 		);
 
 		// Scheduling field.
 		add_settings_field(
 			'schedule',
-			__( 'Auto-Generate Schedule', 'ai-auto-news-poster' ),
+			__( 'Auto-Generate Schedule', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'schedule_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_automation_section'
 		);
 
 		// Featured images field.
 		add_settings_field(
 			'featured_images',
-			__( 'Featured Images', 'ai-auto-news-poster' ),
+			__( 'Featured Images', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'featured_images_callback' ),
-			'ai-auto-news-poster',
+			'newsforge-ai-auto-news-poster',
 			'aanp_automation_section'
 		);
 	}
@@ -172,7 +172,7 @@ class AANP_Admin_Settings {
 	 * Enqueue admin scripts
 	 */
 	public function enqueue_admin_scripts( $hook ) {
-		if ( 'settings_page_ai-auto-news-poster' !== $hook ) {
+		if ( 'settings_page_newsforge-ai-auto-news-poster' !== $hook ) {
 			return;
 		}
 
@@ -197,12 +197,12 @@ class AANP_Admin_Settings {
 			array(
 				'ajax_url'         => admin_url( 'admin-ajax.php' ),
 				'nonce'            => wp_create_nonce( 'aanp_nonce' ),
-				'generating_text'  => __( 'Generating posts...', 'ai-auto-news-poster' ),
-				'success_text'     => __( 'Posts generated successfully!', 'ai-auto-news-poster' ),
-				'error_text'       => __( 'Error generating posts. Please try again.', 'ai-auto-news-poster' ),
+				'generating_text'  => __( 'Generating posts...', 'newsforge-ai-auto-news-poster' ),
+				'success_text'     => __( 'Posts generated successfully!', 'newsforge-ai-auto-news-poster' ),
+				'error_text'       => __( 'Error generating posts. Please try again.', 'newsforge-ai-auto-news-poster' ),
 				'cooldown_seconds' => self::RATE_LIMIT_SECONDS,
 				/* translators: %d: seconds remaining */
-				'cooldown_text'    => __( 'Please wait %d seconds…', 'ai-auto-news-poster' ),
+				'cooldown_text'    => __( 'Please wait %d seconds…', 'newsforge-ai-auto-news-poster' ),
 			)
 		);
 	}
@@ -218,14 +218,14 @@ class AANP_Admin_Settings {
 	 * Main section callback
 	 */
 	public function main_section_callback() {
-		echo '<p>' . esc_html__( 'Configure your NewsForge settings below.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure your NewsForge settings below.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
 	 * RSS section callback
 	 */
 	public function rss_section_callback() {
-		echo '<p>' . esc_html__( 'Manage RSS feeds for news sources.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p>' . esc_html__( 'Manage RSS feeds for news sources.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -240,7 +240,7 @@ class AANP_Admin_Settings {
 		echo '<option value="anthropic"' . selected( $value, 'anthropic', false ) . '>Anthropic</option>';
 		echo '<option value="custom"' . selected( $value, 'custom', false ) . '>Custom API</option>';
 		echo '</select>';
-		echo '<p class="description">' . esc_html__( 'Select your preferred LLM provider.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Select your preferred LLM provider.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -251,9 +251,9 @@ class AANP_Admin_Settings {
 		$has_key = ! empty( $options['api_key'] );
 
 		// Never render the stored (encrypted) value — use a placeholder instead
-		$placeholder = $has_key ? __( 'API key saved — enter a new value to replace it', 'ai-auto-news-poster' ) : '';
+		$placeholder = $has_key ? __( 'API key saved — enter a new value to replace it', 'newsforge-ai-auto-news-poster' ) : '';
 		echo '<input type="password" name="aanp_settings[api_key]" id="api_key" value="" class="regular-text" placeholder="' . esc_attr( $placeholder ) . '" autocomplete="new-password" />';
-		echo '<p class="description">' . esc_html__( 'Enter your API key for the selected LLM provider.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Enter your API key for the selected LLM provider.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -274,7 +274,7 @@ class AANP_Admin_Settings {
 			echo '</label><br>';
 		}
 		echo '</div>';
-		echo '<p class="description">' . esc_html__( 'Select categories for generated posts.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Select categories for generated posts.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -289,7 +289,7 @@ class AANP_Admin_Settings {
 		echo '<option value="medium"' . selected( $value, 'medium', false ) . '>Medium (500-600 words)</option>';
 		echo '<option value="long"' . selected( $value, 'long', false ) . '>Long (800-1000 words)</option>';
 		echo '</select>';
-		echo '<p class="description">' . esc_html__( 'Select the desired word count for generated posts.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Select the desired word count for generated posts.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -304,7 +304,7 @@ class AANP_Admin_Settings {
 		echo '<option value="professional"' . selected( $value, 'professional', false ) . '>Professional</option>';
 		echo '<option value="friendly"' . selected( $value, 'friendly', false ) . '>Friendly</option>';
 		echo '</select>';
-		echo '<p class="description">' . esc_html__( 'Select the tone of voice for generated content.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Select the tone of voice for generated content.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -313,18 +313,18 @@ class AANP_Admin_Settings {
 	public function license_key_callback(): void {
 		$options     = get_option( 'aanp_settings', array() );
 		$has_license = ! empty( $options['license_key'] );
-		$placeholder = $has_license ? __( 'License key saved — enter a new key to replace it', 'ai-auto-news-poster' ) : '';
+		$placeholder = $has_license ? __( 'License key saved — enter a new key to replace it', 'newsforge-ai-auto-news-poster' ) : '';
 		echo '<input type="password" name="aanp_settings[license_key]" id="license_key" value="" class="regular-text" placeholder="' . esc_attr( $placeholder ) . '" autocomplete="new-password" />';
 
 		if ( $has_license ) {
 			$is_valid = get_option( 'aanp_license_valid', false );
 			$badge    = $is_valid
-				? '<span class="aanp-license-valid">' . esc_html__( 'Active', 'ai-auto-news-poster' ) . '</span>'
-				: '<span class="aanp-license-invalid">' . esc_html__( 'Invalid / Inactive', 'ai-auto-news-poster' ) . '</span>';
+				? '<span class="aanp-license-valid">' . esc_html__( 'Active', 'newsforge-ai-auto-news-poster' ) . '</span>'
+				: '<span class="aanp-license-invalid">' . esc_html__( 'Invalid / Inactive', 'newsforge-ai-auto-news-poster' ) . '</span>';
 			echo '<span class="aanp-license-status">' . wp_kses( $badge, array( 'span' => array( 'class' => array() ) ) ) . '</span>';
 		}
 
-		echo '<p class="description">' . esc_html__( 'Enter your Pro license key to unlock advanced features. Leave blank to stay on the free plan.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Enter your Pro license key to unlock advanced features. Leave blank to stay on the free plan.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -334,7 +334,7 @@ class AANP_Admin_Settings {
 		$options = get_option( 'aanp_settings', array() );
 		$value   = isset( $options['custom_api_endpoint'] ) ? $options['custom_api_endpoint'] : '';
 		echo '<input type="url" name="aanp_settings[custom_api_endpoint]" id="custom_api_endpoint" value="' . esc_attr( $value ) . '" class="regular-text" placeholder="https://my-api.example.com/v1/chat/completions" />';
-		echo '<p class="description">' . esc_html__( 'OpenAI-compatible endpoint URL for the Custom API provider. Required when "Custom API" is selected above.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'OpenAI-compatible endpoint URL for the Custom API provider. Required when "Custom API" is selected above.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -344,7 +344,7 @@ class AANP_Admin_Settings {
 		$options = get_option( 'aanp_settings', array() );
 		$value   = isset( $options['custom_api_model'] ) ? $options['custom_api_model'] : '';
 		echo '<input type="text" name="aanp_settings[custom_api_model]" id="custom_api_model" value="' . esc_attr( $value ) . '" class="regular-text" placeholder="e.g. mistral-7b-instruct" />';
-		echo '<p class="description">' . esc_html__( 'Model name to pass in the API request body. Leave blank to use the endpoint default.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Model name to pass in the API request body. Leave blank to use the endpoint default.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -359,22 +359,22 @@ class AANP_Admin_Settings {
 			foreach ( $feeds as $feed ) {
 				echo '<div class="rss-feed-row">';
 				echo '<input type="url" name="aanp_settings[rss_feeds][]" value="' . esc_attr( $feed ) . '" class="regular-text" placeholder="https://example.com/feed.xml" />';
-				echo '<button type="button" class="button test-feed">' . esc_html__( 'Test', 'ai-auto-news-poster' ) . '</button>';
-				echo '<button type="button" class="button remove-feed">' . esc_html__( 'Remove', 'ai-auto-news-poster' ) . '</button>';
+				echo '<button type="button" class="button test-feed">' . esc_html__( 'Test', 'newsforge-ai-auto-news-poster' ) . '</button>';
+				echo '<button type="button" class="button remove-feed">' . esc_html__( 'Remove', 'newsforge-ai-auto-news-poster' ) . '</button>';
 				echo '<span class="feed-test-result"></span>';
 				echo '</div>';
 			}
 		}
 		echo '</div>';
-		echo '<button type="button" id="add-feed" class="button">' . esc_html__( 'Add RSS Feed', 'ai-auto-news-poster' ) . '</button>';
-		echo '<p class="description">' . esc_html__( 'Add RSS feed URLs for news sources.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<button type="button" id="add-feed" class="button">' . esc_html__( 'Add RSS Feed', 'newsforge-ai-auto-news-poster' ) . '</button>';
+		echo '<p class="description">' . esc_html__( 'Add RSS feed URLs for news sources.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
 	 * Automation section callback
 	 */
 	public function automation_section_callback() {
-		echo '<p>' . esc_html__( 'Configure automatic post generation and featured image settings.', 'ai-auto-news-poster' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure automatic post generation and featured image settings.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -384,11 +384,11 @@ class AANP_Admin_Settings {
 		$options = get_option( 'aanp_settings', array() );
 		$current = isset( $options['schedule'] ) ? $options['schedule'] : 'disabled';
 		$choices = array(
-			'disabled'         => __( 'Manual only', 'ai-auto-news-poster' ),
-			'hourly'           => __( 'Every hour', 'ai-auto-news-poster' ),
-			'aanp_every6hours' => __( 'Every 6 hours', 'ai-auto-news-poster' ),
-			'twicedaily'       => __( 'Twice daily', 'ai-auto-news-poster' ),
-			'daily'            => __( 'Daily', 'ai-auto-news-poster' ),
+			'disabled'         => __( 'Manual only', 'newsforge-ai-auto-news-poster' ),
+			'hourly'           => __( 'Every hour', 'newsforge-ai-auto-news-poster' ),
+			'aanp_every6hours' => __( 'Every 6 hours', 'newsforge-ai-auto-news-poster' ),
+			'twicedaily'       => __( 'Twice daily', 'newsforge-ai-auto-news-poster' ),
+			'daily'            => __( 'Daily', 'newsforge-ai-auto-news-poster' ),
 		);
 
 		echo '<select name="aanp_settings[schedule]" id="aanp_schedule">';
@@ -402,10 +402,10 @@ class AANP_Admin_Settings {
 		if ( $next_run ) {
 			echo '<p class="description">';
 			/* translators: %s: human-readable time until next scheduled run, e.g. "2 hours" */
-			echo esc_html( sprintf( __( 'Next run in %s.', 'ai-auto-news-poster' ), $next_run ) );
+			echo esc_html( sprintf( __( 'Next run in %s.', 'newsforge-ai-auto-news-poster' ), $next_run ) );
 			echo '</p>';
 		} else {
-			echo '<p class="description">' . esc_html__( 'Posts will only be generated when you click the Generate button.', 'ai-auto-news-poster' ) . '</p>';
+			echo '<p class="description">' . esc_html__( 'Posts will only be generated when you click the Generate button.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 		}
 	}
 
@@ -419,16 +419,16 @@ class AANP_Admin_Settings {
 
 		echo '<label>';
 		echo '<input type="checkbox" name="aanp_settings[featured_images]" value="1"' . checked( $enabled, true, false ) . ' />';
-		echo ' ' . esc_html__( 'Auto-generate a featured image via DALL-E for each post', 'ai-auto-news-poster' );
+		echo ' ' . esc_html__( 'Auto-generate a featured image via DALL-E for each post', 'newsforge-ai-auto-news-poster' );
 		echo '</label>';
 
 		if ( 'openai' !== $provider ) {
 			echo '<p class="description aanp-warning">';
-			echo esc_html__( 'Featured image generation requires the OpenAI provider (uses DALL-E 3).', 'ai-auto-news-poster' );
+			echo esc_html__( 'Featured image generation requires the OpenAI provider (uses DALL-E 3).', 'newsforge-ai-auto-news-poster' );
 			echo '</p>';
 		} else {
 			echo '<p class="description">';
-			echo esc_html__( 'Uses the DALL-E 3 API — each image costs approximately $0.04. Requires an OpenAI key with image permissions.', 'ai-auto-news-poster' );
+			echo esc_html__( 'Uses the DALL-E 3 API — each image costs approximately $0.04. Requires an OpenAI key with image permissions.', 'newsforge-ai-auto-news-poster' );
 			echo '</p>';
 		}
 	}
@@ -457,7 +457,7 @@ class AANP_Admin_Settings {
 		if ( get_transient( self::RATE_LIMIT_TRANSIENT ) ) {
 			wp_send_json_error(
 				array(
-					'message'      => __( 'Please wait before generating again. Try again in a moment.', 'ai-auto-news-poster' ),
+					'message'      => __( 'Please wait before generating again. Try again in a moment.', 'newsforge-ai-auto-news-poster' ),
 					'rate_limited' => true,
 				)
 			);
@@ -517,7 +517,7 @@ class AANP_Admin_Settings {
 				wp_send_json_success(
 					array(
 						/* translators: %d: Number of posts generated */
-						'message' => sprintf( __( '%d posts generated successfully!', 'ai-auto-news-poster' ), count( $generated_posts ) ),
+						'message' => sprintf( __( '%d posts generated successfully!', 'newsforge-ai-auto-news-poster' ), count( $generated_posts ) ),
 						'posts'   => $generated_posts,
 					)
 				);
@@ -541,7 +541,7 @@ class AANP_Admin_Settings {
 		$feed_url = isset( $_POST['feed_url'] ) ? esc_url_raw( wp_unslash( $_POST['feed_url'] ) ) : '';
 
 		if ( empty( $feed_url ) || ! filter_var( $feed_url, FILTER_VALIDATE_URL ) ) {
-			wp_send_json_error( __( 'Invalid feed URL.', 'ai-auto-news-poster' ) );
+			wp_send_json_error( __( 'Invalid feed URL.', 'newsforge-ai-auto-news-poster' ) );
 			return;
 		}
 
@@ -551,11 +551,11 @@ class AANP_Admin_Settings {
 		if ( $is_valid ) {
 			wp_send_json_success(
 				array(
-					'message' => __( 'Feed is reachable and contains valid RSS/Atom content.', 'ai-auto-news-poster' ),
+					'message' => __( 'Feed is reachable and contains valid RSS/Atom content.', 'newsforge-ai-auto-news-poster' ),
 				)
 			);
 		} else {
-			wp_send_json_error( __( 'Could not reach the feed or it returned invalid content.', 'ai-auto-news-poster' ) );
+			wp_send_json_error( __( 'Could not reach the feed or it returned invalid content.', 'newsforge-ai-auto-news-poster' ) );
 		}
 	}
 
@@ -573,7 +573,7 @@ class AANP_Admin_Settings {
 		$articles   = $news_fetch->fetch_latest_news();
 
 		if ( empty( $articles ) ) {
-			wp_send_json_error( __( 'No articles found in the configured RSS feeds.', 'ai-auto-news-poster' ) );
+			wp_send_json_error( __( 'No articles found in the configured RSS feeds.', 'newsforge-ai-auto-news-poster' ) );
 			return;
 		}
 
@@ -610,7 +610,7 @@ class AANP_Admin_Settings {
 
 		$article = isset( $_POST['article'] ) ? wp_unslash( $_POST['article'] ) : null;
 		if ( ! is_array( $article ) || empty( $article['link'] ) ) {
-			wp_send_json_error( __( 'Invalid article data.', 'ai-auto-news-poster' ) );
+			wp_send_json_error( __( 'Invalid article data.', 'newsforge-ai-auto-news-poster' ) );
 			return;
 		}
 
@@ -632,7 +632,7 @@ class AANP_Admin_Settings {
 		if ( ! $generated_content ) {
 			wp_send_json_error(
 				/* translators: %s: article title */
-				sprintf( __( 'AI generation failed for: %s', 'ai-auto-news-poster' ), $article['title'] )
+				sprintf( __( 'AI generation failed for: %s', 'newsforge-ai-auto-news-poster' ), $article['title'] )
 			);
 			return;
 		}
@@ -649,7 +649,7 @@ class AANP_Admin_Settings {
 			// Duplicate or other failure
 			wp_send_json_error(
 				/* translators: %s: article title */
-				sprintf( __( 'Could not create post for: %s (duplicate or error)', 'ai-auto-news-poster' ), $article['title'] )
+				sprintf( __( 'Could not create post for: %s (duplicate or error)', 'newsforge-ai-auto-news-poster' ), $article['title'] )
 			);
 			return;
 		}
@@ -691,7 +691,7 @@ class AANP_Admin_Settings {
 			if ( in_array( $provider, $allowed_providers, true ) ) {
 				$sanitized['llm_provider'] = $provider;
 			} else {
-				add_settings_error( 'aanp_settings', 'invalid_provider', __( 'Invalid LLM provider selected.', 'ai-auto-news-poster' ) );
+				add_settings_error( 'aanp_settings', 'invalid_provider', __( 'Invalid LLM provider selected.', 'newsforge-ai-auto-news-poster' ) );
 				$sanitized['llm_provider'] = 'openai'; // Default fallback
 			}
 		}
@@ -702,7 +702,7 @@ class AANP_Admin_Settings {
 			$api_key = sanitize_text_field( $input['api_key'] );
 			if ( ! empty( $api_key ) ) {
 				if ( strlen( $api_key ) < 10 ) {
-					add_settings_error( 'aanp_settings', 'invalid_api_key', __( 'API key appears to be too short.', 'ai-auto-news-poster' ) );
+					add_settings_error( 'aanp_settings', 'invalid_api_key', __( 'API key appears to be too short.', 'newsforge-ai-auto-news-poster' ) );
 				}
 				$sanitized['api_key'] = $this->encrypt_api_key( $api_key );
 			} else {
@@ -756,9 +756,9 @@ class AANP_Admin_Settings {
 				$is_valid = $this->validate_license_key( $license_key );
 				update_option( 'aanp_license_valid', $is_valid );
 				if ( $is_valid ) {
-					add_settings_error( 'aanp_settings', 'license_activated', __( 'Pro license activated successfully!', 'ai-auto-news-poster' ), 'updated' );
+					add_settings_error( 'aanp_settings', 'license_activated', __( 'Pro license activated successfully!', 'newsforge-ai-auto-news-poster' ), 'updated' );
 				} else {
-					add_settings_error( 'aanp_settings', 'license_invalid', __( 'The license key could not be verified.', 'ai-auto-news-poster' ), 'error' );
+					add_settings_error( 'aanp_settings', 'license_invalid', __( 'The license key could not be verified.', 'newsforge-ai-auto-news-poster' ), 'error' );
 				}
 			} else {
 				// Keep the existing encrypted key
@@ -774,7 +774,7 @@ class AANP_Admin_Settings {
 			} else {
 				$sanitized['custom_api_endpoint'] = '';
 				if ( ! empty( $input['custom_api_endpoint'] ) ) {
-					add_settings_error( 'aanp_settings', 'invalid_custom_endpoint', __( 'Custom API endpoint must be a valid URL.', 'ai-auto-news-poster' ) );
+					add_settings_error( 'aanp_settings', 'invalid_custom_endpoint', __( 'Custom API endpoint must be a valid URL.', 'newsforge-ai-auto-news-poster' ) );
 				}
 			}
 		}
@@ -792,7 +792,7 @@ class AANP_Admin_Settings {
 
 			foreach ( $input['rss_feeds'] as $feed ) {
 				if ( $feed_count >= $max_feeds ) {
-					add_settings_error( 'aanp_settings', 'too_many_feeds', __( 'Maximum 20 RSS feeds allowed.', 'ai-auto-news-poster' ) );
+					add_settings_error( 'aanp_settings', 'too_many_feeds', __( 'Maximum 20 RSS feeds allowed.', 'newsforge-ai-auto-news-poster' ) );
 					break;
 				}
 
@@ -810,7 +810,7 @@ class AANP_Admin_Settings {
 			// Ensure at least one feed exists
 			if ( empty( $sanitized['rss_feeds'] ) ) {
 				$sanitized['rss_feeds'] = AANP_DEFAULT_FEEDS;
-				add_settings_error( 'aanp_settings', 'no_feeds', __( 'At least one RSS feed is required. Default feeds restored.', 'ai-auto-news-poster' ) );
+				add_settings_error( 'aanp_settings', 'no_feeds', __( 'At least one RSS feed is required. Default feeds restored.', 'newsforge-ai-auto-news-poster' ) );
 			}
 		}
 
@@ -838,7 +838,7 @@ class AANP_Admin_Settings {
 			add_settings_error(
 				'aanp_settings',
 				'openssl_unavailable',
-				__( 'The OpenSSL PHP extension is required to store your API key securely. Please enable OpenSSL on your server.', 'ai-auto-news-poster' ),
+				__( 'The OpenSSL PHP extension is required to store your API key securely. Please enable OpenSSL on your server.', 'newsforge-ai-auto-news-poster' ),
 				'error'
 			);
 			// Return empty rather than storing the key unencrypted

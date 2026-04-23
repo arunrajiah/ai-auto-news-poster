@@ -8,10 +8,10 @@
  * Author URI: https://github.com/arunrajiah
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: ai-auto-news-poster
+ * Text Domain: newsforge-ai-auto-news-poster
  *
  * Requires at least: 5.0
- * Tested up to: 6.8
+ * Tested up to: 6.9
  * Requires PHP: 7.4
  *
  * @package AI_Auto_News_Poster
@@ -117,20 +117,20 @@ class AI_Auto_News_Poster {
 				deactivate_plugins( plugin_basename( __FILE__ ) );
 				$php_version = PHP_VERSION;
 				/* translators: %s: PHP version number */
-				$message = sprintf( __( 'NewsForge requires PHP 7.4 or higher. Your current version is %s', 'ai-auto-news-poster' ), $php_version );
+				$message = sprintf( __( 'NewsForge requires PHP 7.4 or higher. Your current version is %s', 'newsforge-ai-auto-news-poster' ), $php_version );
 				wp_die( esc_html( $message ) );
 			}
 
 			// Check WordPress version.
 			if ( version_compare( get_bloginfo( 'version' ), '5.0', '<' ) ) {
 				deactivate_plugins( plugin_basename( __FILE__ ) );
-				wp_die( esc_html__( 'NewsForge requires WordPress 5.0 or higher.', 'ai-auto-news-poster' ) );
+				wp_die( esc_html__( 'NewsForge requires WordPress 5.0 or higher.', 'newsforge-ai-auto-news-poster' ) );
 			}
 
 			// Check required functions.
 			if ( ! function_exists( 'wp_remote_get' ) || ! function_exists( 'wp_remote_post' ) ) {
 				deactivate_plugins( plugin_basename( __FILE__ ) );
-				wp_die( esc_html__( 'NewsForge requires WordPress HTTP API functions.', 'ai-auto-news-poster' ) );
+				wp_die( esc_html__( 'NewsForge requires WordPress HTTP API functions.', 'newsforge-ai-auto-news-poster' ) );
 			}
 
 			// Set default options.
@@ -159,7 +159,7 @@ class AI_Auto_News_Poster {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 			$error_message = $e->getMessage();
 			/* translators: %s: Error message */
-			$activation_error_message = sprintf( __( 'Plugin activation failed: %s', 'ai-auto-news-poster' ), $error_message );
+			$activation_error_message = sprintf( __( 'Plugin activation failed: %s', 'newsforge-ai-auto-news-poster' ), $error_message );
 			wp_die( esc_html( $activation_error_message ) );
 		}
 	}
@@ -248,7 +248,7 @@ function aanp_activation_redirect() {
 	if ( get_option( 'aanp_activation_redirect', false ) ) {
 		delete_option( 'aanp_activation_redirect' );
 		if ( ! isset( $_GET['activate-multi'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			wp_safe_redirect( admin_url( 'options-general.php?page=ai-auto-news-poster&aanp_activated=1' ) );
+			wp_safe_redirect( admin_url( 'options-general.php?page=newsforge-ai-auto-news-poster&aanp_activated=1' ) );
 			exit;
 		}
 	}

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="AI Auto News Poster">
-    <description>WordPress coding standards for AI Auto News Poster plugin.</description>
+<ruleset name="NewsForge – AI Auto News Poster">
+    <description>WordPress coding standards for NewsForge – AI Auto News Poster plugin.</description>
 
     <!-- What to scan -->
     <file>.</file>
@@ -28,7 +28,7 @@
     <rule ref="WordPress.WP.I18n">
         <properties>
             <property name="text_domain" type="array">
-                <element value="ai-auto-news-poster"/>
+                <element value="newsforge-ai-auto-news-poster"/>
             </property>
         </properties>
     </rule>
