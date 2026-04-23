@@ -1,6 +1,6 @@
 === AI Auto News Poster ===
 Contributors: arunrajiah
-Tags: ai, news, auto-posting, content generation, rss, openai, anthropic, claude
+Tags: ai, news, auto-posting, openai, rss
 Requires at least: 5.0
 Tested up to: 6.8
 Stable tag: 1.0.7
@@ -8,7 +8,7 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Auto-generate unique blog posts from the latest news using AI. Generate posts manually or on an automatic schedule. DALL-E 3 featured image generation included for OpenAI users.
+Auto-generate unique blog posts from the latest news using OpenAI, Claude, or any compatible AI. Supports scheduling, DALL-E 3 images, and RSS feeds.
 
 == Description ==
 
