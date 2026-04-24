@@ -7,7 +7,7 @@
     beStrictAboutOutputDuringTests="true"
 >
     <testsuites>
-        <testsuite name="AI Auto News Poster">
+        <testsuite name="NewsForge – AI Auto News Poster">
             <directory>tests/</directory>
         </testsuite>
     </testsuites>
@@ -15,7 +15,7 @@
     <source>
         <include>
             <directory>includes/</directory>
-            <file>ai-auto-news-poster.php</file>
+            <file>newsforge-ai-auto-news-poster.php</file>
         </include>
     </source>
 </phpunit>

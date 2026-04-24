@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: NewsForge – AI Auto News Poster
- * Plugin URI: https://github.com/arunrajiah/ai-auto-news-poster
+ * Plugin URI: https://github.com/arunrajiah/newsforge-ai-auto-news-poster
  * Description: Auto-generate blog posts from the latest news using AI. Supports manual and automatic WP-Cron scheduling with optional DALL-E 3 featured image generation.
  * Version: 1.0.7
  * Author: Arun Rajiah
@@ -206,7 +206,7 @@ class AANP_Plugin {
 	 * Get Pro upgrade URL (placeholder)
 	 */
 	public static function get_pro_upgrade_url() {
-		return apply_filters( 'aanp_pro_upgrade_url', 'https://github.com/arunrajiah/ai-auto-news-poster-pro' );
+		return apply_filters( 'aanp_pro_upgrade_url', 'https://github.com/arunrajiah/newsforge-ai-auto-news-poster-pro' );
 	}
 
 	/**

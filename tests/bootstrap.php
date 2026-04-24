@@ -11,8 +11,8 @@ define('ABSPATH', __DIR__ . '/');
 define('AANP_VERSION', '1.0.6');
 define('AANP_DB_VERSION', '1.1');
 define('AANP_PLUGIN_DIR', dirname(__DIR__) . '/');
-define('AANP_PLUGIN_URL', 'https://example.com/wp-content/plugins/ai-auto-news-poster/');
-define('AANP_PLUGIN_FILE', dirname(__DIR__) . '/ai-auto-news-poster.php');
+define('AANP_PLUGIN_URL', 'https://example.com/wp-content/plugins/newsforge-ai-auto-news-poster/');
+define('AANP_PLUGIN_FILE', dirname(__DIR__) . '/newsforge-ai-auto-news-poster.php');
 define('AANP_DEFAULT_FEEDS', array(
     'https://feeds.bbci.co.uk/news/rss.xml',
     'https://rss.cnn.com/rss/edition.rss',

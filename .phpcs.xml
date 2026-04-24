@@ -49,10 +49,10 @@
         and the class-based file-name sniff for this entry-point file only.
     -->
     <rule ref="WordPress.Files.FileName.InvalidClassFileName">
-        <exclude-pattern>ai-auto-news-poster.php</exclude-pattern>
+        <exclude-pattern>newsforge-ai-auto-news-poster.php</exclude-pattern>
     </rule>
     <rule ref="Universal.Files.SeparateFunctionsFromOO.Mixed">
-        <exclude-pattern>ai-auto-news-poster.php</exclude-pattern>
+        <exclude-pattern>newsforge-ai-auto-news-poster.php</exclude-pattern>
     </rule>
 
     <!-- Inline-comment punctuation and doc-comment style rules are informational only. -->
