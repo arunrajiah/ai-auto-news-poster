@@ -145,7 +145,7 @@ class AANP_Pro_Features {
 		echo '<a href="' . esc_url( $upgrade_url ) . '" class="button button-primary" target="_blank">';
 		echo esc_html__( 'Learn More About Pro', 'newsforge-ai-auto-news-poster' );
 		echo '</a>';
-		echo ' <a href="#" class="button" onclick="this.parentElement.parentElement.parentElement.style.display=\'none\'; return false;">';
+		echo ' <a href="#" class="button aanp-dismiss-pro-notice">';
 		echo esc_html__( 'Maybe Later', 'newsforge-ai-auto-news-poster' );
 		echo '</a>';
 		echo '</p>';

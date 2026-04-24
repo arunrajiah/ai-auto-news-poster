@@ -7,6 +7,12 @@ jQuery(document).ready(function($) {
         alert(aanp_ajax.pro_coming_soon_text);
     });
 
+    // Dismiss pro notice
+    $(document).on('click', '.aanp-dismiss-pro-notice', function(e) {
+        e.preventDefault();
+        $(this).closest('.aanp-pro-notice').fadeOut();
+    });
+
     // Add RSS Feed functionality
     $('#add-feed').on('click', function() {
         var container = $('#rss-feeds-container');

@@ -181,7 +181,10 @@ class AANP_Admin_Settings {
 			AANP_PLUGIN_URL . 'assets/js/admin.js',
 			array( 'jquery' ),
 			AANP_VERSION,
-			true
+			array(
+				'in_footer' => true,
+				'strategy'  => 'defer',
+			)
 		);
 
 		wp_enqueue_style(
