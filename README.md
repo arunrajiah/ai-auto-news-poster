@@ -1,10 +1,10 @@
-# AI Auto News Poster
+# NewsForge – AI Auto News Poster
 
-![CI](https://github.com/arunrajiah/ai-auto-news-poster/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/arunrajiah/newsforge-ai-auto-news-poster/actions/workflows/ci.yml/badge.svg)
 ![Version](https://img.shields.io/badge/Version-1.0.7-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
-![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-blue.svg)
+![WordPress](https://img.shields.io/badge/WordPress-5.1%2B-blue.svg)
 
 AI-powered WordPress plugin that automatically generates unique blog posts from the latest news using OpenAI, Anthropic Claude, or any OpenAI-compatible API. Features RSS feed integration with transient caching, per-article AJAX generation with live progress feedback, duplicate detection, and AES-256 encrypted API key storage.
 
@@ -34,7 +34,7 @@ AI-powered WordPress plugin that automatically generates unique blog posts from 
 
 | Component | Minimum |
 |-----------|---------|
-| WordPress | 5.0 |
+| WordPress | 5.1 |
 | PHP | 7.4 |
 | PHP extensions | `openssl`, `simplexml`, `mbstring` |
 | Database | MySQL 5.6 / MariaDB 10.1 |
@@ -43,23 +43,23 @@ AI-powered WordPress plugin that automatically generates unique blog posts from 
 ## Installation
 
 ### WordPress Admin (Recommended)
-1. Download the plugin zip from the [releases page](https://github.com/arunrajiah/ai-auto-news-poster/releases)
+1. Download the plugin zip from the [releases page](https://github.com/arunrajiah/newsforge-ai-auto-news-poster/releases)
 2. Go to **Plugins > Add New > Upload Plugin**
 3. Select the zip, click **Install Now**, then **Activate**
 
 ### Manual
-1. Upload the `ai-auto-news-poster` folder to `/wp-content/plugins/`
+1. Upload the `newsforge-ai-auto-news-poster` folder to `/wp-content/plugins/`
 2. Activate from the **Plugins** screen
 
 ### Developer (Git)
 ```bash
-git clone https://github.com/arunrajiah/ai-auto-news-poster.git
-cp -r ai-auto-news-poster /path/to/wordpress/wp-content/plugins/
+git clone https://github.com/arunrajiah/newsforge-ai-auto-news-poster.git
+cp -r newsforge-ai-auto-news-poster /path/to/wordpress/wp-content/plugins/
 ```
 
 ## Configuration
 
-Navigate to **Settings > AI Auto News Poster** after activation.
+Navigate to **Settings > NewsForge** after activation.
 
 | Setting | Description |
 |---------|-------------|
@@ -84,14 +84,14 @@ Navigate to **Settings > AI Auto News Poster** after activation.
 ## Usage
 
 ### Generating Posts Manually
-1. Go to **Settings > AI Auto News Poster**
+1. Go to **Settings > NewsForge**
 2. Click **Generate 5 Posts**
 3. The plugin fetches articles from your RSS feeds, then generates one post at a time with a live progress indicator
 4. Each post appears in the results list with an edit link as soon as it is created
 5. Review and publish drafts from **Posts > All Posts**
 
 ### Automatic Scheduling
-1. Go to **Settings > AI Auto News Poster > Automation**
+1. Go to **Settings > NewsForge > Automation**
 2. Choose a schedule from the **Schedule** dropdown (Hourly / Every 6 Hours / Twice Daily / Daily)
 3. Click **Save Changes** — the WP-Cron event is registered immediately
 4. The next scheduled run time is shown below the dropdown
@@ -130,38 +130,39 @@ The plugin tracks every generated post's source URL in a custom database table (
 ## Architecture
 
 ```
-ai-auto-news-poster/
-├── ai-auto-news-poster.php          # Plugin bootstrap; constants; DB migrations
+newsforge-ai-auto-news-poster/
+├── newsforge-ai-auto-news-poster.php   # Plugin bootstrap; constants; DB migrations
+├── uninstall.php                        # Cleanup on plugin deletion
 ├── includes/
-│   ├── class-admin-settings.php     # Settings API, AJAX handlers, encryption
-│   ├── class-news-fetch.php         # RSS/Atom parsing with transient cache
-│   ├── class-ai-generator.php       # OpenAI / Anthropic / Custom API calls
-│   ├── class-image-generator.php    # DALL-E 3 image generation and sideloading
-│   ├── class-post-creator.php       # WP post creation, duplicate check, stats
-│   ├── class-scheduler.php          # WP-Cron scheduling and automatic generation
-│   └── class-pro-features.php       # Pro feature stubs / upgrade notices
+│   ├── class-admin-settings.php         # Settings API, AJAX handlers, encryption
+│   ├── class-news-fetch.php             # RSS/Atom parsing with transient cache
+│   ├── class-ai-generator.php           # OpenAI / Anthropic / Custom API calls
+│   ├── class-image-generator.php        # DALL-E 3 image generation and sideloading
+│   ├── class-post-creator.php           # WP post creation, duplicate check, stats
+│   ├── class-scheduler.php              # WP-Cron scheduling and automatic generation
+│   └── class-pro-features.php           # Pro feature stubs / upgrade notices
 ├── admin/
-│   └── settings-page.php            # Admin page template
+│   └── settings-page.php                # Admin page template
 ├── assets/
-│   ├── css/admin.css                # Admin styles (no inline CSS)
-│   └── js/admin.js                  # Phase-based AJAX generation flow
+│   ├── css/admin.css                    # Admin styles (no inline CSS)
+│   └── js/admin.js                      # Phase-based AJAX generation flow
 ├── tests/
-│   ├── bootstrap.php                # PHPUnit bootstrap
-│   ├── stubs.php                    # WordPress function stubs
-│   ├── AdminSettingsTest.php        # Encryption, sanitisation, rate-limit tests
-│   ├── AiGeneratorTest.php          # Prompt building, response parsing tests
-│   ├── ImageGeneratorTest.php       # Image generator unit tests
-│   ├── NewsFetchTest.php            # Feed URL validation, cache TTL tests
-│   ├── PostCreatorTest.php          # Duplicate detection, post creation tests
-│   └── SchedulerTest.php            # Cron schedule registration and state tests
+│   ├── bootstrap.php                    # PHPUnit bootstrap
+│   ├── stubs.php                        # WordPress function stubs
+│   ├── AdminSettingsTest.php            # Encryption, sanitisation, rate-limit tests
+│   ├── AiGeneratorTest.php              # Prompt building, response parsing tests
+│   ├── ImageGeneratorTest.php           # Image generator unit tests
+│   ├── NewsFetchTest.php                # Feed URL validation, cache TTL tests
+│   ├── PostCreatorTest.php              # Duplicate detection, post creation tests
+│   └── SchedulerTest.php               # Cron schedule registration and state tests
 ├── .github/
-│   ├── workflows/ci.yml             # CI: PHP lint, PHPCS, PHPUnit
-│   └── workflows/release.yml        # Release: zip and publish on push / tag
-├── .phpcs.xml                       # WordPress coding-standard ruleset
-├── composer.json                    # Dev dependencies
-├── phpunit.xml                      # PHPUnit config
-├── readme.txt                       # WordPress.org repository readme
-└── README.md                        # This file
+│   ├── workflows/ci.yml                 # CI: PHP lint, PHPCS, PHPUnit
+│   └── workflows/release.yml            # Release: zip and publish on push / tag
+├── .phpcs.xml                           # WordPress coding-standard ruleset
+├── composer.json                        # Dev dependencies
+├── phpunit.xml                          # PHPUnit config
+├── readme.txt                           # WordPress.org repository readme
+└── README.md                            # This file
 ```
 
 ### AJAX Generation Flow
@@ -282,8 +283,11 @@ Please follow WordPress Coding Standards and include tests for new functionality
 ## Changelog
 
 ### 1.0.7
+- **Renamed** plugin file to `newsforge-ai-auto-news-poster.php` to align with WordPress.org slug
 - **WP-Cron scheduling** — new Automation settings section; choose hourly / every 6 h / twice daily / daily or disable; next-run time shown inline
 - **DALL-E 3 featured images** — auto-generate and attach a featured image to every post (OpenAI provider only, `dall-e-3` at 1792×1024)
+- **`uninstall.php`** — removes all plugin data (options, DB table, post meta) on deletion
+- Fixed all WordPress Plugin Check warnings: inline JS, late escaping, non-prefixed variables, missing uninstall handler
 - New classes: `AANP_Scheduler`, `AANP_Image_Generator`
 - New tests: `SchedulerTest`, `ImageGeneratorTest` (39 tests total)
 - Release workflow: rolling `latest` zip published on every push to `main`
@@ -324,5 +328,5 @@ GPL v2 or later — see [LICENSE](https://www.gnu.org/licenses/gpl-2.0.html).
 
 ## Support
 
-- Bug reports / feature requests: [GitHub Issues](https://github.com/arunrajiah/ai-auto-news-poster/issues)
+- Bug reports / feature requests: [GitHub Issues](https://github.com/arunrajiah/newsforge-ai-auto-news-poster/issues)
 - Documentation: this README and inline code comments

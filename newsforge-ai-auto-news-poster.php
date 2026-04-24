@@ -124,7 +124,7 @@ class AANP_Plugin {
 			// Check WordPress version.
 			if ( version_compare( get_bloginfo( 'version' ), '5.0', '<' ) ) {
 				deactivate_plugins( plugin_basename( __FILE__ ) );
-				wp_die( esc_html__( 'NewsForge requires WordPress 5.0 or higher.', 'newsforge-ai-auto-news-poster' ) );
+				wp_die( esc_html__( 'NewsForge requires WordPress 5.1 or higher.', 'newsforge-ai-auto-news-poster' ) );
 			}
 
 			// Check required functions.
