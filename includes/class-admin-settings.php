@@ -198,15 +198,15 @@ class AANP_Admin_Settings {
 			'aanp-admin-js',
 			'aanp_ajax',
 			array(
-				'ajax_url'         => admin_url( 'admin-ajax.php' ),
-				'nonce'            => wp_create_nonce( 'aanp_nonce' ),
-				'generating_text'  => __( 'Generating posts...', 'newsforge-ai-auto-news-poster' ),
-				'success_text'     => __( 'Posts generated successfully!', 'newsforge-ai-auto-news-poster' ),
-				'error_text'       => __( 'Error generating posts. Please try again.', 'newsforge-ai-auto-news-poster' ),
-				'cooldown_seconds' => self::RATE_LIMIT_SECONDS,
+				'ajax_url'             => admin_url( 'admin-ajax.php' ),
+				'nonce'                => wp_create_nonce( 'aanp_nonce' ),
+				'generating_text'      => __( 'Generating posts...', 'newsforge-ai-auto-news-poster' ),
+				'success_text'         => __( 'Posts generated successfully!', 'newsforge-ai-auto-news-poster' ),
+				'error_text'           => __( 'Error generating posts. Please try again.', 'newsforge-ai-auto-news-poster' ),
+				'cooldown_seconds'     => self::RATE_LIMIT_SECONDS,
 				/* translators: %d: seconds remaining */
-				'cooldown_text'         => __( 'Please wait %d seconds…', 'newsforge-ai-auto-news-poster' ),
-				'pro_coming_soon_text'  => __( 'Pro version coming soon!', 'newsforge-ai-auto-news-poster' ),
+				'cooldown_text'        => __( 'Please wait %d seconds…', 'newsforge-ai-auto-news-poster' ),
+				'pro_coming_soon_text' => __( 'Pro version coming soon!', 'newsforge-ai-auto-news-poster' ),
 			)
 		);
 	}

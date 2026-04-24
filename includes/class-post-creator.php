@@ -24,7 +24,7 @@ class AANP_Post_Creator {
 		// Check the tracking table first (fast indexed lookup)
 		$table_name = esc_sql( $wpdb->prefix . 'aanp_generated_posts' );
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table lookup; no WP_Query equivalent exists.
-		$exists     = $wpdb->get_var(
+		$exists = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table_name} WHERE source_url = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$source_url
@@ -310,8 +310,8 @@ class AANP_Post_Creator {
 	public function get_stats(): array {
 		global $wpdb;
 
-		$cache_key  = 'aanp_post_stats';
-		$cached     = wp_cache_get( $cache_key, 'aanp' );
+		$cache_key = 'aanp_post_stats';
+		$cached    = wp_cache_get( $cache_key, 'aanp' );
 		if ( false !== $cached ) {
 			return $cached;
 		}
@@ -371,8 +371,8 @@ class AANP_Post_Creator {
 	public function get_recent_posts( int $limit = 10 ): array {
 		global $wpdb;
 
-		$cache_key  = 'aanp_recent_posts_' . $limit;
-		$cached     = wp_cache_get( $cache_key, 'aanp' );
+		$cache_key = 'aanp_recent_posts_' . $limit;
+		$cached    = wp_cache_get( $cache_key, 'aanp' );
 		if ( false !== $cached ) {
 			return $cached;
 		}

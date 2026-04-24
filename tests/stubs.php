@@ -54,6 +54,14 @@ function esc_url_raw(string $url): string {
     return filter_var($url, FILTER_SANITIZE_URL);
 }
 
+function esc_url(string $url): string {
+    return htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+}
+
+function esc_sql($data): string {
+    return addslashes(is_array($data) ? '' : (string) $data);
+}
+
 function wp_strip_all_tags(string $str): string {
     return strip_tags($str);
 }
@@ -64,6 +72,45 @@ function wp_kses_post(string $str): string {
 
 function wp_unslash($value) {
     return is_array($value) ? array_map('wp_unslash', $value) : stripslashes((string) $value);
+}
+
+// ---------- Object cache ----------
+$_wp_object_cache = array();
+
+function wp_cache_get(string $key, string $group = '', bool $force = false, &$found = null) {
+    global $_wp_object_cache;
+    if (!is_array($_wp_object_cache)) {
+        $_wp_object_cache = array();
+    }
+    $cache_key = $group . ':' . $key;
+    if (array_key_exists($cache_key, $_wp_object_cache)) {
+        $found = true;
+        return $_wp_object_cache[$cache_key];
+    }
+    $found = false;
+    return false;
+}
+
+function wp_cache_set(string $key, $data, string $group = '', int $expire = 0): bool {
+    global $_wp_object_cache;
+    if (!is_array($_wp_object_cache)) {
+        $_wp_object_cache = array();
+    }
+    $_wp_object_cache[$group . ':' . $key] = $data;
+    return true;
+}
+
+function wp_cache_delete(string $key, string $group = ''): bool {
+    global $_wp_object_cache;
+    if (is_array($_wp_object_cache)) {
+        unset($_wp_object_cache[$group . ':' . $key]);
+    }
+    return true;
+}
+
+// ---------- Constants ----------
+if (!defined('MINUTE_IN_SECONDS')) {
+    define('MINUTE_IN_SECONDS', 60);
 }
 
 // ---------- Salts ----------
