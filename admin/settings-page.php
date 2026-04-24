@@ -21,6 +21,19 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 
 	<?php settings_errors(); ?>
 
+	<!-- Author / Sponsor Strip -->
+	<div class="aanp-author-strip">
+		<span class="aanp-author-strip__credit">
+			<?php esc_html_e( 'NewsForge is a free WordPress plugin developed and maintained by', 'newsforge-ai-auto-news-poster' ); ?>
+			<a href="https://github.com/arunrajiah" target="_blank" rel="noopener">arunrajiah</a>.
+		</span>
+		<span class="aanp-author-strip__sponsor">
+			<span class="dashicons dashicons-heart aanp-heart-icon"></span>
+			<?php esc_html_e( 'If you find it useful, consider', 'newsforge-ai-auto-news-poster' ); ?>
+			<a href="https://github.com/sponsors/arunrajiah" target="_blank" rel="noopener"><?php esc_html_e( 'becoming a sponsor', 'newsforge-ai-auto-news-poster' ); ?></a>.
+		</span>
+	</div>
+
 	<!-- Pro Features Banner -->
 	<div class="notice notice-info">
 		<p><strong><?php esc_html_e( 'Upgrade to Pro for Advanced Features!', 'newsforge-ai-auto-news-poster' ); ?></strong></p>

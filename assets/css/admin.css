@@ -1,5 +1,43 @@
 /* AI Auto News Poster Admin Styles */
 
+/* Author / Sponsor Strip */
+.aanp-author-strip {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 12px 0 16px;
+    padding: 10px 16px;
+    background: #f0f6fc;
+    border: 1px solid #c3d9ed;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #3c434a;
+    flex-wrap: wrap;
+}
+
+.aanp-author-strip a {
+    color: #0073aa;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.aanp-author-strip a:hover {
+    color: #005a87;
+    text-decoration: underline;
+}
+
+.aanp-author-strip__sponsor {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.aanp-heart-icon {
+    color: #e25555;
+    font-size: 14px !important;
+    vertical-align: middle;
+}
+
 .aanp-dashboard {
     margin: 20px 0;
 }
