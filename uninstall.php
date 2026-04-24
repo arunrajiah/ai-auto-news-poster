@@ -25,18 +25,13 @@ delete_option( 'aanp_license_valid' );
 wp_clear_scheduled_hook( 'aanp_scheduled_generation' );
 
 // Drop the custom posts log table.
-$table_name = $wpdb->prefix . 'aanp_generated_posts';
-// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name is a safe prefixed constant.
-$wpdb->query( "DROP TABLE IF EXISTS `{$table_name}`" );
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Intentional schema removal in uninstall; table name is derived solely from $wpdb->prefix.
+$aanp_table_name = $wpdb->prefix . 'aanp_generated_posts';
+$wpdb->query( "DROP TABLE IF EXISTS `{$aanp_table_name}`" );
+// phpcs:enable
 
-// Remove any post meta created by the plugin.
-$wpdb->delete(
-	$wpdb->postmeta,
-	array( 'meta_key' => '_aanp_source_url' ),
-	array( '%s' )
-);
-$wpdb->delete(
-	$wpdb->postmeta,
-	array( 'meta_key' => '_aanp_generated' ),
-	array( '%s' )
-);
+// Remove post meta created by the plugin.
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Bulk meta cleanup required on uninstall; no caching needed.
+$wpdb->delete( $wpdb->postmeta, array( 'meta_key' => '_aanp_source_url' ), array( '%s' ) );
+$wpdb->delete( $wpdb->postmeta, array( 'meta_key' => '_aanp_generated' ), array( '%s' ) );
+// phpcs:enable

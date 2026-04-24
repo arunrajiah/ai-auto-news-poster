@@ -10,10 +10,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$options      = get_option( 'aanp_settings', array() );
-$post_creator = new AANP_Post_Creator();
-$stats        = $post_creator->get_stats();
-$recent_posts = $post_creator->get_recent_posts( 5 );
+$aanp_options      = get_option( 'aanp_settings', array() );
+$aanp_post_creator = new AANP_Post_Creator();
+$aanp_stats        = $aanp_post_creator->get_stats();
+$aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 ?>
 
 <div class="wrap">
@@ -43,19 +43,19 @@ $recent_posts = $post_creator->get_recent_posts( 5 );
 		<h2><?php esc_html_e( 'Statistics', 'newsforge-ai-auto-news-poster' ); ?></h2>
 		<div class="aanp-stat-grid">
 			<div class="aanp-stat-box aanp-stat-total">
-				<h3><?php echo esc_html( $stats['total'] ); ?></h3>
+				<h3><?php echo esc_html( $aanp_stats['total'] ); ?></h3>
 				<p><?php esc_html_e( 'Total Posts', 'newsforge-ai-auto-news-poster' ); ?></p>
 			</div>
 			<div class="aanp-stat-box aanp-stat-today">
-				<h3><?php echo esc_html( $stats['today'] ); ?></h3>
+				<h3><?php echo esc_html( $aanp_stats['today'] ); ?></h3>
 				<p><?php esc_html_e( 'Today', 'newsforge-ai-auto-news-poster' ); ?></p>
 			</div>
 			<div class="aanp-stat-box aanp-stat-week">
-				<h3><?php echo esc_html( $stats['week'] ); ?></h3>
+				<h3><?php echo esc_html( $aanp_stats['week'] ); ?></h3>
 				<p><?php esc_html_e( 'This Week', 'newsforge-ai-auto-news-poster' ); ?></p>
 			</div>
 			<div class="aanp-stat-box aanp-stat-month">
-				<h3><?php echo esc_html( $stats['month'] ); ?></h3>
+				<h3><?php echo esc_html( $aanp_stats['month'] ); ?></h3>
 				<p><?php esc_html_e( 'This Month', 'newsforge-ai-auto-news-poster' ); ?></p>
 			</div>
 		</div>
@@ -89,7 +89,7 @@ $recent_posts = $post_creator->get_recent_posts( 5 );
 	</div>
 
 	<!-- Recent Posts -->
-	<?php if ( ! empty( $recent_posts ) ) : ?>
+	<?php if ( ! empty( $aanp_recent_posts ) ) : ?>
 	<div class="aanp-recent-posts">
 		<h2><?php esc_html_e( 'Recent Generated Posts', 'newsforge-ai-auto-news-poster' ); ?></h2>
 		<table class="wp-list-table widefat fixed striped">
@@ -102,34 +102,34 @@ $recent_posts = $post_creator->get_recent_posts( 5 );
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ( $recent_posts as $generated_post ) : ?>
+				<?php foreach ( $aanp_recent_posts as $aanp_generated_post ) : ?>
 				<tr>
 					<td>
-						<strong><?php echo esc_html( $generated_post['title'] ); ?></strong>
+						<strong><?php echo esc_html( $aanp_generated_post['title'] ); ?></strong>
 						<br>
 						<small>
-							<a href="<?php echo esc_url( $generated_post['source_url'] ); ?>" target="_blank" rel="noopener">
+							<a href="<?php echo esc_url( $aanp_generated_post['source_url'] ); ?>" target="_blank" rel="noopener">
 								<?php esc_html_e( 'Source', 'newsforge-ai-auto-news-poster' ); ?>
 							</a>
 						</small>
 					</td>
 					<td>
-						<span class="post-status <?php echo esc_attr( $generated_post['status'] ); ?>">
-							<?php echo esc_html( ucfirst( $generated_post['status'] ) ); ?>
+						<span class="post-status <?php echo esc_attr( $aanp_generated_post['status'] ); ?>">
+							<?php echo esc_html( ucfirst( $aanp_generated_post['status'] ) ); ?>
 						</span>
 					</td>
 					<td>
 						<?php
 						/* translators: human-readable time difference, e.g. "5 minutes ago" */
 						echo esc_html(
-							human_time_diff( strtotime( $generated_post['generated_at'] ), time() )
+							human_time_diff( strtotime( $aanp_generated_post['generated_at'] ), time() )
 							. ' '
 							. __( 'ago', 'newsforge-ai-auto-news-poster' )
 						);
 						?>
 					</td>
 					<td>
-						<a href="<?php echo esc_url( $generated_post['edit_link'] ); ?>" class="button button-small">
+						<a href="<?php echo esc_url( $aanp_generated_post['edit_link'] ); ?>" class="button button-small">
 							<?php esc_html_e( 'Edit', 'newsforge-ai-auto-news-poster' ); ?>
 						</a>
 					</td>

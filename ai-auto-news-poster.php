@@ -14,7 +14,7 @@
  * Tested up to: 6.9
  * Requires PHP: 7.4
  *
- * @package AI_Auto_News_Poster
+ * @package AANP_Plugin
  */
 
 // Prevent direct access.
@@ -42,7 +42,7 @@ define(
 /**
  * Main plugin class
  */
-class AI_Auto_News_Poster {
+class AANP_Plugin {
 
 	/**
 	 * Constructor
@@ -257,7 +257,7 @@ add_action( 'admin_init', 'aanp_activation_redirect' );
 
 // Initialize the plugin.
 try {
-	new AI_Auto_News_Poster();
+	new AANP_Plugin();
 } catch ( Exception $e ) {
 	error_log( 'AANP Fatal Error: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	add_action(

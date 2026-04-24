@@ -1,7 +1,7 @@
 === NewsForge – AI Auto News Poster ===
 Contributors: arunrajiah
 Tags: ai, news, auto-posting, openai, rss
-Requires at least: 5.0
+Requires at least: 5.1
 Tested up to: 6.9
 Stable tag: 1.0.7
 Requires PHP: 7.4

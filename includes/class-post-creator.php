@@ -22,7 +22,8 @@ class AANP_Post_Creator {
 		global $wpdb;
 
 		// Check the tracking table first (fast indexed lookup)
-		$table_name = $wpdb->prefix . 'aanp_generated_posts';
+		$table_name = esc_sql( $wpdb->prefix . 'aanp_generated_posts' );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table lookup; no WP_Query equivalent exists.
 		$exists     = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table_name} WHERE source_url = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -222,8 +223,9 @@ class AANP_Post_Creator {
 	private function log_post_creation( int $post_id, array $source_article ): void {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . 'aanp_generated_posts';
+		$table_name = esc_sql( $wpdb->prefix . 'aanp_generated_posts' );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Inserting into custom log table; no WP API equivalent.
 		$wpdb->insert(
 			$table_name,
 			array(
@@ -287,8 +289,9 @@ class AANP_Post_Creator {
 		if ( $result ) {
 			// Remove from tracking table
 			global $wpdb;
-			$table_name = $wpdb->prefix . 'aanp_generated_posts';
+			$table_name = esc_sql( $wpdb->prefix . 'aanp_generated_posts' );
 
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Deleting from custom log table on post deletion; no WP API equivalent.
 			$wpdb->delete(
 				$table_name,
 				array( 'post_id' => $post_id ),
@@ -307,16 +310,22 @@ class AANP_Post_Creator {
 	public function get_stats(): array {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . 'aanp_generated_posts';
+		$cache_key  = 'aanp_post_stats';
+		$cached     = wp_cache_get( $cache_key, 'aanp' );
+		if ( false !== $cached ) {
+			return $cached;
+		}
+
+		$table_name = esc_sql( $wpdb->prefix . 'aanp_generated_posts' );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table stats; results are cached above.
 
 		// Total generated posts.
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table_name is a safe prefixed table name.
 		$total_posts = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
 
 		// Posts generated today.
 		$today_posts = $wpdb->get_var(
 			$wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				"SELECT COUNT(*) FROM $table_name WHERE DATE(generated_at) = %s",
 				current_time( 'Y-m-d' )
 			)
@@ -326,7 +335,6 @@ class AANP_Post_Creator {
 		$week_start = gmdate( 'Y-m-d', strtotime( 'monday this week' ) );
 		$week_posts = $wpdb->get_var(
 			$wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				"SELECT COUNT(*) FROM $table_name WHERE generated_at >= %s",
 				$week_start . ' 00:00:00'
 			)
@@ -336,18 +344,22 @@ class AANP_Post_Creator {
 		$month_start = gmdate( 'Y-m-01' );
 		$month_posts = $wpdb->get_var(
 			$wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				"SELECT COUNT(*) FROM $table_name WHERE generated_at >= %s",
 				$month_start . ' 00:00:00'
 			)
 		);
+		// phpcs:enable
 
-		return array(
+		$stats = array(
 			'total' => (int) $total_posts,
 			'today' => (int) $today_posts,
 			'week'  => (int) $week_posts,
 			'month' => (int) $month_posts,
 		);
+
+		wp_cache_set( $cache_key, $stats, 'aanp', 5 * MINUTE_IN_SECONDS );
+
+		return $stats;
 	}
 
 	/**
@@ -359,9 +371,15 @@ class AANP_Post_Creator {
 	public function get_recent_posts( int $limit = 10 ): array {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . 'aanp_generated_posts';
+		$cache_key  = 'aanp_recent_posts_' . $limit;
+		$cached     = wp_cache_get( $cache_key, 'aanp' );
+		if ( false !== $cached ) {
+			return $cached;
+		}
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table_name is a safe prefixed table name.
+		$table_name = esc_sql( $wpdb->prefix . 'aanp_generated_posts' );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table JOIN query; results are cached above.
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT gp.*, p.post_title, p.post_status, p.post_date
@@ -372,7 +390,7 @@ class AANP_Post_Creator {
 				$limit
 			)
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:enable
 
 		$posts = array();
 
@@ -386,6 +404,8 @@ class AANP_Post_Creator {
 				'edit_link'    => get_edit_post_link( $result->post_id ),
 			);
 		}
+
+		wp_cache_set( $cache_key, $posts, 'aanp', 5 * MINUTE_IN_SECONDS );
 
 		return $posts;
 	}

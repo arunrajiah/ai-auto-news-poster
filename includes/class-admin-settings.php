@@ -616,7 +616,7 @@ class AANP_Admin_Settings {
 			return;
 		}
 
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- sanitized field-by-field below
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- array is sanitized field-by-field below.
 		$article = isset( $_POST['article'] ) ? wp_unslash( $_POST['article'] ) : null;
 		if ( ! is_array( $article ) || empty( $article['link'] ) ) {
 			wp_send_json_error( __( 'Invalid article data.', 'newsforge-ai-auto-news-poster' ) );
