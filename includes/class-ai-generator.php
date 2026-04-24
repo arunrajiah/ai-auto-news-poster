@@ -378,16 +378,16 @@ class AANP_AI_Generator {
 	 * @return string Fallback content
 	 */
 	private function generate_fallback_content( array $article ): string {
-		$content  = "<p>In recent news, {$article['title']} has been making headlines.</p>
+		$content  = '<p>In recent news, ' . esc_html( $article['title'] ) . ' has been making headlines.</p>
 
-";
-		$content .= "<p>{$article['description']}</p>
+';
+		$content .= '<p>' . wp_kses_post( $article['description'] ) . '</p>
 
-";
+';
 		$content .= '<p>This developing story continues to unfold, and we will provide updates as more information becomes available.</p>
 
 ';
-		$content .= "<p>For more details, you can read the original article at <a href=\"{$article['link']}\" target=\"_blank\" rel=\"noopener\">{$article['source_domain']}</a>.</p>";
+		$content .= '<p>For more details, you can read the original article at <a href="' . esc_url( $article['link'] ) . '" target="_blank" rel="noopener">' . esc_html( $article['source_domain'] ) . '</a>.</p>';
 
 		return $content;
 	}

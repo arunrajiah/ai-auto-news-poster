@@ -1,5 +1,12 @@
 jQuery(document).ready(function($) {
-    
+
+    // Pro upgrade button
+    $(document).on('click', '.aanp-pro-upgrade-btn', function(e) {
+        e.preventDefault();
+        /* global aanp_ajax */
+        alert(aanp_ajax.pro_coming_soon_text);
+    });
+
     // Add RSS Feed functionality
     $('#add-feed').on('click', function() {
         var container = $('#rss-feeds-container');

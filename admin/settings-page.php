@@ -32,7 +32,7 @@ $recent_posts = $post_creator->get_recent_posts( 5 );
 			<li><?php esc_html_e( '• Priority support', 'newsforge-ai-auto-news-poster' ); ?></li>
 		</ul>
 		<p>
-			<a href="#" class="button button-primary" onclick="alert('Pro version coming soon!')">
+			<a href="#" class="button button-primary aanp-pro-upgrade-btn">
 				<?php esc_html_e( 'Upgrade to Pro', 'newsforge-ai-auto-news-poster' ); ?>
 			</a>
 		</p>

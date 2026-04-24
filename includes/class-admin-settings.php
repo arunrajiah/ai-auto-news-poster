@@ -202,7 +202,8 @@ class AANP_Admin_Settings {
 				'error_text'       => __( 'Error generating posts. Please try again.', 'newsforge-ai-auto-news-poster' ),
 				'cooldown_seconds' => self::RATE_LIMIT_SECONDS,
 				/* translators: %d: seconds remaining */
-				'cooldown_text'    => __( 'Please wait %d seconds…', 'newsforge-ai-auto-news-poster' ),
+				'cooldown_text'         => __( 'Please wait %d seconds…', 'newsforge-ai-auto-news-poster' ),
+				'pro_coming_soon_text'  => __( 'Pro version coming soon!', 'newsforge-ai-auto-news-poster' ),
 			)
 		);
 	}
@@ -444,7 +445,8 @@ class AANP_Admin_Settings {
 	 */
 	public function ajax_generate_posts() {
 		// Verify nonce
-		if ( ! wp_verify_nonce( $_POST['nonce'], 'aanp_nonce' ) ) {
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'aanp_nonce' ) ) {
 			wp_die( 'Security check failed' );
 		}
 
@@ -533,7 +535,8 @@ class AANP_Admin_Settings {
 	 * AJAX handler: test whether a single RSS feed URL is reachable and parseable.
 	 */
 	public function ajax_test_feed(): void {
-		if ( ! wp_verify_nonce( $_POST['nonce'], 'aanp_nonce' ) || ! current_user_can( 'manage_options' ) ) {
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'aanp_nonce' ) || ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( 'Unauthorized' );
 			return;
 		}
@@ -564,7 +567,8 @@ class AANP_Admin_Settings {
 	 * Returns up to 5 article stubs so the client can drive per-article generation.
 	 */
 	public function ajax_fetch_articles(): void {
-		if ( ! wp_verify_nonce( $_POST['nonce'], 'aanp_nonce' ) || ! current_user_can( 'manage_options' ) ) {
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'aanp_nonce' ) || ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( 'Unauthorized' );
 			return;
 		}
@@ -603,11 +607,13 @@ class AANP_Admin_Settings {
 	 * Called once per article by the JS progress loop.
 	 */
 	public function ajax_generate_single(): void {
-		if ( ! wp_verify_nonce( $_POST['nonce'], 'aanp_nonce' ) || ! current_user_can( 'manage_options' ) ) {
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'aanp_nonce' ) || ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( 'Unauthorized' );
 			return;
 		}
 
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- sanitized field-by-field below
 		$article = isset( $_POST['article'] ) ? wp_unslash( $_POST['article'] ) : null;
 		if ( ! is_array( $article ) || empty( $article['link'] ) ) {
 			wp_send_json_error( __( 'Invalid article data.', 'newsforge-ai-auto-news-poster' ) );
