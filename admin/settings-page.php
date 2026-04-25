@@ -23,15 +23,24 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 
 	<!-- Author / Sponsor Strip -->
 	<div class="aanp-author-strip">
-		<span class="aanp-author-strip__credit">
-			<?php esc_html_e( 'NewsForge is a free WordPress plugin developed and maintained by', 'newsforge-ai-auto-news-poster' ); ?>
-			<a href="https://github.com/arunrajiah" target="_blank" rel="noopener">arunrajiah</a>.
-		</span>
-		<span class="aanp-author-strip__sponsor">
-			<span class="dashicons dashicons-heart aanp-heart-icon"></span>
-			<?php esc_html_e( 'If you find it useful, consider', 'newsforge-ai-auto-news-poster' ); ?>
-			<a href="https://github.com/sponsors/arunrajiah" target="_blank" rel="noopener"><?php esc_html_e( 'becoming a sponsor', 'newsforge-ai-auto-news-poster' ); ?></a>.
-		</span>
+		<div class="aanp-author-strip__logo">
+			<span class="aanp-author-strip__logo-mark">NF</span>
+			<span class="aanp-author-strip__logo-name">NewsForge</span>
+		</div>
+		<div class="aanp-author-strip__body">
+			<p class="aanp-author-strip__credit">
+				<?php esc_html_e( 'NewsForge is a free WordPress plugin developed and maintained by', 'newsforge-ai-auto-news-poster' ); ?>
+				<a href="https://github.com/arunrajiah" target="_blank" rel="noopener">arunrajiah</a>.
+			</p>
+			<p class="aanp-author-strip__sponsor">
+				<?php esc_html_e( 'If you find it useful, please consider', 'newsforge-ai-auto-news-poster' ); ?>
+				<a href="https://github.com/sponsors/arunrajiah" target="_blank" rel="noopener" class="aanp-sponsor-btn">
+					<span class="aanp-sponsor-btn__heart">&#9829;</span>
+					<?php esc_html_e( 'becoming a sponsor on GitHub', 'newsforge-ai-auto-news-poster' ); ?>
+				</a>
+				<?php esc_html_e( '— it helps keep the project alive and growing.', 'newsforge-ai-auto-news-poster' ); ?>
+			</p>
+		</div>
 	</div>
 
 	<!-- Pro Features Banner -->
