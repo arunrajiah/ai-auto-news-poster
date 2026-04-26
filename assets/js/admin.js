@@ -117,7 +117,7 @@ jQuery(document).ready(function($) {
                             statusText.html('<span class="aanp-status-success">&#x2713; ' + escapeHtml(doneMsg) + '</span>');
                             var listHtml = '<ul>';
                             $.each(generated, function(i, post) {
-                                listHtml += '<li><strong>' + escapeHtml(post.title) + '</strong> <a href="' + post.edit_link + '" class="button button-small" target="_blank">Edit Post</a></li>';
+                                listHtml += '<li><strong>' + escapeHtml(post.title) + '</strong> <a href="' + escapeHtml(post.edit_link) + '" class="button button-small" target="_blank">Edit Post</a></li>';
                             });
                             listHtml += '</ul>';
                             resultsList.html(listHtml);

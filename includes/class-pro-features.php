@@ -72,9 +72,15 @@ class AANP_Pro_Features {
 			return;
 		}
 
-		// Automatic scheduling logic will be implemented in Pro version
+		// Only run scheduling logic in admin or cron context — not on every
+		// front-end page load, which would fire a DB query on each request.
+		if ( ! is_admin() && ! wp_doing_cron() ) {
+			return;
+		}
+
+		// Automatic scheduling logic will be implemented in Pro version.
+		// Route all cron through AANP_Scheduler to avoid a duplicate pipeline.
 		if ( ! wp_next_scheduled( 'aanp_auto_generate_posts' ) ) {
-			// This will be configurable in Pro version
 			wp_schedule_event( time(), 'hourly', 'aanp_auto_generate_posts' );
 		}
 

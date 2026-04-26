@@ -437,29 +437,33 @@ class AANP_Admin_Settings {
 		}
 	}
 
-	/** Transient key used for rate-limiting generation requests. */
-	const RATE_LIMIT_TRANSIENT = 'aanp_generation_cooldown';
+	/** Transient key prefix for per-user rate-limiting. User ID is appended at runtime. */
+	const RATE_LIMIT_TRANSIENT = 'aanp_cooldown_';
 
 	/** Seconds a user must wait between generation requests. */
 	const RATE_LIMIT_SECONDS = 60;
 
 	/**
+	 * Return the rate-limit transient key for the current user.
+	 */
+	private function rate_limit_key(): string {
+		return self::RATE_LIMIT_TRANSIENT . get_current_user_id();
+	}
+
+	/**
 	 * AJAX handler for generating posts
 	 */
 	public function ajax_generate_posts() {
-		// Verify nonce
+		// Verify nonce and capability
 		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
-		if ( ! wp_verify_nonce( $nonce, 'aanp_nonce' ) ) {
-			wp_die( 'Security check failed' );
+		if ( ! wp_verify_nonce( $nonce, 'aanp_nonce' ) || ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'Unauthorized' );
+			return;
 		}
 
-		// Check user capabilities
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( 'Insufficient permissions' );
-		}
-
-		// Rate limit: prevent rapid repeated submissions
-		if ( get_transient( self::RATE_LIMIT_TRANSIENT ) ) {
+		// Rate limit: prevent rapid repeated submissions (per user)
+		$rate_key = $this->rate_limit_key();
+		if ( get_transient( $rate_key ) ) {
 			wp_send_json_error(
 				array(
 					'message'      => __( 'Please wait before generating again. Try again in a moment.', 'newsforge-ai-auto-news-poster' ),
@@ -469,8 +473,8 @@ class AANP_Admin_Settings {
 			return;
 		}
 
-		// Set cooldown transient before starting work
-		set_transient( self::RATE_LIMIT_TRANSIENT, 1, self::RATE_LIMIT_SECONDS );
+		// Set per-user cooldown transient before starting work
+		set_transient( $rate_key, 1, self::RATE_LIMIT_SECONDS );
 
 		try {
 			// Initialize classes
@@ -530,7 +534,8 @@ class AANP_Admin_Settings {
 				wp_send_json_error( 'Failed to generate posts' );
 			}
 		} catch ( Exception $e ) {
-			wp_send_json_error( 'Error: ' . $e->getMessage() );
+			error_log( 'AANP: Generation exception: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			wp_send_json_error( __( 'An unexpected error occurred. Please try again.', 'newsforge-ai-auto-news-poster' ) );
 		}
 	}
 
@@ -548,6 +553,13 @@ class AANP_Admin_Settings {
 
 		if ( empty( $feed_url ) || ! filter_var( $feed_url, FILTER_VALIDATE_URL ) ) {
 			wp_send_json_error( __( 'Invalid feed URL.', 'newsforge-ai-auto-news-poster' ) );
+			return;
+		}
+
+		// Restrict to http/https to prevent SSRF via other schemes (ftp://, file://, etc.)
+		$parsed_scheme = wp_parse_url( $feed_url, PHP_URL_SCHEME );
+		if ( ! in_array( $parsed_scheme, array( 'http', 'https' ), true ) ) {
+			wp_send_json_error( __( 'Only http:// and https:// feed URLs are supported.', 'newsforge-ai-auto-news-poster' ) );
 			return;
 		}
 
@@ -616,6 +628,18 @@ class AANP_Admin_Settings {
 			return;
 		}
 
+		// Rate limit per user — prevents direct API endpoint spam bypassing the UI cooldown
+		$rate_key = $this->rate_limit_key();
+		if ( get_transient( $rate_key ) ) {
+			wp_send_json_error(
+				array(
+					'message'      => __( 'Please wait before generating again. Try again in a moment.', 'newsforge-ai-auto-news-poster' ),
+					'rate_limited' => true,
+				)
+			);
+			return;
+		}
+
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- array is sanitized field-by-field below.
 		$article = isset( $_POST['article'] ) ? wp_unslash( $_POST['article'] ) : null;
 		if ( ! is_array( $article ) || empty( $article['link'] ) ) {
@@ -681,10 +705,12 @@ class AANP_Admin_Settings {
 	 * @param string $license_key Raw (unencrypted) license key entered by user
 	 * @return bool True when the key appears valid
 	 */
-	private function validate_license_key( string $license_key ): bool {
-		// A valid key is non-empty and at least 20 characters — real validation
-		// would POST to a license server here and cache the result.
-		return strlen( $license_key ) >= 20;
+	private function validate_license_key( string $license_key ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- parameter reserved for future license server HTTP call.
+		// Always returns false until a real license server is implemented.
+		// Fail closed: a length-only check allows any 20-char string to unlock Pro features.
+		// TODO: replace with an authenticated HTTP call to the license server.
+		unset( $license_key );
+		return false;
 	}
 
 	/**

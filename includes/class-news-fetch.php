@@ -315,6 +315,13 @@ class AANP_News_Fetch {
 			return false;
 		}
 
+		// Restrict to http/https — reject ftp://, file://, and any other scheme
+		// that could be used for SSRF against internal services or the filesystem.
+		$scheme = wp_parse_url( $url, PHP_URL_SCHEME );
+		if ( ! in_array( $scheme, array( 'http', 'https' ), true ) ) {
+			return false;
+		}
+
 		$info = $this->get_feed_info( $url );
 		return 'success' === $info['status'];
 	}

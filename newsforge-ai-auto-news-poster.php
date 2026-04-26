@@ -245,6 +245,10 @@ class AANP_Plugin {
  * and redirects the admin to the plugin settings page.
  */
 function aanp_activation_redirect() {
+	// Only redirect users who can actually access the settings page.
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
 	if ( get_option( 'aanp_activation_redirect', false ) ) {
 		delete_option( 'aanp_activation_redirect' );
 		if ( ! isset( $_GET['activate-multi'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended

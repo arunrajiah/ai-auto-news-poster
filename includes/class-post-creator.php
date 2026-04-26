@@ -318,7 +318,7 @@ class AANP_Post_Creator {
 
 		$table_name = esc_sql( $wpdb->prefix . 'aanp_generated_posts' );
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table stats; results are cached above.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table stats; results are cached above. Table name is a plugin constant with no user input; no injection risk.
 
 		// Total generated posts.
 		$total_posts = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
