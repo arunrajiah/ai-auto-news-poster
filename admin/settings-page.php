@@ -29,54 +29,54 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 		</div>
 		<div class="aanp-author-strip__body">
 			<p class="aanp-author-strip__credit">
-				<?php esc_html_e( 'NewsForge is a free WordPress plugin developed and maintained by', 'newsforge-ai-auto-news-poster' ); ?>
+				<?php esc_html_e( 'NewsForge is a free WordPress plugin developed and maintained by', 'arunai-auto-news-poster' ); ?>
 				<a href="https://github.com/arunrajiah" target="_blank" rel="noopener">arunrajiah</a>.
 			</p>
 			<p class="aanp-author-strip__sponsor">
-				<?php esc_html_e( 'If you find it useful, please consider', 'newsforge-ai-auto-news-poster' ); ?>
+				<?php esc_html_e( 'If you find it useful, please consider', 'arunai-auto-news-poster' ); ?>
 				<a href="https://github.com/sponsors/arunrajiah" target="_blank" rel="noopener" class="aanp-sponsor-btn">
 					<span class="aanp-sponsor-btn__heart">&#9829;</span>
-					<?php esc_html_e( 'becoming a sponsor on GitHub', 'newsforge-ai-auto-news-poster' ); ?>
+					<?php esc_html_e( 'becoming a sponsor on GitHub', 'arunai-auto-news-poster' ); ?>
 				</a>
-				<?php esc_html_e( '— it helps keep the project alive and growing.', 'newsforge-ai-auto-news-poster' ); ?>
+				<?php esc_html_e( '— it helps keep the project alive and growing.', 'arunai-auto-news-poster' ); ?>
 			</p>
 		</div>
 	</div>
 
 	<!-- Statistics Dashboard -->
 	<div class="aanp-dashboard">
-		<h2><?php esc_html_e( 'Statistics', 'newsforge-ai-auto-news-poster' ); ?></h2>
+		<h2><?php esc_html_e( 'Statistics', 'arunai-auto-news-poster' ); ?></h2>
 		<div class="aanp-stat-grid">
 			<div class="aanp-stat-box aanp-stat-total">
 				<h3><?php echo esc_html( $aanp_stats['total'] ); ?></h3>
-				<p><?php esc_html_e( 'Total Posts', 'newsforge-ai-auto-news-poster' ); ?></p>
+				<p><?php esc_html_e( 'Total Posts', 'arunai-auto-news-poster' ); ?></p>
 			</div>
 			<div class="aanp-stat-box aanp-stat-today">
 				<h3><?php echo esc_html( $aanp_stats['today'] ); ?></h3>
-				<p><?php esc_html_e( 'Today', 'newsforge-ai-auto-news-poster' ); ?></p>
+				<p><?php esc_html_e( 'Today', 'arunai-auto-news-poster' ); ?></p>
 			</div>
 			<div class="aanp-stat-box aanp-stat-week">
 				<h3><?php echo esc_html( $aanp_stats['week'] ); ?></h3>
-				<p><?php esc_html_e( 'This Week', 'newsforge-ai-auto-news-poster' ); ?></p>
+				<p><?php esc_html_e( 'This Week', 'arunai-auto-news-poster' ); ?></p>
 			</div>
 			<div class="aanp-stat-box aanp-stat-month">
 				<h3><?php echo esc_html( $aanp_stats['month'] ); ?></h3>
-				<p><?php esc_html_e( 'This Month', 'newsforge-ai-auto-news-poster' ); ?></p>
+				<p><?php esc_html_e( 'This Month', 'arunai-auto-news-poster' ); ?></p>
 			</div>
 		</div>
 	</div>
 
 	<!-- Generate Posts Section -->
 	<div class="aanp-generate-section">
-		<h2><?php esc_html_e( 'Generate Posts', 'newsforge-ai-auto-news-poster' ); ?></h2>
+		<h2><?php esc_html_e( 'Generate Posts', 'arunai-auto-news-poster' ); ?></h2>
 		<p>
-			<?php esc_html_e( 'Click the button below to fetch the latest news and generate blog posts automatically.', 'newsforge-ai-auto-news-poster' ); ?>
+			<?php esc_html_e( 'Click the button below to fetch the latest news and generate blog posts automatically.', 'arunai-auto-news-poster' ); ?>
 		</p>
 
 		<div class="aanp-generate-controls">
 			<button type="button" id="aanp-generate-posts" class="button button-primary button-large">
 				<span class="dashicons dashicons-update aanp-btn-icon"></span>
-				<?php esc_html_e( 'Generate Posts', 'newsforge-ai-auto-news-poster' ); ?>
+				<?php esc_html_e( 'Generate Posts', 'arunai-auto-news-poster' ); ?>
 			</button>
 
 			<div id="aanp-generation-status">
@@ -88,7 +88,7 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 		</div>
 
 		<div id="aanp-generation-results">
-			<h3><?php esc_html_e( 'Generated Posts', 'newsforge-ai-auto-news-poster' ); ?></h3>
+			<h3><?php esc_html_e( 'Generated Posts', 'arunai-auto-news-poster' ); ?></h3>
 			<div id="aanp-results-list"></div>
 		</div>
 	</div>
@@ -96,14 +96,14 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 	<!-- Recent Posts -->
 	<?php if ( ! empty( $aanp_recent_posts ) ) : ?>
 	<div class="aanp-recent-posts">
-		<h2><?php esc_html_e( 'Recent Generated Posts', 'newsforge-ai-auto-news-poster' ); ?></h2>
+		<h2><?php esc_html_e( 'Recent Generated Posts', 'arunai-auto-news-poster' ); ?></h2>
 		<table class="wp-list-table widefat fixed striped">
 			<thead>
 				<tr>
-					<th><?php esc_html_e( 'Title', 'newsforge-ai-auto-news-poster' ); ?></th>
-					<th><?php esc_html_e( 'Status', 'newsforge-ai-auto-news-poster' ); ?></th>
-					<th><?php esc_html_e( 'Generated', 'newsforge-ai-auto-news-poster' ); ?></th>
-					<th><?php esc_html_e( 'Actions', 'newsforge-ai-auto-news-poster' ); ?></th>
+					<th><?php esc_html_e( 'Title', 'arunai-auto-news-poster' ); ?></th>
+					<th><?php esc_html_e( 'Status', 'arunai-auto-news-poster' ); ?></th>
+					<th><?php esc_html_e( 'Generated', 'arunai-auto-news-poster' ); ?></th>
+					<th><?php esc_html_e( 'Actions', 'arunai-auto-news-poster' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -114,7 +114,7 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 						<br>
 						<small>
 							<a href="<?php echo esc_url( $aanp_generated_post['source_url'] ); ?>" target="_blank" rel="noopener">
-								<?php esc_html_e( 'Source', 'newsforge-ai-auto-news-poster' ); ?>
+								<?php esc_html_e( 'Source', 'arunai-auto-news-poster' ); ?>
 							</a>
 						</small>
 					</td>
@@ -129,13 +129,13 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 						echo esc_html(
 							human_time_diff( strtotime( $aanp_generated_post['generated_at'] ), time() )
 							. ' '
-							. __( 'ago', 'newsforge-ai-auto-news-poster' )
+							. __( 'ago', 'arunai-auto-news-poster' )
 						);
 						?>
 					</td>
 					<td>
 						<a href="<?php echo esc_url( $aanp_generated_post['edit_link'] ); ?>" class="button button-small">
-							<?php esc_html_e( 'Edit', 'newsforge-ai-auto-news-poster' ); ?>
+							<?php esc_html_e( 'Edit', 'arunai-auto-news-poster' ); ?>
 						</a>
 					</td>
 				</tr>
@@ -149,7 +149,7 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 	<form method="post" action="options.php">
 		<?php
 		settings_fields( 'aanp_settings_group' );
-		do_settings_sections( 'newsforge-ai-auto-news-poster' );
+		do_settings_sections( 'arunai-auto-news-poster' );
 		?>
 
 		<?php submit_button(); ?>

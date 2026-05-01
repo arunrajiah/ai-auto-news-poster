@@ -51,7 +51,7 @@ RSS AI Post Generator transforms the latest news articles into unique, engaging 
 
 == Installation ==
 
-1. Upload the plugin files to `/wp-content/plugins/newsforge-ai-auto-news-poster/`, or install through the WordPress plugins screen.
+1. Upload the plugin files to `/wp-content/plugins/arunai-auto-news-poster/`, or install through the WordPress plugins screen.
 2. Activate the plugin through the **Plugins** screen.
 3. Go to **Settings > RSS AI Post Generator**.
 4. Select your AI provider and enter your API key.
@@ -207,8 +207,8 @@ Important security update: API keys are now encrypted at rest. Existing plaintex
 
 == Support ==
 
-* Bug reports / feature requests: https://github.com/arunrajiah/newsforge-ai-auto-news-poster/issues
-* Documentation: https://github.com/arunrajiah/newsforge-ai-auto-news-poster
+* Bug reports / feature requests: https://github.com/arunrajiah/arunai-auto-news-poster/issues
+* Documentation: https://github.com/arunrajiah/arunai-auto-news-poster
 
 == Privacy Policy ==
 
