@@ -30,8 +30,8 @@ class AANP_Admin_Settings {
 	 */
 	public function add_admin_menu() {
 		add_options_page(
-			__( 'NewsForge – AI Auto News Poster', 'newsforge-ai-auto-news-poster' ),
-			__( 'NewsForge', 'newsforge-ai-auto-news-poster' ),
+			__( 'RSS AI Post Generator', 'newsforge-ai-auto-news-poster' ),
+			__( 'RSS AI Post Generator', 'newsforge-ai-auto-news-poster' ),
 			'manage_options',
 			'newsforge-ai-auto-news-poster',
 			array( $this, 'settings_page' )
@@ -93,15 +93,6 @@ class AANP_Admin_Settings {
 			'tone',
 			__( 'Tone of Voice', 'newsforge-ai-auto-news-poster' ),
 			array( $this, 'tone_callback' ),
-			'newsforge-ai-auto-news-poster',
-			'aanp_main_section'
-		);
-
-		// License key field
-		add_settings_field(
-			'license_key',
-			__( 'Pro License Key', 'newsforge-ai-auto-news-poster' ),
-			array( $this, 'license_key_callback' ),
 			'newsforge-ai-auto-news-poster',
 			'aanp_main_section'
 		);
@@ -222,7 +213,7 @@ class AANP_Admin_Settings {
 	 * Main section callback
 	 */
 	public function main_section_callback() {
-		echo '<p>' . esc_html__( 'Configure your NewsForge settings below.', 'newsforge-ai-auto-news-poster' ) . '</p>';
+		echo '<p>' . esc_html__( 'Configure your RSS AI Post Generator settings below.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -309,26 +300,6 @@ class AANP_Admin_Settings {
 		echo '<option value="friendly"' . selected( $value, 'friendly', false ) . '>Friendly</option>';
 		echo '</select>';
 		echo '<p class="description">' . esc_html__( 'Select the tone of voice for generated content.', 'newsforge-ai-auto-news-poster' ) . '</p>';
-	}
-
-	/**
-	 * License key callback
-	 */
-	public function license_key_callback(): void {
-		$options     = get_option( 'aanp_settings', array() );
-		$has_license = ! empty( $options['license_key'] );
-		$placeholder = $has_license ? __( 'License key saved — enter a new key to replace it', 'newsforge-ai-auto-news-poster' ) : '';
-		echo '<input type="password" name="aanp_settings[license_key]" id="license_key" value="" class="regular-text" placeholder="' . esc_attr( $placeholder ) . '" autocomplete="new-password" />';
-
-		if ( $has_license ) {
-			$is_valid = get_option( 'aanp_license_valid', false );
-			$badge    = $is_valid
-				? '<span class="aanp-license-valid">' . esc_html__( 'Active', 'newsforge-ai-auto-news-poster' ) . '</span>'
-				: '<span class="aanp-license-invalid">' . esc_html__( 'Invalid / Inactive', 'newsforge-ai-auto-news-poster' ) . '</span>';
-			echo '<span class="aanp-license-status">' . wp_kses( $badge, array( 'span' => array( 'class' => array() ) ) ) . '</span>';
-		}
-
-		echo '<p class="description">' . esc_html__( 'Enter your Pro license key to unlock advanced features. Leave blank to stay on the free plan.', 'newsforge-ai-auto-news-poster' ) . '</p>';
 	}
 
 	/**
@@ -596,7 +567,7 @@ class AANP_Admin_Settings {
 			return;
 		}
 
-		$max      = AI_Auto_News_Poster::get_max_posts_per_batch();
+		$max      = AANP_Plugin::get_max_posts_per_batch();
 		$articles = array_slice( $articles, 0, $max );
 
 		// Return lightweight stubs (no content) so the payload stays small
@@ -697,23 +668,6 @@ class AANP_Admin_Settings {
 	}
 
 	/**
-	 * Validate a Pro license key.
-	 * Checks the aanp_license_valid option set during the last successful
-	 * verification. To connect to a real license server, replace this method
-	 * with an HTTP call and update the option accordingly.
-	 *
-	 * @param string $license_key Raw (unencrypted) license key entered by user
-	 * @return bool True when the key appears valid
-	 */
-	private function validate_license_key( string $license_key ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- parameter reserved for future license server HTTP call.
-		// Always returns false until a real license server is implemented.
-		// Fail closed: a length-only check allows any 20-char string to unlock Pro features.
-		// TODO: replace with an authenticated HTTP call to the license server.
-		unset( $license_key );
-		return false;
-	}
-
-	/**
 	 * Sanitize settings
 	 */
 	public function sanitize_settings( $input ) {
@@ -779,25 +733,6 @@ class AANP_Admin_Settings {
 				$sanitized['tone'] = $tone;
 			} else {
 				$sanitized['tone'] = 'neutral'; // Default fallback
-			}
-		}
-
-		// Sanitize license key — keep existing when field left blank
-		if ( isset( $input['license_key'] ) ) {
-			$license_key = sanitize_text_field( $input['license_key'] );
-			if ( ! empty( $license_key ) ) {
-				$sanitized['license_key'] = $this->encrypt_api_key( $license_key );
-				// Validate the key against the license server
-				$is_valid = $this->validate_license_key( $license_key );
-				update_option( 'aanp_license_valid', $is_valid );
-				if ( $is_valid ) {
-					add_settings_error( 'aanp_settings', 'license_activated', __( 'Pro license activated successfully!', 'newsforge-ai-auto-news-poster' ), 'updated' );
-				} else {
-					add_settings_error( 'aanp_settings', 'license_invalid', __( 'The license key could not be verified.', 'newsforge-ai-auto-news-poster' ), 'error' );
-				}
-			} else {
-				// Keep the existing encrypted key
-				$sanitized['license_key'] = isset( $existing_options['license_key'] ) ? $existing_options['license_key'] : '';
 			}
 		}
 

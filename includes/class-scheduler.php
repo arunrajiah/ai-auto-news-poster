@@ -86,7 +86,7 @@ class AANP_Scheduler {
 		$image_gen    = new AANP_Image_Generator();
 
 		$settings        = get_option( 'aanp_settings', array() );
-		$max             = AI_Auto_News_Poster::get_max_posts_per_batch();
+		$max             = AANP_Plugin::get_max_posts_per_batch();
 		$featured_images = ! empty( $settings['featured_images'] );
 
 		$articles = $news_fetch->fetch_latest_news();

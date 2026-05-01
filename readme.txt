@@ -1,9 +1,9 @@
-=== NewsForge – AI Auto News Poster ===
+=== RSS AI Post Generator ===
 Contributors: arunrajiah
 Tags: ai, news, auto-posting, openai, rss
 Requires at least: 5.1
 Tested up to: 6.9
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -12,7 +12,7 @@ Auto-generate unique blog posts from the latest news using OpenAI, Claude, or an
 
 == Description ==
 
-NewsForge transforms the latest news articles into unique, engaging blog posts using OpenAI, Anthropic Claude, or any OpenAI-compatible API. Perfect for news sites, blogs, and content creators who want to stay on top of trending topics without the manual effort.
+RSS AI Post Generator transforms the latest news articles into unique, engaging blog posts using OpenAI, Anthropic Claude, or any OpenAI-compatible API. Perfect for news sites, blogs, and content creators who want to stay on top of trending topics without the manual effort.
 
 **Key Features:**
 
@@ -39,7 +39,7 @@ NewsForge transforms the latest news articles into unique, engaging blog posts u
 
 **Includes:**
 
-* Manual generation of up to 5 posts per batch
+* Manual generation of up to 30 posts per batch
 * Automatic WP-Cron scheduling (hourly / every 6 h / twice daily / daily)
 * DALL-E 3 featured image generation (OpenAI provider)
 * OpenAI, Anthropic, and Custom API support
@@ -49,17 +49,11 @@ NewsForge transforms the latest news articles into unique, engaging blog posts u
 * AES-256 API key encryption
 * PHPUnit-tested, CI-verified codebase (39 tests)
 
-**Coming Soon:**
-
-* Up to 30 posts per batch
-* SEO meta tags auto-fill
-* Priority support
-
 == Installation ==
 
 1. Upload the plugin files to `/wp-content/plugins/newsforge-ai-auto-news-poster/`, or install through the WordPress plugins screen.
 2. Activate the plugin through the **Plugins** screen.
-3. Go to **Settings > NewsForge**.
+3. Go to **Settings > RSS AI Post Generator**.
 4. Select your AI provider and enter your API key.
 5. Add RSS feed URLs (or use the built-in defaults).
 6. Click **Generate 5 Posts** to start creating content.
@@ -88,7 +82,7 @@ No. All posts are saved as drafts for you to review and edit before publishing, 
 
 = How many posts can I generate at once? =
 
-Up to 5 per batch (manual or scheduled).
+Up to 30 per batch (manual or scheduled).
 
 = Why do I have to wait 60 seconds between manual batches? =
 
@@ -114,6 +108,38 @@ The plugin checks its own tracking table (`wp_aanp_generated_posts`) and silentl
 
 Yes. It follows WordPress security best practices: nonce verification, `manage_options` capability checks, `$wpdb->prepare()` for all queries, and output escaping throughout.
 
+== External Services ==
+
+This plugin connects to the following external services. By using this plugin you agree to these services' terms and privacy policies.
+
+**OpenAI API** (required when LLM Provider is set to OpenAI)
+
+* What is sent: article headline and summary text (from RSS feeds) to generate blog post content; the post title when DALL-E 3 image generation is enabled
+* Why: to generate unique blog post content and, optionally, featured images using DALL-E 3
+* Service URL: https://api.openai.com
+* Privacy Policy: https://openai.com/policies/privacy-policy
+* Terms of Service: https://openai.com/policies/terms-of-use
+
+**Anthropic API** (required when LLM Provider is set to Anthropic)
+
+* What is sent: article headline and summary text (from RSS feeds) to generate blog post content
+* Why: to generate unique blog post content using Claude
+* Service URL: https://api.anthropic.com
+* Privacy Policy: https://www.anthropic.com/privacy
+* Terms of Service: https://www.anthropic.com/legal/consumer-terms
+
+**RSS Feeds** (publicly available news sources)
+
+The plugin fetches articles from RSS feeds configured by the site administrator. The default built-in feeds are:
+
+* BBC News — https://feeds.bbci.co.uk/news/rss.xml — Privacy: https://www.bbc.com/privacy
+* CNN — https://rss.cnn.com/rss/edition.rss — Privacy: https://www.cnn.com/privacy
+* Reuters — https://feeds.reuters.com/reuters/topNews — Privacy: https://www.reuters.com/privacy-policy
+
+What is sent: a standard HTTP GET request (no personal data, no cookies). The feed URLs are configurable — administrators can add, remove, or replace any feed.
+
+No data is transmitted to any external service without the site administrator explicitly configuring an API key and/or feed URL in the plugin settings.
+
 == Screenshots ==
 
 1. Main settings page with AI provider configuration
@@ -123,6 +149,13 @@ Yes. It follows WordPress security best practices: nonce verification, `manage_o
 5. Recent generated posts table with edit links
 
 == Changelog ==
+
+= 1.0.8 =
+* Renamed plugin to "RSS AI Post Generator" to comply with WordPress.org trademark guidelines
+* Removed all Pro/license gating — all features (scheduling, featured images, up to 30 posts per batch) are now fully available to all users
+* Added `== External Services ==` section to readme.txt documenting RSS feeds, OpenAI, and Anthropic API usage
+* Removed "Upgrade to Pro" banner and locked "Coming Soon" sections from settings page
+* Fixed class name reference (AI_Auto_News_Poster → AANP_Plugin) in scheduler and admin settings
 
 = 1.0.7 =
 * WP-Cron scheduling — new Automation section in settings; choose hourly / every 6 h / twice daily / daily; next-run time shown inline
@@ -159,6 +192,9 @@ Yes. It follows WordPress security best practices: nonce verification, `manage_o
 * Initial release: OpenAI and Anthropic integration, RSS feed parsing, batch draft creation, admin settings UI
 
 == Upgrade Notice ==
+
+= 1.0.8 =
+Plugin renamed to "RSS AI Post Generator". All features (scheduling, featured images, 30 posts per batch) are now fully free — no license key required.
 
 = 1.0.7 =
 Adds automatic WP-Cron scheduling and DALL-E 3 featured image generation. No database migration required. New Automation settings section appears after upgrade.

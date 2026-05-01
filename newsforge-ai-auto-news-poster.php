@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: NewsForge – AI Auto News Poster
+ * Plugin Name: RSS AI Post Generator
  * Plugin URI: https://github.com/arunrajiah/newsforge-ai-auto-news-poster
  * Description: Auto-generate blog posts from the latest news using AI. Supports manual and automatic WP-Cron scheduling with optional DALL-E 3 featured image generation.
- * Version: 1.0.7
+ * Version: 1.0.8
  * Author: Arun Rajiah
  * Author URI: https://github.com/arunrajiah
  * License: GPL v2 or later
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants.
-define( 'AANP_VERSION', '1.0.7' );
+define( 'AANP_VERSION', '1.0.8' );
 define( 'AANP_DB_VERSION', '1.1' );
 define( 'AANP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AANP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -194,47 +194,31 @@ class AANP_Plugin {
 	}
 
 	/**
-	 * Check if a valid Pro license is active.
-	 * Reads the cached validation result stored by AANP_Admin_Settings::sanitize_settings().
+	 * Get maximum posts per batch.
 	 */
-	public static function is_pro_active(): bool {
-		$is_valid = (bool) get_option( 'aanp_license_valid', false );
-		return apply_filters( 'aanp_is_pro_active', $is_valid );
+	public static function get_max_posts_per_batch(): int {
+		return 30;
 	}
 
 	/**
-	 * Get Pro upgrade URL (placeholder)
+	 * Check if scheduling is available (always true).
 	 */
-	public static function get_pro_upgrade_url() {
-		return apply_filters( 'aanp_pro_upgrade_url', 'https://github.com/arunrajiah/newsforge-ai-auto-news-poster-pro' );
+	public static function is_scheduling_available(): bool {
+		return true;
 	}
 
 	/**
-	 * Get maximum posts per batch based on version
+	 * Check if featured image generation is available (always true).
 	 */
-	public static function get_max_posts_per_batch() {
-		return self::is_pro_active() ? 30 : 5;
+	public static function is_featured_images_available(): bool {
+		return true;
 	}
 
 	/**
-	 * Check if scheduling is available
+	 * Check if SEO features are available (always true).
 	 */
-	public static function is_scheduling_available() {
-		return self::is_pro_active();
-	}
-
-	/**
-	 * Check if featured image generation is available
-	 */
-	public static function is_featured_images_available() {
-		return self::is_pro_active();
-	}
-
-	/**
-	 * Check if SEO features are available
-	 */
-	public static function is_seo_features_available() {
-		return self::is_pro_active();
+	public static function is_seo_features_available(): bool {
+		return true;
 	}
 }
 

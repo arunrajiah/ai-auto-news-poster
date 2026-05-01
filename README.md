@@ -1,12 +1,12 @@
-# NewsForge – AI Auto News Poster
+# RSS AI Post Generator
 
 ![CI](https://github.com/arunrajiah/newsforge-ai-auto-news-poster/actions/workflows/ci.yml/badge.svg)
-![Version](https://img.shields.io/badge/Version-1.0.7-green.svg)
+![Version](https://img.shields.io/badge/Version-1.0.8-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-5.1%2B-blue.svg)
 
-AI-powered WordPress plugin that automatically generates unique blog posts from the latest news using OpenAI, Anthropic Claude, or any OpenAI-compatible API. Features RSS feed integration with transient caching, per-article AJAX generation with live progress feedback, duplicate detection, and AES-256 encrypted API key storage.
+AI-powered WordPress plugin that automatically generates unique blog posts from the latest news using OpenAI, Anthropic Claude, or any OpenAI-compatible API. Features RSS feed integration with transient caching, per-article AJAX generation with live progress feedback, duplicate detection, and AES-256 encrypted API key storage. All features are free — no license key required.
 
 ## Features
 
@@ -21,14 +21,9 @@ AI-powered WordPress plugin that automatically generates unique blog posts from 
 - **Draft-first workflow** — all posts saved as drafts for review before publishing
 - **Source attribution** — each post links back to its original news source
 
-### Automation (v1.0.7)
+### Automation (v1.0.8)
 - **WP-Cron scheduling** — run generation automatically on any schedule: hourly, every 6 hours, twice daily, or daily; configured in **Settings > Automation**
 - **DALL-E 3 featured images** — when OpenAI is the selected provider, automatically generate and attach a featured image to every post using `dall-e-3` at 1792×1024 resolution
-
-### Coming Soon
-- Up to 30 posts per batch
-- SEO meta tags auto-fill
-- Priority support
 
 ## Requirements
 
@@ -59,7 +54,7 @@ cp -r newsforge-ai-auto-news-poster /path/to/wordpress/wp-content/plugins/
 
 ## Configuration
 
-Navigate to **Settings > NewsForge** after activation.
+Navigate to **Settings > RSS AI Post Generator** after activation.
 
 | Setting | Description |
 |---------|-------------|
@@ -281,6 +276,13 @@ define( 'WP_DEBUG_LOG', true );
 Please follow WordPress Coding Standards and include tests for new functionality.
 
 ## Changelog
+
+### 1.0.8
+- **Renamed** plugin to "RSS AI Post Generator" to comply with WordPress.org trademark guidelines
+- **All features unlocked** — scheduling, featured images, up to 30 posts per batch are fully free; no license key required
+- **External Services** documentation added to `readme.txt` as required by WordPress.org
+- Removed "Upgrade to Pro" banner and locked feature sections from settings UI
+- Fixed `AI_Auto_News_Poster` → `AANP_Plugin` class name references in scheduler and admin settings
 
 ### 1.0.7
 - **Renamed** plugin file to `newsforge-ai-auto-news-poster.php` to align with WordPress.org slug

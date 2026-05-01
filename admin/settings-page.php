@@ -24,8 +24,8 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 	<!-- Author / Sponsor Strip -->
 	<div class="aanp-author-strip">
 		<div class="aanp-author-strip__logo">
-			<span class="aanp-author-strip__logo-mark">NF</span>
-			<span class="aanp-author-strip__logo-name">NewsForge</span>
+			<span class="aanp-author-strip__logo-mark">AI</span>
+			<span class="aanp-author-strip__logo-name">RSS AI Post</span>
 		</div>
 		<div class="aanp-author-strip__body">
 			<p class="aanp-author-strip__credit">
@@ -41,23 +41,6 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 				<?php esc_html_e( '— it helps keep the project alive and growing.', 'newsforge-ai-auto-news-poster' ); ?>
 			</p>
 		</div>
-	</div>
-
-	<!-- Pro Features Banner -->
-	<div class="notice notice-info">
-		<p><strong><?php esc_html_e( 'Upgrade to Pro for Advanced Features!', 'newsforge-ai-auto-news-poster' ); ?></strong></p>
-		<ul style="margin-left: 20px;">
-			<li><?php esc_html_e( '• Automated scheduling with WP-Cron', 'newsforge-ai-auto-news-poster' ); ?></li>
-			<li><?php esc_html_e( '• Generate up to 30 posts per batch', 'newsforge-ai-auto-news-poster' ); ?></li>
-			<li><?php esc_html_e( '• Automatic featured image generation', 'newsforge-ai-auto-news-poster' ); ?></li>
-			<li><?php esc_html_e( '• SEO meta tags auto-fill', 'newsforge-ai-auto-news-poster' ); ?></li>
-			<li><?php esc_html_e( '• Priority support', 'newsforge-ai-auto-news-poster' ); ?></li>
-		</ul>
-		<p>
-			<a href="#" class="button button-primary aanp-pro-upgrade-btn">
-				<?php esc_html_e( 'Upgrade to Pro', 'newsforge-ai-auto-news-poster' ); ?>
-			</a>
-		</p>
 	</div>
 
 	<!-- Statistics Dashboard -->
@@ -87,13 +70,13 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 	<div class="aanp-generate-section">
 		<h2><?php esc_html_e( 'Generate Posts', 'newsforge-ai-auto-news-poster' ); ?></h2>
 		<p>
-			<?php esc_html_e( 'Click the button below to fetch the latest news and generate 5 unique blog posts automatically.', 'newsforge-ai-auto-news-poster' ); ?>
+			<?php esc_html_e( 'Click the button below to fetch the latest news and generate blog posts automatically.', 'newsforge-ai-auto-news-poster' ); ?>
 		</p>
 
 		<div class="aanp-generate-controls">
 			<button type="button" id="aanp-generate-posts" class="button button-primary button-large">
 				<span class="dashicons dashicons-update aanp-btn-icon"></span>
-				<?php esc_html_e( 'Generate 5 Posts', 'newsforge-ai-auto-news-poster' ); ?>
+				<?php esc_html_e( 'Generate Posts', 'newsforge-ai-auto-news-poster' ); ?>
 			</button>
 
 			<div id="aanp-generation-status">
@@ -168,25 +151,6 @@ $aanp_recent_posts = $aanp_post_creator->get_recent_posts( 5 );
 		settings_fields( 'aanp_settings_group' );
 		do_settings_sections( 'newsforge-ai-auto-news-poster' );
 		?>
-
-		<!-- Coming Soon: SEO meta optimization -->
-		<div class="aanp-pro-features">
-			<h2><?php esc_html_e( 'Coming Soon', 'newsforge-ai-auto-news-poster' ); ?></h2>
-			<table class="form-table">
-				<tr>
-					<th scope="row"><?php esc_html_e( 'SEO Optimization', 'newsforge-ai-auto-news-poster' ); ?></th>
-					<td>
-						<label>
-							<input type="checkbox" disabled />
-							<?php esc_html_e( 'Auto-fill SEO meta tags (coming soon)', 'newsforge-ai-auto-news-poster' ); ?>
-						</label>
-						<p class="description">
-							<?php esc_html_e( 'Automatically generate SEO-optimized meta descriptions and keywords.', 'newsforge-ai-auto-news-poster' ); ?>
-						</p>
-					</td>
-				</tr>
-			</table>
-		</div>
 
 		<?php submit_button(); ?>
 	</form>

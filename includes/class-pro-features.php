@@ -1,11 +1,14 @@
 <?php
 /**
- * Pro Features Class (Placeholder)
+ * Pro Features Class
+ *
+ * All features are available to all users. This class is retained for
+ * extensibility and fires action hooks that third-party code can hook into.
  *
  * @package AI_Auto_News_Poster
  */
 
-// Prevent direct access
+// Prevent direct access.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -16,148 +19,37 @@ class AANP_Pro_Features {
 	 * Constructor
 	 */
 	public function __construct() {
-		// Pro features will be initialized here when available
-		add_action( 'init', array( $this, 'init_pro_features' ) );
+		add_action( 'init', array( $this, 'init_features' ) );
 	}
 
 	/**
-	 * Initialize Pro features
+	 * Initialize features and register action hooks.
 	 */
-	public function init_pro_features() {
-		if ( ! AI_Auto_News_Poster::is_pro_active() ) {
-			return;
-		}
-
-		// Pro features initialization will go here
-		add_action( 'aanp_after_post_generation', array( $this, 'generate_featured_image' ) );
-		add_action( 'aanp_after_post_creation', array( $this, 'add_seo_meta' ) );
-		add_action( 'wp', array( $this, 'schedule_automatic_generation' ) );
+	public function init_features() {
+		add_action( 'aanp_after_post_generation', array( $this, 'generate_featured_image' ), 10, 2 );
+		add_action( 'aanp_after_post_creation', array( $this, 'add_seo_meta' ), 10, 2 );
 	}
 
 	/**
-	 * Generate featured image for post (Pro feature placeholder)
+	 * Generate featured image for post.
 	 *
-	 * @param int   $post_id Post ID
-	 * @param array $article Article data
+	 * @param int   $post_id Post ID.
+	 * @param array $article Article data.
 	 */
 	public function generate_featured_image( $post_id, $article ) {
-		if ( ! AI_Auto_News_Poster::is_featured_images_available() ) {
-			return;
-		}
-
-		// Featured image generation logic will be implemented in Pro version
-		do_action( 'aanp_pro_generate_featured_image', $post_id, $article );
+		do_action( 'aanp_generate_featured_image', $post_id, $article );
 	}
 
 	/**
-	 * Add SEO meta tags (Pro feature placeholder)
+	 * Add SEO meta tags.
 	 *
-	 * @param int   $post_id Post ID
-	 * @param array $generated_content Generated content
+	 * @param int   $post_id          Post ID.
+	 * @param array $generated_content Generated content.
 	 */
 	public function add_seo_meta( $post_id, $generated_content ) {
-		if ( ! AI_Auto_News_Poster::is_seo_features_available() ) {
-			return;
-		}
-
-		// SEO meta generation logic will be implemented in Pro version
-		do_action( 'aanp_pro_add_seo_meta', $post_id, $generated_content );
-	}
-
-	/**
-	 * Schedule automatic generation (Pro feature placeholder)
-	 */
-	public function schedule_automatic_generation() {
-		if ( ! AI_Auto_News_Poster::is_scheduling_available() ) {
-			return;
-		}
-
-		// Only run scheduling logic in admin or cron context — not on every
-		// front-end page load, which would fire a DB query on each request.
-		if ( ! is_admin() && ! wp_doing_cron() ) {
-			return;
-		}
-
-		// Automatic scheduling logic will be implemented in Pro version.
-		// Route all cron through AANP_Scheduler to avoid a duplicate pipeline.
-		if ( ! wp_next_scheduled( 'aanp_auto_generate_posts' ) ) {
-			wp_schedule_event( time(), 'hourly', 'aanp_auto_generate_posts' );
-		}
-
-		add_action( 'aanp_auto_generate_posts', array( $this, 'run_automatic_generation' ) );
-	}
-
-	/**
-	 * Run automatic generation (Pro feature placeholder)
-	 */
-	public function run_automatic_generation() {
-		if ( ! AI_Auto_News_Poster::is_scheduling_available() ) {
-			return;
-		}
-
-		// Automatic generation logic will be implemented in Pro version
-		do_action( 'aanp_pro_auto_generate' );
-	}
-
-	/**
-	 * Get Pro feature status
-	 *
-	 * @return array Pro features status
-	 */
-	public static function get_pro_features_status() {
-		return array(
-			'scheduling'       => array(
-				'available'   => AI_Auto_News_Poster::is_scheduling_available(),
-				'title'       => __( 'Automated Scheduling', 'newsforge-ai-auto-news-poster' ),
-				'description' => __( 'Automatically generate posts on a schedule using WP-Cron.', 'newsforge-ai-auto-news-poster' ),
-			),
-			'batch_size'       => array(
-				'available'   => AI_Auto_News_Poster::is_pro_active(),
-				'title'       => __( 'Large Batch Generation', 'newsforge-ai-auto-news-poster' ),
-				'description' => __( 'Generate up to 30 posts per batch instead of 5.', 'newsforge-ai-auto-news-poster' ),
-			),
-			'featured_images'  => array(
-				'available'   => AI_Auto_News_Poster::is_featured_images_available(),
-				'title'       => __( 'Featured Image Generation', 'newsforge-ai-auto-news-poster' ),
-				'description' => __( 'Automatically generate relevant featured images for posts.', 'newsforge-ai-auto-news-poster' ),
-			),
-			'seo_optimization' => array(
-				'available'   => AI_Auto_News_Poster::is_seo_features_available(),
-				'title'       => __( 'SEO Optimization', 'newsforge-ai-auto-news-poster' ),
-				'description' => __( 'Auto-fill SEO meta descriptions and keywords.', 'newsforge-ai-auto-news-poster' ),
-			),
-			'priority_support' => array(
-				'available'   => AI_Auto_News_Poster::is_pro_active(),
-				'title'       => __( 'Priority Support', 'newsforge-ai-auto-news-poster' ),
-				'description' => __( 'Get priority email support and faster response times.', 'newsforge-ai-auto-news-poster' ),
-			),
-		);
-	}
-
-	/**
-	 * Display Pro upgrade notice
-	 */
-	public static function display_upgrade_notice() {
-		if ( AI_Auto_News_Poster::is_pro_active() ) {
-			return;
-		}
-
-		$upgrade_url = AI_Auto_News_Poster::get_pro_upgrade_url();
-
-		echo '<div class="notice notice-info aanp-pro-notice" style="border-left-color: #ff6900;">';
-		echo '<p><strong>' . esc_html__( 'Upgrade to NewsForge Pro!', 'newsforge-ai-auto-news-poster' ) . '</strong></p>';
-		echo '<p>' . esc_html__( 'Unlock powerful features like automated scheduling, 30 posts per batch, featured image generation, and SEO optimization.', 'newsforge-ai-auto-news-poster' ) . '</p>';
-		echo '<p>';
-		echo '<a href="' . esc_url( $upgrade_url ) . '" class="button button-primary" target="_blank">';
-		echo esc_html__( 'Learn More About Pro', 'newsforge-ai-auto-news-poster' );
-		echo '</a>';
-		echo ' <a href="#" class="button aanp-dismiss-pro-notice">';
-		echo esc_html__( 'Maybe Later', 'newsforge-ai-auto-news-poster' );
-		echo '</a>';
-		echo '</p>';
-		echo '</div>';
+		do_action( 'aanp_add_seo_meta', $post_id, $generated_content );
 	}
 }
 
-// Initialize Pro features
+// Initialize features.
 new AANP_Pro_Features();

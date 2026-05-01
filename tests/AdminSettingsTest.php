@@ -85,20 +85,6 @@ class AdminSettingsTest extends TestCase {
         $this->assertContains('https://feeds.bbci.co.uk/news/rss.xml', $result['rss_feeds']);
     }
 
-    public function test_validate_license_key_rejects_short_key(): void {
-        $reflection = new ReflectionMethod(AANP_Admin_Settings::class, 'validate_license_key');
-        $reflection->setAccessible(true);
-        $this->assertFalse($reflection->invoke($this->settings, 'short'));
-    }
-
-    public function test_validate_license_key_returns_false_until_server_implemented(): void {
-        // License validation now fails closed — any key is rejected until a real
-        // license server is wired up. This prevents length-only bypass of Pro features.
-        $reflection = new ReflectionMethod(AANP_Admin_Settings::class, 'validate_license_key');
-        $reflection->setAccessible(true);
-        $this->assertFalse($reflection->invoke($this->settings, 'abcdefghijklmnopqrstu'));
-    }
-
     public function test_rate_limit_constant_is_positive(): void {
         $this->assertGreaterThan(0, AANP_Admin_Settings::RATE_LIMIT_SECONDS);
     }
