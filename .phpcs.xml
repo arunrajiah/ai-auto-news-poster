@@ -28,7 +28,7 @@
     <rule ref="WordPress.WP.I18n">
         <properties>
             <property name="text_domain" type="array">
-                <element value="newsforge-ai-auto-news-poster"/>
+                <element value="arunai-auto-news-poster"/>
             </property>
         </properties>
     </rule>
