@@ -1,5 +1,5 @@
 {
-    "name": "arunrajiah/newsforge-ai-auto-news-poster",
+    "name": "arunrajiah/arunai-auto-news-poster",
     "description": "WordPress plugin that auto-generates unique blog posts from RSS feeds using AI APIs.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",

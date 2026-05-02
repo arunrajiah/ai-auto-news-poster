@@ -1,6 +1,6 @@
 # RSS AI Post Generator
 
-![CI](https://github.com/arunrajiah/newsforge-ai-auto-news-poster/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/arunrajiah/arunai-auto-news-poster/actions/workflows/ci.yml/badge.svg)
 ![Version](https://img.shields.io/badge/Version-1.0.8-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)
@@ -38,18 +38,18 @@ AI-powered WordPress plugin that automatically generates unique blog posts from 
 ## Installation
 
 ### WordPress Admin (Recommended)
-1. Download the plugin zip from the [releases page](https://github.com/arunrajiah/newsforge-ai-auto-news-poster/releases)
+1. Download the plugin zip from the [releases page](https://github.com/arunrajiah/arunai-auto-news-poster/releases)
 2. Go to **Plugins > Add New > Upload Plugin**
 3. Select the zip, click **Install Now**, then **Activate**
 
 ### Manual
-1. Upload the `newsforge-ai-auto-news-poster` folder to `/wp-content/plugins/`
+1. Upload the `arunai-auto-news-poster` folder to `/wp-content/plugins/`
 2. Activate from the **Plugins** screen
 
 ### Developer (Git)
 ```bash
-git clone https://github.com/arunrajiah/newsforge-ai-auto-news-poster.git
-cp -r newsforge-ai-auto-news-poster /path/to/wordpress/wp-content/plugins/
+git clone https://github.com/arunrajiah/arunai-auto-news-poster.git
+cp -r arunai-auto-news-poster /path/to/wordpress/wp-content/plugins/
 ```
 
 ## Configuration
@@ -68,7 +68,6 @@ Navigate to **Settings > RSS AI Post Generator** after activation.
 | RSS Feed URLs | One URL per row; use the **Test** button to validate |
 | **Schedule** | Disabled / Hourly / Every 6 Hours / Twice Daily / Daily |
 | **Featured Images** | Auto-generate DALL-E 3 images (OpenAI provider only) |
-| Pro License Key | Unlocks Pro features when available |
 
 ### Getting API Keys
 
@@ -79,14 +78,14 @@ Navigate to **Settings > RSS AI Post Generator** after activation.
 ## Usage
 
 ### Generating Posts Manually
-1. Go to **Settings > NewsForge**
+1. Go to **Settings > RSS AI Post Generator**
 2. Click **Generate 5 Posts**
 3. The plugin fetches articles from your RSS feeds, then generates one post at a time with a live progress indicator
 4. Each post appears in the results list with an edit link as soon as it is created
 5. Review and publish drafts from **Posts > All Posts**
 
 ### Automatic Scheduling
-1. Go to **Settings > NewsForge > Automation**
+1. Go to **Settings > RSS AI Post Generator > Automation**
 2. Choose a schedule from the **Schedule** dropdown (Hourly / Every 6 Hours / Twice Daily / Daily)
 3. Click **Save Changes** — the WP-Cron event is registered immediately
 4. The next scheduled run time is shown below the dropdown
@@ -125,7 +124,7 @@ The plugin tracks every generated post's source URL in a custom database table (
 ## Architecture
 
 ```
-newsforge-ai-auto-news-poster/
+arunai-auto-news-poster/
 ├── newsforge-ai-auto-news-poster.php   # Plugin bootstrap; constants; DB migrations
 ├── uninstall.php                        # Cleanup on plugin deletion
 ├── includes/
@@ -330,5 +329,5 @@ GPL v2 or later — see [LICENSE](https://www.gnu.org/licenses/gpl-2.0.html).
 
 ## Support
 
-- Bug reports / feature requests: [GitHub Issues](https://github.com/arunrajiah/newsforge-ai-auto-news-poster/issues)
+- Bug reports / feature requests: [GitHub Issues](https://github.com/arunrajiah/arunai-auto-news-poster/issues)
 - Documentation: this README and inline code comments

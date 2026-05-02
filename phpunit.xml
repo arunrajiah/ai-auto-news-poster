@@ -7,7 +7,7 @@
     beStrictAboutOutputDuringTests="true"
 >
     <testsuites>
-        <testsuite name="NewsForge – AI Auto News Poster">
+        <testsuite name="RSS AI Post Generator">
             <directory>tests/</directory>
         </testsuite>
     </testsuites>

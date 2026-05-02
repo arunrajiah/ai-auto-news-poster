@@ -46,7 +46,7 @@ jobs:
 
       - name: Build plugin zip
         run: |
-          PLUGIN_SLUG="newsforge-ai-auto-news-poster"
+          PLUGIN_SLUG="arunai-auto-news-poster"
           DIST_DIR="${PLUGIN_SLUG}"
           ZIP_NAME="${PLUGIN_SLUG}-${{ steps.meta.outputs.version }}.zip"
 
@@ -56,6 +56,7 @@ jobs:
             --exclude=".github" \
             --exclude=".phpcs.xml" \
             --exclude=".DS_Store" \
+            --exclude=".phpunit.result.cache" \
             --exclude="composer.json" \
             --exclude="composer.lock" \
             --exclude="phpunit.xml" \

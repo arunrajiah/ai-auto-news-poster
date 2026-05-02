@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="NewsForge – AI Auto News Poster">
-    <description>WordPress coding standards for NewsForge – AI Auto News Poster plugin.</description>
+<ruleset name="RSS AI Post Generator">
+    <description>WordPress coding standards for RSS AI Post Generator plugin.</description>
 
     <!-- What to scan -->
     <file>.</file>
